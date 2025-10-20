@@ -1,0 +1,99 @@
+# ==============================================
+# Maven build output
+# ==============================================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# ==============================================
+# Java class files
+# ==============================================
+*.class
+*.war
+*.ear
+*.jar
+
+# ==============================================
+# Logs & Temp files
+# ==============================================
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# ==============================================
+# IDE-specific files
+# ==============================================
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse / STS
+.project
+.classpath
+.factorypath
+.settings/
+.apt_generated/
+.springBeans
+.sts4-cache/
+bin/
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# VS Code
+.vscode/
+
+# ==============================================
+# OS-specific files
+# ==============================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ==============================================
+# Test & Reports
+# ==============================================
+test-output/
+surefire-reports/
+failsafe-reports/
+jacoco.exec
+coverage/
+
+# ==============================================
+# Environment & Secrets
+# ==============================================
+.env
+.env.*
+*.env.local
+application-prod.yml
+application-prod.properties
+application-test.yml
+application-test.properties
+
+# ==============================================
+# Docker / Deployment
+# ==============================================
+*.pid
+docker-compose.override.yml
+docker-compose.override.yaml
+.docker/
