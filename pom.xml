@@ -66,5 +66,11 @@
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.32</version> <!-- hoặc version mới hơn -->
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>

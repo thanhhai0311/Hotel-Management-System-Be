@@ -17,57 +17,58 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+	@Autowired
+	private JwtUtil jwtUtil;
+	@Autowired
+	private CustomUserDetailsService customUserDetailsService;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-        String path = request.getServletPath();
-        // Cho phép các endpoint /auth/** đi qua không cần JWT
-        if (path.equals("/auth/login") || path.equals("/auth/register/customer") || path.equals("/auth/register/employee")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+		String path = request.getServletPath();
+		// Cho phép các endpoint /auth/** đi qua không cần JWT
+		if (path.equals("/auth/login") || path.equals("/auth/register/customer")
+				|| path.equals("/auth/register/employee") || path.equals("/auth/login/customer")
+				|| path.equals("/auth/login/employee")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
 
-        final String authHeader = request.getHeader("Authorization");
-        String username = null;
-        String jwt = null;
+		final String authHeader = request.getHeader("Authorization");
+		String username = null;
+		String jwt = null;
 
-        // Kiểm tra có header Authorization hay không
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
-            try {
-                username = jwtUtil.extractUsername(jwt);
-            } catch (Exception e) {
-                System.out.println("⚠️ Token không hợp lệ hoặc hết hạn: " + e.getMessage());
-            }
-        }
+		// Kiểm tra có header Authorization hay không
+		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+			jwt = authHeader.substring(7);
+			try {
+				username = jwtUtil.extractUsername(jwt);
+			} catch (Exception e) {
+				System.out.println("⚠️ Token không hợp lệ hoặc hết hạn: " + e.getMessage());
+			}
+		}
 
-        // Nếu có username và chưa có Authentication trong context
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
+		// Nếu có username và chưa có Authentication trong context
+		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+			if (jwtUtil.validateToken(jwt, userDetails)) {
+				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+						null, userDetails.getAuthorities());
 
-                // 🔥 Quan trọng: gắn chi tiết request để Security hiểu request này đã xác thực
-                authToken.setDetails(new WebAuthenticationDetailsSource()
-                        .buildDetails(request));
+				// 🔥 Quan trọng: gắn chi tiết request để Security hiểu request này đã xác thực
+				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // 🔥 Quan trọng: đưa Authentication vào context
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+				// 🔥 Quan trọng: đưa Authentication vào context
+				SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                System.out.println("✅ JWT xác thực thành công cho user: " + username);
-            } else {
-                System.out.println("❌ JWT không hợp lệ hoặc không khớp user!");
-            }
-        }
+				System.out.println("✅ JWT xác thực thành công cho user: " + username);
+			} else {
+				System.out.println("❌ JWT không hợp lệ hoặc không khớp user!");
+			}
+		}
 
-        filterChain.doFilter(request, response);
-    }
+		filterChain.doFilter(request, response);
+	}
 }
