@@ -6,9 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,51 +21,48 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.javaweb.security.CustomUserDetailsService;
 import com.javaweb.security.JwtAuthenticationFilter;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
-@Configurable
 @EnableWebSecurity
-public class SecurityConfig {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    @Autowired
+	@Autowired
     private CustomUserDetailsService userDetailsService;
+	
+	@Autowired
+    private  JwtAuthenticationFilter jwtFilter;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
 //    	return org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance();
     }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+            .passwordEncoder(passwordEncoder());
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
-                .antMatchers("/auth/**").permitAll()
-                .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .antMatchers("/customer/**").authenticated()
-                .anyRequest().authenticated()
+            .antMatchers("/api/auth/**").permitAll()
+            .antMatchers("/api/admin/**").hasRole("ADMIN")
+            .antMatchers("/api/staff/**").hasAnyRole("STAFF", "ADMIN")
+            .antMatchers("/api/customer/**").hasRole("CUSTOMER")
+            .anyRequest().authenticated()
             .and()
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    }
 
-        http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

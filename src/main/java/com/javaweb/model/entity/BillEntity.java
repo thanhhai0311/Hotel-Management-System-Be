@@ -27,7 +27,7 @@ public class BillEntity {
 
     @ManyToOne
     @JoinColumn(name = "idCustomer")
-    private CustomerEntity customer;
+    private UserEntity customer;
 
     @OneToMany(mappedBy = "bill")
     private List<BookingServiceEntity> bookingServices;
@@ -80,11 +80,11 @@ public class BillEntity {
 		this.paymentStatus = paymentStatus;
 	}
 
-	public CustomerEntity getCustomer() {
+	public UserEntity getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(CustomerEntity customer) {
+	public void setCustomer(UserEntity customer) {
 		this.customer = customer;
 	}
 

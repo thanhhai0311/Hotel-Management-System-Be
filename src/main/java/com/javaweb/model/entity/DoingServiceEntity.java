@@ -18,7 +18,7 @@ public class DoingServiceEntity {
 
     @ManyToOne
     @JoinColumn(name = "idEmployee")
-    private EmployeeEntity employee;
+    private UserEntity employee;
 
 	public Integer getId() {
 		return id;
@@ -52,11 +52,11 @@ public class DoingServiceEntity {
 		this.bookingService = bookingService;
 	}
 
-	public EmployeeEntity getEmployee() {
+	public UserEntity getEmployee() {
 		return employee;
 	}
 
-	public void setEmployee(EmployeeEntity employee) {
+	public void setEmployee(UserEntity employee) {
 		this.employee = employee;
 	}
 

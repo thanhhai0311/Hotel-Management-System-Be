@@ -18,7 +18,7 @@ public class RoleEntity {
     private String details;
     
     @OneToMany(mappedBy = "role")
-    private List<EmployeeEntity> employees;
+    private List<AccountEntity> accountEntity;
 
 	public Integer getId() {
 		return id;
@@ -43,6 +43,15 @@ public class RoleEntity {
 	public void setDetails(String details) {
 		this.details = details;
 	}
-    
-    
+
+	public List<AccountEntity> getAccountEntity() {
+		return accountEntity;
+	}
+
+	public void setAccountEntity(List<AccountEntity> accountEntity) {
+		this.accountEntity = accountEntity;
+	}
+
+	
+	   
 }

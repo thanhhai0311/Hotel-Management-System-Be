@@ -15,7 +15,7 @@ public class NotifacationServiceEntity {
 
     @ManyToOne
     @JoinColumn(name = "idCustomer")
-    private CustomerEntity customer;
+    private UserEntity customer;
 
     @ManyToOne
     @JoinColumn(name = "idBookingService")
@@ -37,11 +37,11 @@ public class NotifacationServiceEntity {
 		this.notiTime = notiTime;
 	}
 
-	public CustomerEntity getCustomer() {
+	public UserEntity getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(CustomerEntity customer) {
+	public void setCustomer(UserEntity customer) {
 		this.customer = customer;
 	}
 

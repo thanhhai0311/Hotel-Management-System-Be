@@ -25,7 +25,7 @@ public class BookingRoomEntity {
 
     @ManyToOne
     @JoinColumn(name = "idCustomer")
-    private CustomerEntity customer;
+    private UserEntity customer;
 
     @OneToOne
     @JoinColumn(name = "idRoomPromotion")
@@ -37,7 +37,7 @@ public class BookingRoomEntity {
 
     @ManyToOne
     @JoinColumn(name = "idEmployee")
-    private EmployeeEntity employee;
+    private UserEntity employee;
 
     @OneToMany(mappedBy = "bookingRoom")
     private List<BookingServiceEntity> bookingServices;
@@ -85,11 +85,11 @@ public class BookingRoomEntity {
 		this.actualCheckOutTime = actualCheckOutTime;
 	}
 
-	public CustomerEntity getCustomer() {
+	public UserEntity getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(CustomerEntity customer) {
+	public void setCustomer(UserEntity customer) {
 		this.customer = customer;
 	}
 
@@ -109,11 +109,11 @@ public class BookingRoomEntity {
 		this.room = room;
 	}
 
-	public EmployeeEntity getEmployee() {
+	public UserEntity getEmployee() {
 		return employee;
 	}
 
-	public void setEmployee(EmployeeEntity employee) {
+	public void setEmployee(UserEntity employee) {
 		this.employee = employee;
 	}
 

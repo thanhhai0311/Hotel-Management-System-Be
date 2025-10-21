@@ -1,87 +1,61 @@
 package com.javaweb.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.javaweb.model.dto.LoginRequest;
-import com.javaweb.model.dto.LoginResponse;
-import com.javaweb.model.entity.CustomerEntity;
-import com.javaweb.model.entity.EmployeeEntity;
-import com.javaweb.repository.CustomerRepository;
-import com.javaweb.repository.EmployeeRepository;
-import com.javaweb.security.JwtUtil;
-
-import lombok.RequiredArgsConstructor;
+import com.javaweb.model.dto.RegisterRequest;
+import com.javaweb.model.entity.AccountEntity;
+import com.javaweb.model.entity.RoleEntity;
+import com.javaweb.model.entity.UserEntity;
+import com.javaweb.repository.AccountRepository;
+import com.javaweb.repository.RoleRepository;
+import com.javaweb.repository.UserRepository;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
-
 	@Autowired
-	private CustomerRepository customerRepository;
+    private AccountRepository accountRepository;
 
-	@Autowired
-	private EmployeeRepository employeeRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-	@Autowired
-	private JwtUtil jwtUtil;
+    @Autowired
+    private UserRepository userRepository;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+    public String register(RegisterRequest request) {
+        // 1 Kiểm tra email đã tồn tại chưa
+        if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email đã tồn tại!");
+        }
 
-	public LoginResponse loginCustomer(LoginRequest request) {
-//        CustomerEntity customer = customerRepository.findByEmail(request.getEmail())
-//                .orElseThrow(() -> new RuntimeException("Customer không tồn tại"));
-//
-//        if (!passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
-//            throw new RuntimeException("Sai mật khẩu");
-//        }
-//
-//        String token = jwtUtil.generateToken(customer.getEmail(), "CUSTOMER");
-//
-//        return new LoginResponse(token, "CUSTOMER", customer.getName(), customer.getEmail());
-		authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        // 2️ Tìm role theo tên (CUSTOMER / STAFF / ADMIN)
+        RoleEntity role = roleRepository.findByName(request.getRoleName().toUpperCase())
+                .orElseThrow(() -> new RuntimeException("Role không tồn tại!"));
 
-		CustomerEntity customer = customerRepository.findByEmail(request.getEmail())
-				.orElseThrow(() -> new RuntimeException("Customer không tồn tại"));
+        // 3️ Tạo account
+        AccountEntity account = new AccountEntity();
+        account.setEmail(request.getEmail());
+        account.setPassword(passwordEncoder.encode(request.getPassword()));
+        account.setActive(true);
+        account.setRole(role);
 
-		String token = jwtUtil.generateToken(customer.getEmail(), "ROLE_CUSTOMER", "");
+        accountRepository.save(account);
 
-		return new LoginResponse(token, "CUSTOMER", customer.getName(), customer.getEmail());
+        // 4️ Tạo user (thông tin cá nhân)
+        UserEntity user = new UserEntity();
+        user.setName(request.getName());
+        user.setPhone(request.getPhone());
+        user.setAddress(request.getAddress());
+        user.setGender(request.getGender());
+        user.setAccount(account);
+        user.setDob(request.getDob());
 
-	}
+        userRepository.save(user);
 
-	public LoginResponse loginEmployee(LoginRequest request) {
-//        EmployeeEntity employee = employeeRepository.findByEmail(request.getEmail())
-//                .orElseThrow(() -> new RuntimeException("Employee không tồn tại"));
-//
-//        if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
-//            throw new RuntimeException("Sai mật khẩu");
-//        }
-//
-//        String token = jwtUtil.generateToken(employee.getEmail(), "EMPLOYEE");
-//
-//        return new LoginResponse(token, "EMPLOYEE", employee.getName(), employee.getEmail());
-		authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-
-		EmployeeEntity employee = employeeRepository.findByEmail(request.getEmail())
-				.orElseThrow(() -> new RuntimeException("Employee không tồn tại"));
-
-		String token = jwtUtil.generateToken(employee.getEmail(), "ROLE_EMPLOYEE", employee.getRole().getName());
-
-		return new LoginResponse(token, "EMPLOYEE", employee.getName(), employee.getEmail());
-	}
+        return "Đăng ký thành công!";
+    }
 }

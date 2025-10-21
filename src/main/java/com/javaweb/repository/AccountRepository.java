@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.javaweb.model.entity.RoleEntity;
+import com.javaweb.model.entity.AccountEntity;
 
 @Repository
-public interface RoleRepository extends JpaRepository<RoleEntity, Integer> {
-	Optional<RoleEntity> findByName(String name);
+public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
+    Optional<AccountEntity> findByEmail(String email);
 }

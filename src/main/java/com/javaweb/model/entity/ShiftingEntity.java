@@ -19,7 +19,7 @@ public class ShiftingEntity {
 
     @ManyToOne
     @JoinColumn(name = "idEmployee")
-    private EmployeeEntity employee;
+    private UserEntity employee;
 
     @ManyToOne
     @JoinColumn(name = "idShift")
@@ -49,11 +49,11 @@ public class ShiftingEntity {
 		this.day = day;
 	}
 
-	public EmployeeEntity getEmployee() {
+	public UserEntity getEmployee() {
 		return employee;
 	}
 
-	public void setEmployee(EmployeeEntity employee) {
+	public void setEmployee(UserEntity employee) {
 		this.employee = employee;
 	}
 

@@ -19,7 +19,7 @@ public class ReviewEntity {
 
     @ManyToOne
     @JoinColumn(name = "idCustomer")
-    private CustomerEntity customer;
+    private UserEntity customer;
 
     @OneToMany(mappedBy = "review")
     private List<ReviewImageEntity> reviewImages;
@@ -56,11 +56,11 @@ public class ReviewEntity {
 		this.day = day;
 	}
 
-	public CustomerEntity getCustomer() {
+	public UserEntity getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(CustomerEntity customer) {
+	public void setCustomer(UserEntity customer) {
 		this.customer = customer;
 	}
 

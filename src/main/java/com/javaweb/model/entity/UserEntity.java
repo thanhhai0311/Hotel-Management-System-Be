@@ -1,38 +1,53 @@
 package com.javaweb.model.entity;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 @Entity
-@Table(name = "Customer")
-public class CustomerEntity {
-    @Id
+@Table(name = "users")
+public class UserEntity {
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "name")
     private String name;
-
-    @Column(name = "phone", length = 10)
+    
+    @Column(name = "phone")
     private String phone;
-
-    @Column(name = "gender", length = 10)
+    
+    @Column(name = "gender")
     private String gender;
-
+    
     @Column(name = "address")
     private String address;
-
+    
     @Temporal(TemporalType.DATE)
-    @Column(name = "dob")
-    private Date dob;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "password")
-    private String password;
-
+	@Column(name = "dob")
+	private Date dob;
+    
+    @OneToMany(mappedBy = "employee")
+    private List<EvaluateEntity> evaluates;
+    
+    @OneToMany(mappedBy = "employee")
+    private List<ShiftingEntity> shiftings;
+    
+    @OneToMany(mappedBy = "employee")
+    private List<DoingServiceEntity> doingServices;
+    
     @OneToMany(mappedBy = "customer")
     private List<ReviewEntity> reviews;
 
@@ -47,6 +62,10 @@ public class CustomerEntity {
 
     @OneToMany(mappedBy = "customer")
     private List<NotifacationRoomEntity> notifacationRooms;
+    
+    @OneToOne()
+    @JoinColumn(name = "idAccount")
+    private AccountEntity account;
 
 	public Integer getId() {
 		return id;
@@ -96,20 +115,28 @@ public class CustomerEntity {
 		this.dob = dob;
 	}
 
-	public String getEmail() {
-		return email;
+	public List<EvaluateEntity> getEvaluates() {
+		return evaluates;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setEvaluates(List<EvaluateEntity> evaluates) {
+		this.evaluates = evaluates;
 	}
 
-	public String getPassword() {
-		return password;
+	public List<ShiftingEntity> getShiftings() {
+		return shiftings;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setShiftings(List<ShiftingEntity> shiftings) {
+		this.shiftings = shiftings;
+	}
+
+	public List<DoingServiceEntity> getDoingServices() {
+		return doingServices;
+	}
+
+	public void setDoingServices(List<DoingServiceEntity> doingServices) {
+		this.doingServices = doingServices;
 	}
 
 	public List<ReviewEntity> getReviews() {
@@ -152,6 +179,14 @@ public class CustomerEntity {
 		this.notifacationRooms = notifacationRooms;
 	}
 
+	public AccountEntity getAccount() {
+		return account;
+	}
 
+	public void setAccount(AccountEntity account) {
+		this.account = account;
+	}
+    
+    
     
 }
