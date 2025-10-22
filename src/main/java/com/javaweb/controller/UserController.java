@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.javaweb.mapper.UserMapper;
+import com.javaweb.model.dto.UserResponse;
 import com.javaweb.model.entity.UserEntity;
 import com.javaweb.service.UserService;
 
@@ -27,5 +29,11 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body("Lỗi: " + e.getMessage());
         }
+    }
+    
+    @GetMapping("")
+    public UserResponse getCurrentUser() {
+        UserEntity currentUser = userService.getCurrentUser();
+        return UserMapper.toUserResponse(currentUser);
     }
 }

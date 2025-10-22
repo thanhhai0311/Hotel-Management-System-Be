@@ -1,5 +1,5 @@
 package com.javaweb.repository;
 
-public class HotelRepository {
+public interface HotelRepository {
 
 }

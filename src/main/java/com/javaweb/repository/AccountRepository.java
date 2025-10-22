@@ -10,4 +10,5 @@ import com.javaweb.model.entity.AccountEntity;
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
     Optional<AccountEntity> findByEmail(String email);
+    Optional<AccountEntity> findById(Integer id);
 }
