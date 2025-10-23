@@ -33,11 +33,8 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	@Transactional
 	public AccountEntity toggleAccountActive(Integer id) {
-		AccountEntity account = accountRepository.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Không tìm thấy tài khoản với ID: " + id
-                ));
+		AccountEntity account = accountRepository.findById(id).orElseThrow(
+				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy tài khoản với ID: " + id));
 
 		if (account.isActive())
 			account.setActive(false);
@@ -77,56 +74,45 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-    public AccountEntity updateAccount(Integer id, AccountEntity account) {
-        AccountEntity accountEntity = accountRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Không tìm thấy tài khoản với ID: " + id
-                ));
+	public AccountEntity updateAccount(Integer id, AccountEntity account) {
+		AccountEntity accountEntity = accountRepository.findById(id).orElseThrow(
+				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy tài khoản với ID: " + id));
 
-        // Kiểm tra trùng email nếu thay đổi
-        if (!accountEntity.getEmail().equals(account.getEmail())
-                && accountRepository.existsByEmail(account.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email đã tồn tại!");
-        }
+		// Kiểm tra trùng email nếu thay đổi
+		if (!accountEntity.getEmail().equals(account.getEmail())
+				&& accountRepository.existsByEmail(account.getEmail())) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email đã tồn tại!");
+		}
 
-        accountEntity.setEmail(account.getEmail());
+		accountEntity.setEmail(account.getEmail());
 
-        if (account.getPassword() != null && !account.getPassword().isEmpty()) {
-            accountEntity.setPassword(passwordEncoder.encode(account.getPassword()));
-        }
+		if (account.getPassword() != null && !account.getPassword().isEmpty()) {
+			accountEntity.setPassword(passwordEncoder.encode(account.getPassword()));
+		}
 
-        accountEntity.setActive(account.isActive());
-        accountEntity.setRole(account.getRole());
+		accountEntity.setActive(account.isActive());
+		accountEntity.setRole(account.getRole());
 
-        return accountRepository.save(accountEntity);
-    }
+		return accountRepository.save(accountEntity);
+	}
 
 	@Override
-    public void deleteAccount(Integer id) {
-        if (!accountRepository.existsById(id)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Không tìm thấy tài khoản với ID: " + id
-            );
-        }
+	public void deleteAccount(Integer id) {
+		if (!accountRepository.existsById(id)) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy tài khoản với ID: " + id);
+		}
 
-        accountRepository.deleteById(id);
-    }
+		accountRepository.deleteById(id);
+	}
 
 	@Override
 	public AccountEntity updateAccountRole(Integer accountId, Integer roleId) {
 		AccountEntity account = accountRepository.findById(accountId)
-				.orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Không tìm thấy tài khoản với ID: " + accountId
-                ));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+						"Không tìm thấy tài khoản với ID: " + accountId));
 
-		RoleEntity role = roleRepository.findById(roleId)
-				 .orElseThrow(() -> new ResponseStatusException(
-	                        HttpStatus.NOT_FOUND,
-	                        "Không tìm thấy role với ID: " + roleId
-	                ));
+		RoleEntity role = roleRepository.findById(roleId).orElseThrow(
+				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy role với ID: " + roleId));
 		account.setRole(role);
 		return accountRepository.save(account);
 	}
