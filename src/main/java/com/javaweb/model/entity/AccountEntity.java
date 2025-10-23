@@ -15,7 +15,7 @@ import javax.persistence.Table;
 public class AccountEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -33,11 +33,11 @@ public class AccountEntity {
     @OneToOne(mappedBy = "account")
     private UserEntity user;
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
