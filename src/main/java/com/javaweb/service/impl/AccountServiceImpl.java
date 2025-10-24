@@ -14,8 +14,10 @@ import com.javaweb.model.dto.AccountDTO;
 import com.javaweb.model.dto.CreateAccountDTO;
 import com.javaweb.model.entity.AccountEntity;
 import com.javaweb.model.entity.RoleEntity;
+import com.javaweb.model.entity.UserEntity;
 import com.javaweb.repository.AccountRepository;
 import com.javaweb.repository.RoleRepository;
+import com.javaweb.repository.UserRepository;
 import com.javaweb.service.AccountService;
 
 @Service
@@ -29,6 +31,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	@Override
 	@Transactional
@@ -53,6 +58,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
+	@Transactional
 	public AccountEntity createAccount(CreateAccountDTO dto) {
 		// Kiểm tra trùng email
 		if (accountRepository.existsByEmail(dto.getEmail())) {
@@ -68,9 +74,24 @@ public class AccountServiceImpl implements AccountService {
 		account.setPassword(passwordEncoder.encode(dto.getPassword()));
 		account.setActive(true);
 		account.setRole(role);
+		accountRepository.save(account);
+		
 		AccountDTO dtoRes = new AccountDTO(account.getId(), account.getEmail(), account.isActive(),
 				account.getRole() != null ? account.getRole().getName() : null);
-		return accountRepository.save(account);
+		
+		UserEntity user = new UserEntity();
+        user.setName(dto.getName());
+        user.setPhone(dto.getPhone());
+        user.setGender(dto.getGender());
+        user.setAddress(dto.getAddress());
+        user.setDob(dto.getDob());
+        user.setAccount(account);
+        
+        userRepository.save(user);
+        
+        account.setUser(user);
+        
+		return account;
 	}
 
 	@Override

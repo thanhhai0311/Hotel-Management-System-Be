@@ -1,5 +1,7 @@
 package com.javaweb.exception;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,6 @@ public class GlobalExceptionHandler {
                 null,
                 request.getRequestURI()
         );
-
         return ResponseEntity.status(ex.getStatus()).body(response);
     }
 
@@ -39,25 +40,27 @@ public class GlobalExceptionHandler {
      * Bắt lỗi validate (từ @Valid)
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleValidationErrors(
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
 
-        String message = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-
-        ApiResponse<Object> response = new ApiResponse<>(
-                false,
-                HttpStatus.BAD_REQUEST.value(),
-                message,
-                null,
-                request.getRequestURI()
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(err ->
+                errors.put(err.getField(), err.getDefaultMessage())
         );
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        ApiResponse<Map<String, String>> response = new ApiResponse<>(
+                false,
+                HttpStatus.BAD_REQUEST.value(),
+                "Dữ liệu không hợp lệ",
+                errors,
+                request.getRequestURI()
+        );
+        return ResponseEntity.badRequest().body(response);
     }
 
     /**
-     * ✅ Bắt lỗi đăng nhập sai thông tin
+     * Bắt lỗi đăng nhập sai thông tin
      */
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse<Object>> handleBadCredentials(
@@ -71,7 +74,6 @@ public class GlobalExceptionHandler {
                 null,
                 request.getRequestURI()
         );
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
@@ -90,7 +92,6 @@ public class GlobalExceptionHandler {
                 null,
                 request.getRequestURI()
         );
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
@@ -109,7 +110,6 @@ public class GlobalExceptionHandler {
                 null,
                 request.getRequestURI()
         );
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
