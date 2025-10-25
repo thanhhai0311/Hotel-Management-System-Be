@@ -97,3 +97,7 @@ application-test.properties
 docker-compose.override.yml
 docker-compose.override.yaml
 .docker/
+
+src/main/resources/application-secret.properties
+src/main/resources/application-pro.properties
+src/main/resources/application-uat.properties
