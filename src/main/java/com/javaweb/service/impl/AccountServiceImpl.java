@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -137,5 +141,30 @@ public class AccountServiceImpl implements AccountService {
 		account.setRole(role);
 		return accountRepository.save(account);
 	}
+
+	@Override
+	public Object getAllAccounts(int page, int size, String keyword) {
+	    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+	    Page<AccountEntity> accountPage;
+
+	    if (keyword == null || keyword.trim().isEmpty()) {
+	        accountPage = accountRepository.findAll(pageable);
+	    } else {
+	        accountPage = accountRepository.findByEmailContainingIgnoreCase(keyword, pageable);
+	    }
+
+	    // Chuyển entity sang DTO
+	    Page<AccountDTO> dtoPage = accountPage.map(account ->
+	            new AccountDTO(
+	                    account.getId(),
+	                    account.getEmail(),
+	                    account.isActive(),
+	                    account.getRole() != null ? account.getRole().getName() : null
+	            )
+	    );
+
+	    return dtoPage;
+	}
+
 
 }

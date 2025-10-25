@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.javaweb.mapper.UserMapper;
-import com.javaweb.model.dto.UserResponse;
+import com.javaweb.model.dto.response.UserResponse;
 import com.javaweb.model.entity.UserEntity;
 import com.javaweb.model.response.ApiResponse;
 import com.javaweb.service.UserService;

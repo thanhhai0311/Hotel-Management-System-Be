@@ -14,9 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import com.javaweb.model.dto.LoginRequest;
-import com.javaweb.model.dto.LoginResponse;
-import com.javaweb.model.dto.RegisterRequest;
+import com.javaweb.model.dto.request.LoginRequest;
+import com.javaweb.model.dto.request.RegisterRequest;
+import com.javaweb.model.dto.response.LoginResponse;
 import com.javaweb.model.entity.AccountEntity;
 import com.javaweb.repository.AccountRepository;
 import com.javaweb.security.JwtUtil;
