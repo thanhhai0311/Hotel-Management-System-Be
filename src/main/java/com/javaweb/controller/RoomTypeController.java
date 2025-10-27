@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.javaweb.model.dto.request.RoomTypeRequest;
@@ -45,6 +46,7 @@ public class RoomTypeController {
         return ResponseEntity.ok(res);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<RoomTypeResponse>> create(@Valid @RequestBody RoomTypeRequest req) {
         RoomTypeResponse data = roomTypeService.create(req);
@@ -52,6 +54,7 @@ public class RoomTypeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<RoomTypeResponse>> update(@PathVariable Integer id,
                                                                 @Valid @RequestBody RoomTypeRequest req) {
@@ -60,6 +63,7 @@ public class RoomTypeController {
         return ResponseEntity.ok(res);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Integer id) {
         roomTypeService.delete(id);

@@ -1,20 +1,13 @@
 package com.javaweb.service;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.javaweb.model.entity.RoomEntity;
+import com.javaweb.model.dto.RoomDTO.RoomCreateDTO;
+import com.javaweb.model.dto.RoomDTO.RoomResponseDTO;
 
 public interface RoomService {
-	RoomEntity createRoom(RoomEntity room, List<MultipartFile> images) throws IOException;
-
-	RoomEntity updateRoom(Integer id, RoomEntity roomDetails);
-
-	void deleteRoom(Integer id);
-
-	RoomEntity getRoomById(Integer id);
-
-	List<RoomEntity> getAllRooms();
+    RoomResponseDTO createRoom(RoomCreateDTO dto) throws IOException;
+    Map<String, Object> getAllRooms(int page, int size);
+    RoomResponseDTO getRoomById(Integer id);
 }

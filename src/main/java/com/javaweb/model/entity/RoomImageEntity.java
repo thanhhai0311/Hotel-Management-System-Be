@@ -12,7 +12,7 @@ public class RoomImageEntity {
     private String details;
     private String src;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idRoom")
     private RoomEntity room;
 

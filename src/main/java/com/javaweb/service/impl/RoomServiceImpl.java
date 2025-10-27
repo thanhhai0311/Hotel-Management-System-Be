@@ -2,86 +2,125 @@ package com.javaweb.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.javaweb.converter.RoomConverter;
+import com.javaweb.model.dto.RoomDTO.RoomCreateDTO;
+import com.javaweb.model.dto.RoomDTO.RoomResponseDTO;
+import com.javaweb.model.entity.HotelEntity;
 import com.javaweb.model.entity.RoomEntity;
 import com.javaweb.model.entity.RoomImageEntity;
+import com.javaweb.model.entity.RoomStatusEntity;
+import com.javaweb.model.entity.RoomTypeEntity;
+import com.javaweb.repository.HotelRepository;
 import com.javaweb.repository.RoomImageRepository;
 import com.javaweb.repository.RoomRepository;
+import com.javaweb.repository.RoomStatusRepository;
+import com.javaweb.repository.RoomTypeRepository;
+import com.javaweb.service.CloudinaryService;
 import com.javaweb.service.RoomService;
-import com.javaweb.service.S3Service;
 
 @Service
-public class RoomServiceImpl implements RoomService{
-    private final RoomRepository roomRepository;
-    private final RoomImageRepository roomImageRepository;
-    private final S3Service s3Service;
+public class RoomServiceImpl implements RoomService {
 
-    public RoomServiceImpl(RoomRepository roomRepository, RoomImageRepository roomImageRepository, S3Service s3Service) {
-        this.roomRepository = roomRepository;
-        this.roomImageRepository = roomImageRepository;
-        this.s3Service = s3Service;
-    }
+	@Autowired
+	private RoomRepository roomRepository;
 
-    @Override
-    public RoomEntity createRoom(RoomEntity room, List<MultipartFile> images) throws IOException {
-        RoomEntity savedRoom = roomRepository.save(room);
-        List<RoomImageEntity> imageEntities = new ArrayList<>();
+	@Autowired
+	private HotelRepository hotelRepository;
 
-        if (images != null && !images.isEmpty()) {
-            for (MultipartFile file : images) {
-                String imageUrl = s3Service.uploadFile(file);
-                RoomImageEntity img = new RoomImageEntity();
-                img.setSrc(imageUrl);
-                img.setRoom(savedRoom);
-                imageEntities.add(img);
-            }
-            roomImageRepository.saveAll(imageEntities);
-            savedRoom.setRoomImage(imageEntities);
-        }
+	@Autowired
+	private RoomTypeRepository roomTypeRepository;
 
-        return savedRoom;
-    }
+	@Autowired
+	private RoomStatusRepository roomStatusRepository;
 
-    @Override
-    public RoomEntity updateRoom(Integer id, RoomEntity newData) {
-        RoomEntity room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+	@Autowired
+	private RoomImageRepository roomImageRepository;
 
-        room.setRoomNumber(newData.getRoomNumber());
-        room.setBedCount(newData.getBedCount());
-        room.setMaxOccupancy(newData.getMaxOccupancy());
-        room.setPrice(newData.getPrice());
-        room.setDetails(newData.getDetails());
+	@Autowired
+	private CloudinaryService cloudinaryService;
 
-        return roomRepository.save(room);
-    }
+	@Autowired
+	private RoomConverter roomConverter;
 
-    @Override
-    public void deleteRoom(Integer id) {
-        RoomEntity room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+	@Override
+	public RoomResponseDTO createRoom(RoomCreateDTO dto) throws IOException {
+		RoomEntity room = new RoomEntity();
+		room.setRoomNumber(dto.getRoomNumber());
+		room.setBedCount(dto.getBedCount());
+		room.setMaxOccupancy(dto.getMaxOccupancy());
+		room.setPrice(dto.getPrice());
+		room.setDetails(dto.getDetails());
 
-        if (room.getRoomImage() != null) {
-            for (RoomImageEntity img : room.getRoomImage()) {
-                s3Service.deleteFile(img.getSrc());
-            }
-            roomImageRepository.deleteAll(room.getRoomImage());
-        }
-        roomRepository.delete(room);
-    }
+		HotelEntity hotel = hotelRepository.findById(dto.getIdHotel())
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy khách sạn"));
+		RoomTypeEntity type = roomTypeRepository.findById(dto.getIdRoomType())
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy loại phòng"));
+		RoomStatusEntity status = roomStatusRepository.findById(dto.getIdRoomStatus()).orElseThrow(
+				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy trạng thái phòng"));
 
-    @Override
-    public RoomEntity getRoomById(Integer id) {
-        return roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
-    }
+		room.setHotel(hotel);
+		room.setRoomType(type);
+		room.setRoomStatus(status);
 
-    @Override
-    public List<RoomEntity> getAllRooms() {
-        return roomRepository.findAll();
-    }
+		// Khởi tạo danh sách ảnh
+		List<RoomImageEntity> images = new ArrayList<>();
+
+		if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+			for (MultipartFile file : dto.getImages()) {
+				String url = cloudinaryService.uploadFile(file);
+				RoomImageEntity img = new RoomImageEntity();
+				img.setSrc(url);
+				img.setRoom(room);
+				images.add(img);
+			}
+		}
+
+		// Gán list ảnh cho phòng trước khi lưu
+		room.setRoomImage(images);
+		RoomEntity saved = roomRepository.save(room);
+
+		// Giờ entity đã có danh sách ảnh trong bộ nhớ
+		return roomConverter.toResponseDTO(saved);
+	}
+
+	@Override
+	public Map<String, Object> getAllRooms(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<RoomEntity> roomPage = roomRepository.findAll(pageable);
+
+		List<RoomResponseDTO> rooms = roomPage.getContent().stream().map(roomConverter::toResponseDTO)
+				.collect(Collectors.toList());
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("rooms", rooms);
+		response.put("currentPage", roomPage.getNumber());
+		response.put("totalItems", roomPage.getTotalElements());
+		response.put("totalPages", roomPage.getTotalPages());
+
+		return response;
+	}
+
+	@Override
+	public RoomResponseDTO getRoomById(Integer id) {
+		RoomEntity room = roomRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy phòng."));
+//	    if (room == null) {
+//	        return null;
+//	    }
+		return roomConverter.toResponseDTO(room);
+	}
 }

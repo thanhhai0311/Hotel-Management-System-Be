@@ -1,5 +1,6 @@
 package com.javaweb.model.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -38,8 +39,12 @@ public class RoomEntity {
 	@JoinColumn(name = "idRoomType")
 	private RoomTypeEntity roomType;
 	
-	@OneToMany(mappedBy = "room")
-    private List<RoomImageEntity> roomImage;
+//	@OneToMany(mappedBy = "room")
+//    private List<RoomImageEntity> roomImage;
+	
+	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<RoomImageEntity> roomImage = new ArrayList<>();
+
 
 	public Integer getId() {
 		return id;
