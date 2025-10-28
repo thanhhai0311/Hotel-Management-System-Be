@@ -59,9 +59,9 @@ public class RoomStatusServiceImpl implements RoomStatusService {
         RoomStatusEntity entity = roomStatusRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy trạng thái"));
 
-        // if (entity.getRooms() != null && !entity.getRooms().isEmpty()) {
-        //     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Không thể xóa: Trạng thái đang được sử dụng");
-        // }
+         if (entity.getRooms() != null && !entity.getRooms().isEmpty()) {
+             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Không thể xóa: Trạng thái đang được sử dụng");
+         }
 
         roomStatusRepository.delete(entity);
     }

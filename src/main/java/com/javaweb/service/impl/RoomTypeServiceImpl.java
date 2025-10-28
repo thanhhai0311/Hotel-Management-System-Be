@@ -60,10 +60,10 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         RoomTypeEntity entity = roomTypeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy loại phòng"));
 
-        // Nếu có ràng buộc (rooms) có thể kiểm tra trước khi xóa
-        // if (entity.getRooms() != null && !entity.getRooms().isEmpty()) {
-        //     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Không thể xóa: Loại phòng đang được sử dụng");
-        // }
+         //Nếu có ràng buộc (rooms) có thể kiểm tra trước khi xóa
+         if (entity.getRooms() != null && !entity.getRooms().isEmpty()) {
+             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Không thể xóa: Loại phòng đang được sử dụng");
+         }
 
         roomTypeRepository.delete(entity);
     }

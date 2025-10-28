@@ -15,5 +15,5 @@ public interface AccountService {
     void deleteAccount(Integer id);
     AccountEntity updateAccountRole(Integer accountId, Integer roleId);
     Object getAllAccounts(int page, int size, String keyword);
-	
+	AccountDTO findById(Integer id);
 }

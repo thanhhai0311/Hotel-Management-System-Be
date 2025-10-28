@@ -23,6 +23,9 @@ public class HotelEntity {
     @OneToMany(mappedBy = "hotel")
     private List<RoomEntity> rooms;
     
+    @OneToMany(mappedBy = "hotel")
+    private List<ServiceEntity> services;
+    
 	public Integer getId() {
 		return id;
 	}

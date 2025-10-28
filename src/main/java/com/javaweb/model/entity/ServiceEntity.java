@@ -20,6 +20,10 @@ public class ServiceEntity {
     @ManyToOne
     @JoinColumn(name = "idServiceCategory")
     private ServiceCategoryEntity serviceCategory;
+    
+    @ManyToOne
+    @JoinColumn(name = "idHotel")
+    private HotelEntity hotel;
 
     @OneToMany(mappedBy = "service")
     private List<ServiceImageEntity> serviceImages;
@@ -118,5 +122,12 @@ public class ServiceEntity {
 		this.bookingServices = bookingServices;
 	}
 
+	public HotelEntity getHotel() {
+		return hotel;
+	}
+
+	public void setHotel(HotelEntity hotel) {
+		this.hotel = hotel;
+	}
     
 }

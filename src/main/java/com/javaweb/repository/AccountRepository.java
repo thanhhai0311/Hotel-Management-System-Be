@@ -13,7 +13,7 @@ import com.javaweb.model.entity.AccountEntity;
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Integer> {
     Optional<AccountEntity> findByEmail(String email);
-    Optional<AccountEntity> findById(Integer id);
+//    AccountEntity findById(Integer id);
     boolean existsByEmail(String email);
     List<AccountEntity> findAll();
     boolean existsById(Integer id);

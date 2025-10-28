@@ -65,26 +65,19 @@ public class AccountController {
 //
 //		return ResponseEntity.ok(response);
 //	}
-	
+
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping
-	public ResponseEntity<ApiResponse<Object>> getAllAccounts(
-	        @RequestParam(defaultValue = "0") int page,
-	        @RequestParam(defaultValue = "10") int size,
-	        @RequestParam(required = false) String keyword) {
+	public ResponseEntity<ApiResponse<Object>> getAllAccounts(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword) {
 
-	    // Gọi service xử lý
-	    Object accountsPage = accountService.getAllAccounts(page, size, keyword);
+		// Gọi service xử lý
+		Object accountsPage = accountService.getAllAccounts(page, size, keyword);
 
-	    ApiResponse<Object> response = new ApiResponse<>(
-	            true,
-	            HttpStatus.OK.value(),
-	            "Lấy danh sách tài khoản thành công",
-	            accountsPage,
-	            "/api/account"
-	    );
+		ApiResponse<Object> response = new ApiResponse<>(true, HttpStatus.OK.value(),
+				"Lấy danh sách tài khoản thành công", accountsPage, "/api/account");
 
-	    return ResponseEntity.ok(response);
+		return ResponseEntity.ok(response);
 	}
 
 	/**
@@ -92,7 +85,8 @@ public class AccountController {
 	 */
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping
-	public ResponseEntity<ApiResponse<AccountWithUserResponse>> createAccount(@Valid @RequestBody CreateAccountDTO dto) {
+	public ResponseEntity<ApiResponse<AccountWithUserResponse>> createAccount(
+			@Valid @RequestBody CreateAccountDTO dto) {
 		AccountEntity created = accountService.createAccount(dto);
 
 		// Lấy thông tin user từ Account
@@ -162,6 +156,15 @@ public class AccountController {
 		ApiResponse<AccountDTO> response = new ApiResponse<>(true, HttpStatus.OK.value(),
 				"Cập nhật quyền thành công cho tài khoản ID: " + id, dto, "/api/account/" + id + "/updateRole");
 
+		return ResponseEntity.ok(response);
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("{id}")
+	public ResponseEntity<ApiResponse<AccountDTO>> fingById(@PathVariable Integer id) {
+		AccountDTO accountDTO = accountService.findById(id);
+		ApiResponse<AccountDTO> response = new ApiResponse<AccountDTO>(true, HttpStatus.OK.value(),
+				"Lấy thông tin tài khoản thành công", accountDTO, "account/ " + id);
 		return ResponseEntity.ok(response);
 	}
 }
