@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "BookingService")
+@Table(name = "bookingservice")
 public class BookingServiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

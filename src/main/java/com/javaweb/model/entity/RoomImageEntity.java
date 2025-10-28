@@ -3,7 +3,7 @@ package com.javaweb.model.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "RoomImage")
+@Table(name = "roomimage")
 public class RoomImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
