@@ -11,7 +11,7 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Render sẽ truyền biến PORT tự động
-ENV PORT=8080
-EXPOSE 8080
+ENV PORT=8081
+EXPOSE 8081
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
