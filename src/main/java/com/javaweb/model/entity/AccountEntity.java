@@ -11,7 +11,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Account")
+@Table(name = "account")
 public class AccountEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
