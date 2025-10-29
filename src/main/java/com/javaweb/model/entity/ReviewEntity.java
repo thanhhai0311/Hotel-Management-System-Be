@@ -13,6 +13,8 @@ public class ReviewEntity {
 
     private String details;
     private Integer star;
+    
+    private String type;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date day;
@@ -71,6 +73,16 @@ public class ReviewEntity {
 	public void setReviewImages(List<ReviewImageEntity> reviewImages) {
 		this.reviewImages = reviewImages;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	
 
 
     

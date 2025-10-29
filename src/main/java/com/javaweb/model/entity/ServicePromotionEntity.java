@@ -14,6 +14,9 @@ public class ServicePromotionEntity {
     private String details;
     private String banner;
     private Float discount;
+    
+    @Column(name = "isActive", nullable = false)
+    private Boolean isActive;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
@@ -99,5 +102,15 @@ public class ServicePromotionEntity {
 	public void setBookingService(BookingServiceEntity bookingService) {
 		this.bookingService = bookingService;
 	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+	
+	
 
 }

@@ -15,6 +15,9 @@ public class RoomPromotionEntity {
     private String banner;
     private Float discount;
 
+    @Column(name = "isActive", nullable = false)
+    private Boolean isActive;
+    
     @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
 
@@ -99,6 +102,16 @@ public class RoomPromotionEntity {
 	public void setBookingRoom(BookingRoomEntity bookingRoom) {
 		this.bookingRoom = bookingRoom;
 	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+	
+	
     
     
 }
