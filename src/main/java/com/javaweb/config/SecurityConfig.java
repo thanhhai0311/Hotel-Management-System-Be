@@ -125,7 +125,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/room-statuses/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/room-statuses/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/room-statuses/**").hasRole("ADMIN")
+                
+                // ========== ROOM ==========
+                .antMatchers("/api/rooms/getAll", "/api/rooms/search", "/api/rooms/**").permitAll()
+                .antMatchers("/api/rooms/create", "/api/rooms/update/**", "/api/rooms/delete/**", "/api/rooms/{id}").hasRole("ADMIN")
 
+			    // ========== PROMOTION ==========
+                .antMatchers(HttpMethod.GET, "/api/promotions/getAll", "/api/promotions/search", "/api/promotions/{id}").permitAll()
+			    .antMatchers(HttpMethod.POST, "/api/promotions/create").hasRole("ADMIN")
+			    .antMatchers(HttpMethod.PUT, "/api/promotions/update/**").hasRole("ADMIN")
+			    .antMatchers(HttpMethod.DELETE, "/api/promotions/delete/**").hasRole("ADMIN")
+			    .antMatchers(HttpMethod.PUT, "/api/promotions/update-status/**").hasRole("ADMIN")
+			    
+			    // ========== ROOM PROMOTION ==========
+			    .antMatchers(HttpMethod.GET, "/api/room-promotions/**").permitAll()
+			    .antMatchers(HttpMethod.POST, "/api/room-promotions/create").hasRole("ADMIN")
+			    .antMatchers(HttpMethod.PUT, "/api/room-promotions/update/**").hasRole("ADMIN")
+			    .antMatchers(HttpMethod.DELETE, "/api/room-promotions/delete/**").hasRole("ADMIN")
+                
                 // ========== TEST API ==========
                 .antMatchers("/test/**").permitAll()
 

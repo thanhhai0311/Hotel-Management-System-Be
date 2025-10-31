@@ -26,6 +26,9 @@ public class PromotionEntity {
 
     private Boolean isActive;
     
+    @Column(nullable = false)
+    private Boolean isManuallyDisabled = false;
+    
     @OneToMany(mappedBy = "promotion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RoomPromotionEntity> roomPromotions;
 
@@ -100,5 +103,14 @@ public class PromotionEntity {
 	public void setRoomPromotions(List<RoomPromotionEntity> roomPromotions) {
 		this.roomPromotions = roomPromotions;
 	}
+
+	public Boolean getIsManuallyDisabled() {
+		return isManuallyDisabled;
+	}
+
+	public void setIsManuallyDisabled(Boolean isManuallyDisabled) {
+		this.isManuallyDisabled = isManuallyDisabled;
+	}
     
+	
 }

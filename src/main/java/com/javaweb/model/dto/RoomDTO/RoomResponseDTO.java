@@ -3,24 +3,176 @@ package com.javaweb.model.dto.RoomDTO;
 import java.util.List;
 
 public class RoomResponseDTO {
-    private Integer id;
-    private int roomNumber;
-    private int bedCount;
-    private int maxOccupancy;
-    private float price;
-    private String details;
+	private Integer id;
+	private int roomNumber;
+	private String details;
+	private String hotelName;
+	private String roomStatusName;
+	private List<String> imageUrls;
 
-    private Integer hotelId;
-    private String hotelName;
+	// ✅ Thông tin chi tiết loại phòng
+	private RoomTypeInfo roomType;
 
-    private Integer roomTypeId;
-    private String roomTypeName;
+	public static class RoomTypeInfo {
+		private Integer id;
+		private String name;
+		private String details;
+		private Float price;
+		private Float area;
+		private Integer bedCount;
+		private Integer maxOccupancy;
 
-    private Integer roomStatusId;
-    private String roomStatusName;
+		// Tiện nghi (amenities)
+		private Boolean isPrivateBathroom;
+		private Boolean isFreeToiletries;
+		private Boolean isAirConditioning;
+		private Boolean isSoundproofing;
+		private Boolean isTV;
+		private Boolean isMiniBar;
+		private Boolean isWorkDesk;
+		private Boolean isSeatingArea;
+		private Boolean isSafetyFeatures;
+		private Boolean isSmoking;
 
-    private List<String> imageUrls;
+		// Getters & Setters
+		public Integer getId() {
+			return id;
+		}
 
+		public void setId(Integer id) {
+			this.id = id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getDetails() {
+			return details;
+		}
+
+		public void setDetails(String details) {
+			this.details = details;
+		}
+
+		public Float getPrice() {
+			return price;
+		}
+
+		public void setPrice(Float price) {
+			this.price = price;
+		}
+
+		public Float getArea() {
+			return area;
+		}
+
+		public void setArea(Float area) {
+			this.area = area;
+		}
+
+		public Integer getBedCount() {
+			return bedCount;
+		}
+
+		public void setBedCount(Integer bedCount) {
+			this.bedCount = bedCount;
+		}
+
+		public Integer getMaxOccupancy() {
+			return maxOccupancy;
+		}
+
+		public void setMaxOccupancy(Integer maxOccupancy) {
+			this.maxOccupancy = maxOccupancy;
+		}
+
+		public Boolean getIsPrivateBathroom() {
+			return isPrivateBathroom;
+		}
+
+		public void setIsPrivateBathroom(Boolean isPrivateBathroom) {
+			this.isPrivateBathroom = isPrivateBathroom;
+		}
+
+		public Boolean getIsFreeToiletries() {
+			return isFreeToiletries;
+		}
+
+		public void setIsFreeToiletries(Boolean isFreeToiletries) {
+			this.isFreeToiletries = isFreeToiletries;
+		}
+
+		public Boolean getIsAirConditioning() {
+			return isAirConditioning;
+		}
+
+		public void setIsAirConditioning(Boolean isAirConditioning) {
+			this.isAirConditioning = isAirConditioning;
+		}
+
+		public Boolean getIsSoundproofing() {
+			return isSoundproofing;
+		}
+
+		public void setIsSoundproofing(Boolean isSoundproofing) {
+			this.isSoundproofing = isSoundproofing;
+		}
+
+		public Boolean getIsTV() {
+			return isTV;
+		}
+
+		public void setIsTV(Boolean isTV) {
+			this.isTV = isTV;
+		}
+
+		public Boolean getIsMiniBar() {
+			return isMiniBar;
+		}
+
+		public void setIsMiniBar(Boolean isMiniBar) {
+			this.isMiniBar = isMiniBar;
+		}
+
+		public Boolean getIsWorkDesk() {
+			return isWorkDesk;
+		}
+
+		public void setIsWorkDesk(Boolean isWorkDesk) {
+			this.isWorkDesk = isWorkDesk;
+		}
+
+		public Boolean getIsSeatingArea() {
+			return isSeatingArea;
+		}
+
+		public void setIsSeatingArea(Boolean isSeatingArea) {
+			this.isSeatingArea = isSeatingArea;
+		}
+
+		public Boolean getIsSafetyFeatures() {
+			return isSafetyFeatures;
+		}
+
+		public void setIsSafetyFeatures(Boolean isSafetyFeatures) {
+			this.isSafetyFeatures = isSafetyFeatures;
+		}
+
+		public Boolean getIsSmoking() {
+			return isSmoking;
+		}
+
+		public void setIsSmoking(Boolean isSmoking) {
+			this.isSmoking = isSmoking;
+		}
+	}
+
+	// Getters/Setters cho RoomResponseDTO
 	public Integer getId() {
 		return id;
 	}
@@ -37,30 +189,6 @@ public class RoomResponseDTO {
 		this.roomNumber = roomNumber;
 	}
 
-	public int getBedCount() {
-		return bedCount;
-	}
-
-	public void setBedCount(int bedCount) {
-		this.bedCount = bedCount;
-	}
-
-	public int getMaxOccupancy() {
-		return maxOccupancy;
-	}
-
-	public void setMaxOccupancy(int maxOccupancy) {
-		this.maxOccupancy = maxOccupancy;
-	}
-
-	public float getPrice() {
-		return price;
-	}
-
-	public void setPrice(float price) {
-		this.price = price;
-	}
-
 	public String getDetails() {
 		return details;
 	}
@@ -69,44 +197,12 @@ public class RoomResponseDTO {
 		this.details = details;
 	}
 
-	public Integer getHotelId() {
-		return hotelId;
-	}
-
-	public void setHotelId(Integer hotelId) {
-		this.hotelId = hotelId;
-	}
-
 	public String getHotelName() {
 		return hotelName;
 	}
 
 	public void setHotelName(String hotelName) {
 		this.hotelName = hotelName;
-	}
-
-	public Integer getRoomTypeId() {
-		return roomTypeId;
-	}
-
-	public void setRoomTypeId(Integer roomTypeId) {
-		this.roomTypeId = roomTypeId;
-	}
-
-	public String getRoomTypeName() {
-		return roomTypeName;
-	}
-
-	public void setRoomTypeName(String roomTypeName) {
-		this.roomTypeName = roomTypeName;
-	}
-
-	public Integer getRoomStatusId() {
-		return roomStatusId;
-	}
-
-	public void setRoomStatusId(Integer roomStatusId) {
-		this.roomStatusId = roomStatusId;
 	}
 
 	public String getRoomStatusName() {
@@ -125,7 +221,11 @@ public class RoomResponseDTO {
 		this.imageUrls = imageUrls;
 	}
 
-    // Getters & setters
-    
-    
+	public RoomTypeInfo getRoomType() {
+		return roomType;
+	}
+
+	public void setRoomType(RoomTypeInfo roomType) {
+		this.roomType = roomType;
+	}
 }
