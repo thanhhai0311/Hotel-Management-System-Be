@@ -1,8 +1,18 @@
 package com.javaweb.model.entity;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "bookingservice")
@@ -25,20 +35,12 @@ public class BookingServiceEntity {
     @JoinColumn(name = "idService")
     private ServiceEntity service;
 
-    @ManyToOne
-    @JoinColumn(name = "idBill")
-    private BillEntity bill;
-
     @OneToMany(mappedBy = "bookingService")
     private List<NotifacationServiceEntity> notifacationServices;
 
     @OneToMany(mappedBy = "bookingService")
     private List<DoingServiceEntity> doingServices;
     
-    @OneToOne()
-    @JoinColumn(name = "idServicePromotion")
-    private ServicePromotionEntity servicePromotion;
-
 	public Integer getId() {
 		return id;
 	}
@@ -79,14 +81,6 @@ public class BookingServiceEntity {
 		this.service = service;
 	}
 
-	public BillEntity getBill() {
-		return bill;
-	}
-
-	public void setBill(BillEntity bill) {
-		this.bill = bill;
-	}
-
 	public List<NotifacationServiceEntity> getNotifacationServices() {
 		return notifacationServices;
 	}
@@ -101,15 +95,5 @@ public class BookingServiceEntity {
 
 	public void setDoingServices(List<DoingServiceEntity> doingServices) {
 		this.doingServices = doingServices;
-	}
-
-	public ServicePromotionEntity getServicePromotion() {
-		return servicePromotion;
-	}
-
-	public void setServicePromotion(ServicePromotionEntity servicePromotion) {
-		this.servicePromotion = servicePromotion;
-	}
-
-    
+	}    
 }

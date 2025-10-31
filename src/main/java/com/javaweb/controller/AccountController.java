@@ -17,14 +17,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.javaweb.mapper.UserMapper;
-import com.javaweb.model.dto.AccountDTO;
-import com.javaweb.model.dto.CreateAccountDTO;
-import com.javaweb.model.dto.response.AccountWithUserResponse;
-import com.javaweb.model.dto.response.UserResponse;
+import com.javaweb.model.dto.AccountDTO.AccountDTO;
+import com.javaweb.model.dto.AccountDTO.AccountWithUserResponse;
+import com.javaweb.model.dto.AccountDTO.AdminUpdateUserDTO;
+import com.javaweb.model.dto.AccountDTO.CreateAccountDTO;
+import com.javaweb.model.dto.UserDTO.UserResponse;
+import com.javaweb.model.dto.UserDTO.UserResponseDTO;
 import com.javaweb.model.entity.AccountEntity;
 import com.javaweb.model.entity.UserEntity;
 import com.javaweb.model.response.ApiResponse;
 import com.javaweb.service.AccountService;
+import com.javaweb.service.UserService;
 
 @RestController
 @RequestMapping("/api/account")
@@ -32,6 +35,9 @@ public class AccountController {
 
 	@Autowired
 	private AccountService accountService;
+	
+	@Autowired
+	private UserService userService;
 
 	/**
 	 * Bật/tắt trạng thái tài khoản
@@ -106,25 +112,6 @@ public class AccountController {
 	}
 
 	/**
-	 * Cập nhật thông tin tài khoản
-	 */
-	@PreAuthorize("hasRole('ADMIN')")
-	@PutMapping("/{id}")
-	public ResponseEntity<ApiResponse<AccountDTO>> updateAccount(@PathVariable Integer id,
-			@RequestBody AccountEntity updatedAccount) {
-
-		AccountEntity account = accountService.updateAccount(id, updatedAccount);
-
-		AccountDTO dto = new AccountDTO(account.getId(), account.getEmail(), account.isActive(),
-				account.getRole() != null ? account.getRole().getName() : null);
-
-		ApiResponse<AccountDTO> response = new ApiResponse<>(true, HttpStatus.OK.value(),
-				"Cập nhật tài khoản thành công", dto, "/api/account/" + id);
-
-		return ResponseEntity.ok(response);
-	}
-
-	/**
 	 * Xóa tài khoản
 	 */
 	@PreAuthorize("hasRole('ADMIN')")
@@ -165,4 +152,19 @@ public class AccountController {
 				"Lấy thông tin tài khoản thành công", accountDTO, "account/ " + id);
 		return ResponseEntity.ok(response);
 	}
+	
+	 @PreAuthorize("hasRole('ADMIN')")
+	    @PutMapping("/{id}")
+	    public ResponseEntity<?> updateUserByAdmin(@PathVariable Integer id, @RequestBody AdminUpdateUserDTO dto) {
+	            UserResponseDTO updated = accountService.updateUserByAdmin(id, dto);
+	            ApiResponse<UserResponseDTO> response = new ApiResponse<>(
+	                    true,
+	                    HttpStatus.OK.value(),
+	                    "Cập nhật thông tin người dùng thành công",
+	                    updated,
+	                    "/api/admin/users/" + id
+	            );
+	            return ResponseEntity.ok(response);
+	        
+	    }
 }

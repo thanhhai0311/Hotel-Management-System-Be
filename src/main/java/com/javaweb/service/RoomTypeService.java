@@ -1,14 +1,25 @@
 package com.javaweb.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import com.javaweb.model.dto.request.RoomTypeRequest;
-import com.javaweb.model.dto.response.RoomTypeResponse;
+import java.io.IOException;
+import java.util.Map;
+
+import com.javaweb.model.dto.RoomTypeDTO.RoomTypeCreateDTO;
+import com.javaweb.model.dto.RoomTypeDTO.RoomTypeResponseDTO;
+import com.javaweb.model.dto.RoomTypeDTO.RoomTypeUpdateDTO;
 
 public interface RoomTypeService {
-    RoomTypeResponse create(RoomTypeRequest req);
-    RoomTypeResponse update(Integer id, RoomTypeRequest req);
-    void delete(Integer id);
-    RoomTypeResponse getById(Integer id);
-    Page<RoomTypeResponse> getAll(Pageable pageable, String keyword);
+	RoomTypeResponseDTO createRoomType(RoomTypeCreateDTO dto) throws IOException;
+
+	RoomTypeResponseDTO updateRoomType(Integer id, RoomTypeUpdateDTO dto) throws IOException;
+
+	Map<String, Object> getAllRoomTypes(Integer page, Integer size);
+
+	void deleteRoomType(Integer id);
+
+	Map<String, Object> searchRoomTypes(String name, Float minPrice, Float maxPrice, Integer bedCount,
+			Integer maxOccupancy, Float minArea, Float maxArea, Boolean isSmoking, Boolean isAirConditioning,
+			Integer page, Integer size);
+	
+	RoomTypeResponseDTO getRoomTypeById(Integer id);
+
 }

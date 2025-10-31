@@ -2,7 +2,7 @@ package com.javaweb.converter;
 
 import org.springframework.stereotype.Component;
 
-import com.javaweb.model.dto.AccountDTO;
+import com.javaweb.model.dto.AccountDTO.AccountDTO;
 import com.javaweb.model.entity.AccountEntity;
 
 @Component

@@ -1,4 +1,4 @@
-package com.javaweb.model.dto.response;
+package com.javaweb.model.dto.UserDTO;
 
 import java.util.Date;
 

@@ -16,8 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.javaweb.converter.AccountConverter;
-import com.javaweb.model.dto.AccountDTO;
-import com.javaweb.model.dto.CreateAccountDTO;
+import com.javaweb.converter.UserConverter;
+import com.javaweb.model.dto.AccountDTO.AccountDTO;
+import com.javaweb.model.dto.AccountDTO.AdminUpdateUserDTO;
+import com.javaweb.model.dto.AccountDTO.CreateAccountDTO;
+import com.javaweb.model.dto.UserDTO.UserResponseDTO;
 import com.javaweb.model.entity.AccountEntity;
 import com.javaweb.model.entity.RoleEntity;
 import com.javaweb.model.entity.UserEntity;
@@ -43,6 +46,9 @@ public class AccountServiceImpl implements AccountService {
 	
 	@Autowired
 	private AccountConverter accountConverter;
+	
+	@Autowired
+	private UserConverter userConverter;
 
 	@Override
 	@Transactional
@@ -178,6 +184,59 @@ public class AccountServiceImpl implements AccountService {
 	        new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy tài khoản"));
 	    return accountConverter.toAccountDTO(account);
 	}
+	
+	@Override
+	@Transactional
+	public UserResponseDTO updateUserByAdmin(Integer id, AdminUpdateUserDTO dto) {
+	    // 🔹 Tìm user
+	    UserEntity user = userRepository.findById(id)
+	            .orElseThrow(() -> new ResponseStatusException(
+	                    HttpStatus.NOT_FOUND, "Không tìm thấy người dùng với ID: " + id));
+
+	    AccountEntity account = user.getAccount();
+	    if (account == null) {
+	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Người dùng chưa có tài khoản liên kết");
+	    }
+
+	    // Cập nhật thông tin cá nhân (UserEntity)
+	    if (dto.getName() != null) user.setName(dto.getName());
+	    if (dto.getPhone() != null) user.setPhone(dto.getPhone());
+	    if (dto.getGender() != null) user.setGender(dto.getGender());
+	    if (dto.getAddress() != null) user.setAddress(dto.getAddress());
+	    if (dto.getIdentification() != null) user.setIdentification(dto.getIdentification());
+	    if (dto.getDob() != null) user.setDob(dto.getDob());
+
+	    // Cập nhật thông tin tài khoản (AccountEntity)
+	    if (dto.getEmail() != null && !dto.getEmail().equals(account.getEmail())) {
+	        if (accountRepository.existsByEmail(dto.getEmail())) {
+	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email đã tồn tại!");
+	        }
+	        account.setEmail(dto.getEmail());
+	    }
+
+	    if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+	        if (dto.getPassword().length() < 6) {
+	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mật khẩu phải có ít nhất 6 ký tự");
+	        }
+	        account.setPassword(passwordEncoder.encode(dto.getPassword()));
+	    }
+
+	    if (dto.getIsActive() != null) account.setActive(dto.getIsActive());
+
+	    if (dto.getRoleId() != null) {
+	        RoleEntity role = roleRepository.findById(dto.getRoleId())
+	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+	                        "Không tìm thấy quyền với ID = " + dto.getRoleId()));
+	        account.setRole(role);
+	    }
+
+	    // Lưu
+	    accountRepository.save(account);
+	    userRepository.save(user);
+
+	    return userConverter.toResponseDTO(user);
+	}
+
 
 
 }

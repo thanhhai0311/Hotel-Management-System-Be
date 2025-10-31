@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.javaweb.model.dto.request.RoomStatusRequest;
-import com.javaweb.model.dto.response.RoomStatusResponse;
+import com.javaweb.model.dto.RoomStatusDTO.RoomStatusRequest;
+import com.javaweb.model.dto.RoomStatusDTO.RoomStatusResponse;
 import com.javaweb.model.response.ApiResponse;
 import com.javaweb.service.RoomStatusService;
 

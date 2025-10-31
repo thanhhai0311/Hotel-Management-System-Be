@@ -1,4 +1,4 @@
-package com.javaweb.model.dto.response;
+package com.javaweb.model.dto.AuthDTO;
 
 public class LoginResponse {
     private String token;

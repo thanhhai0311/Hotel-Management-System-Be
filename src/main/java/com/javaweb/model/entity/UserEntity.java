@@ -34,6 +34,9 @@ public class UserEntity {
     @Column(name = "address")
     private String address;
     
+    @Column(name = "identification")
+    private String identification;
+    
     @Temporal(TemporalType.DATE)
 	@Column(name = "dob")
 	private Date dob;
@@ -184,6 +187,14 @@ public class UserEntity {
 
 	public void setAccount(AccountEntity account) {
 		this.account = account;
+	}
+
+	public String getIdentification() {
+		return identification;
+	}
+
+	public void setIdentification(String identification) {
+		this.identification = identification;
 	}
     
     

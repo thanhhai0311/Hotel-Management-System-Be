@@ -1,7 +1,16 @@
 package com.javaweb.model.entity;
 
-import javax.persistence.*;
-import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "roompromotion")
@@ -10,26 +19,18 @@ public class RoomPromotionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name;
     private String details;
-    private String banner;
-    private Float discount;
 
-    @Column(name = "isActive", nullable = false)
-    private Boolean isActive;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idRoomType")
+    private RoomTypeEntity roomType;
     
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date startTime;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date endTime;
-
-    @ManyToOne
-    @JoinColumn(name = "idRoom")
-    private RoomEntity room;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idPromotion")
+    private PromotionEntity promotion;
     
-    @OneToOne(mappedBy = "roomPromotion")
-    private BookingRoomEntity bookingRoom;
+    @OneToMany(mappedBy = "roomPromotion")
+    private List<BookingRoomEntity> bookingRooms;
 
 	public Integer getId() {
 		return id;
@@ -37,14 +38,6 @@ public class RoomPromotionEntity {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getDetails() {
@@ -55,63 +48,30 @@ public class RoomPromotionEntity {
 		this.details = details;
 	}
 
-	public String getBanner() {
-		return banner;
+	public RoomTypeEntity getRoomType() {
+		return roomType;
 	}
 
-	public void setBanner(String banner) {
-		this.banner = banner;
+	public void setRoomType(RoomTypeEntity roomType) {
+		this.roomType = roomType;
 	}
 
-	public Float getDiscount() {
-		return discount;
+	public PromotionEntity getPromotion() {
+		return promotion;
 	}
 
-	public void setDiscount(Float discount) {
-		this.discount = discount;
+	public void setPromotion(PromotionEntity promotion) {
+		this.promotion = promotion;
 	}
 
-	public Date getStartTime() {
-		return startTime;
+	public List<BookingRoomEntity> getBookingRooms() {
+		return bookingRooms;
 	}
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
+	public void setBookingRooms(List<BookingRoomEntity> bookingRooms) {
+		this.bookingRooms = bookingRooms;
 	}
 
-	public Date getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-
-	public RoomEntity getRoom() {
-		return room;
-	}
-
-	public void setRoom(RoomEntity room) {
-		this.room = room;
-	}
-
-	public BookingRoomEntity getBookingRoom() {
-		return bookingRoom;
-	}
-
-	public void setBookingRoom(BookingRoomEntity bookingRoom) {
-		this.bookingRoom = bookingRoom;
-	}
-
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
 	
 	
-    
-    
 }

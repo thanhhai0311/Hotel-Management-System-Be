@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.javaweb.model.dto.request.RoomStatusRequest;
-import com.javaweb.model.dto.response.RoomStatusResponse;
+import com.javaweb.model.dto.RoomStatusDTO.RoomStatusRequest;
+import com.javaweb.model.dto.RoomStatusDTO.RoomStatusResponse;
 import com.javaweb.model.entity.RoomStatusEntity;
 import com.javaweb.repository.RoomStatusRepository;
 import com.javaweb.service.RoomStatusService;

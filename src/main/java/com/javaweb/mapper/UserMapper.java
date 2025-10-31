@@ -1,6 +1,6 @@
 package com.javaweb.mapper;
 
-import com.javaweb.model.dto.response.UserResponse;
+import com.javaweb.model.dto.UserDTO.UserResponse;
 import com.javaweb.model.entity.AccountEntity;
 import com.javaweb.model.entity.RoleEntity;
 import com.javaweb.model.entity.UserEntity;

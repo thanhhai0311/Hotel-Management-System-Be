@@ -1,12 +1,12 @@
-package com.javaweb.model.dto.response;
+package com.javaweb.model.dto.RoomStatusDTO;
 
-public class RoomTypeResponse {
+public class RoomStatusResponse {
     private Integer id;
     private String name;
     private String details;
 
-    public RoomTypeResponse() {}
-    public RoomTypeResponse(Integer id, String name, String details) {
+    public RoomStatusResponse() {}
+    public RoomStatusResponse(Integer id, String name, String details) {
         this.id = id; this.name = name; this.details = details;
     }
 

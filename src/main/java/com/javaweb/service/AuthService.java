@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.javaweb.model.dto.request.RegisterRequest;
+import com.javaweb.model.dto.AuthDTO.RegisterRequest;
 import com.javaweb.model.entity.AccountEntity;
 import com.javaweb.model.entity.RoleEntity;
 import com.javaweb.model.entity.UserEntity;

@@ -15,15 +15,6 @@ public class RoomEntity {
     @Column(name = "roomNumber")
     private int roomNumber;
     
-    @Column(name = "bedCount")
-    private int bedCount;
-    
-    @Column(name = "maxOccupancy")
-    private int maxOccupancy;
-    
-    @Column(name = "price")
-    private float price;
-    
     @Column(name = "details")
     private String details;
     
@@ -60,30 +51,6 @@ public class RoomEntity {
 
 	public void setRoomNumber(int roomNumber) {
 		this.roomNumber = roomNumber;
-	}
-
-	public int getBedCount() {
-		return bedCount;
-	}
-
-	public void setBedCount(int bedCount) {
-		this.bedCount = bedCount;
-	}
-
-	public int getMaxOccupancy() {
-		return maxOccupancy;
-	}
-
-	public void setMaxOccupancy(int maxOccupancy) {
-		this.maxOccupancy = maxOccupancy;
-	}
-
-	public float getPrice() {
-		return price;
-	}
-
-	public void setPrice(float price) {
-		this.price = price;
 	}
 
 	public String getDetails() {

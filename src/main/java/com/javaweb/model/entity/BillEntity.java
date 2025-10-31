@@ -30,7 +30,7 @@ public class BillEntity {
     private UserEntity customer;
 
     @OneToMany(mappedBy = "bill")
-    private List<BookingServiceEntity> bookingServices;
+    private List<BookingRoomEntity> bookingRooms;
 
 	public Integer getId() {
 		return id;
@@ -88,13 +88,14 @@ public class BillEntity {
 		this.customer = customer;
 	}
 
-	public List<BookingServiceEntity> getBookingServices() {
-		return bookingServices;
+	public List<BookingRoomEntity> getBookingRooms() {
+		return bookingRooms;
 	}
 
-	public void setBookingServices(List<BookingServiceEntity> bookingServices) {
-		this.bookingServices = bookingServices;
+	public void setBookingRooms(List<BookingRoomEntity> bookingRooms) {
+		this.bookingRooms = bookingRooms;
 	}
+
 
     
 }

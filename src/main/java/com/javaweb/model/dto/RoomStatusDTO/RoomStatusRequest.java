@@ -1,11 +1,11 @@
-package com.javaweb.model.dto.request;
+package com.javaweb.model.dto.RoomStatusDTO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class RoomTypeRequest {
-    @NotBlank(message = "Tên loại phòng không được để trống")
-    @Size(max = 100, message = "Tên loại phòng tối đa 100 ký tự")
+public class RoomStatusRequest {
+    @NotBlank(message = "Trạng thái không được để trống")
+    @Size(max = 100, message = "Tên trạng thái tối đa 100 ký tự")
     private String name;
 
     @Size(max = 1000, message = "Chi tiết tối đa 1000 ký tự")

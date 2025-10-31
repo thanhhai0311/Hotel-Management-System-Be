@@ -1,4 +1,4 @@
-package com.javaweb.model.dto.request;
+package com.javaweb.model.dto.AuthDTO;
 
 import java.util.Date;
 

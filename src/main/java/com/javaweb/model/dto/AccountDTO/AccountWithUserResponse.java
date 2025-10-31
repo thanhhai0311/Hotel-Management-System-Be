@@ -1,6 +1,6 @@
-package com.javaweb.model.dto.response;
+package com.javaweb.model.dto.AccountDTO;
 
-import com.javaweb.model.dto.AccountDTO;
+import com.javaweb.model.dto.UserDTO.UserResponse;
 
 public class AccountWithUserResponse {
     private AccountDTO account;

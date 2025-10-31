@@ -1,70 +1,31 @@
-package com.javaweb.model.entity;
+package com.javaweb.model.dto.RoomTypeDTO;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import org.springframework.web.multipart.MultipartFile;
 
-@Entity
-@Table(name = "roomtype")
-public class RoomTypeEntity {
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class RoomTypeCreateDTO {
+	private String name;
+	private String details;
+	private Integer bedCount;
+	private Integer maxOccupancy;
+	private Float price;
+	private Float area;
 
-    private String name;
+	private Boolean isPrivateBathroom = false;
+	private Boolean isFreeToiletries = false;
+	private Boolean isAirConditioning = false;
+	private Boolean isSoundproofing = false;
+	private Boolean isTV = false;
+	private Boolean isMiniBar = false;
+	private Boolean isWorkDesk = false;
+	private Boolean isSeatingArea = false;
+	private Boolean isSafetyFeatures = false;
+	private Boolean isSmoking = false;
+	
+	private List<MultipartFile> images;
 
-    private String details;
-
-    private Integer bedCount;
-
-    private Integer maxOccupancy;
-
-    private Float price;
-
-    private Float area;
-
-    private Boolean isPrivateBathroom = false;
-
-    private Boolean isFreeToiletries = false;
-
-    private Boolean isAirConditioning = false;
-
-    private Boolean isSoundproofing = false;
-
-    private Boolean isTV = false;
-
-    private Boolean isMiniBar = false;
-
-    private Boolean isWorkDesk = false;
-
-    private Boolean isSeatingArea = false;
-
-    private Boolean isSafetyFeatures = false;
-
-    private Boolean isSmoking = false;
-    
-    @Column(nullable = false)
-    private Boolean isDeleted = false;
-    
-    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TypeImageEntity> typeImages = new ArrayList<>();
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
+	// Getters & Setters
 	public String getName() {
 		return name;
 	}
@@ -193,22 +154,13 @@ public class RoomTypeEntity {
 		this.isSmoking = isSmoking;
 	}
 
-	public List<TypeImageEntity> getTypeImages() {
-		return typeImages;
+	public List<MultipartFile> getImages() {
+		return images;
 	}
 
-	public void setTypeImages(List<TypeImageEntity> typeImages) {
-		this.typeImages = typeImages;
-	}
-
-	public Boolean getIsDeleted() {
-		return isDeleted;
-	}
-
-	public void setIsDeleted(Boolean isDeleted) {
-		this.isDeleted = isDeleted;
+	public void setImages(List<MultipartFile> images) {
+		this.images = images;
 	}
 	
 	
-  
 }

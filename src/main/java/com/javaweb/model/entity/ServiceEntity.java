@@ -29,9 +29,6 @@ public class ServiceEntity {
     private List<ServiceImageEntity> serviceImages;
 
     @OneToMany(mappedBy = "service")
-    private List<ServicePromotionEntity> servicePromotions;
-
-    @OneToMany(mappedBy = "service")
     private List<BookingServiceEntity> bookingServices;
 
 	public Integer getId() {
@@ -104,14 +101,6 @@ public class ServiceEntity {
 
 	public void setServiceImages(List<ServiceImageEntity> serviceImages) {
 		this.serviceImages = serviceImages;
-	}
-
-	public List<ServicePromotionEntity> getServicePromotions() {
-		return servicePromotions;
-	}
-
-	public void setServicePromotions(List<ServicePromotionEntity> servicePromotions) {
-		this.servicePromotions = servicePromotions;
 	}
 
 	public List<BookingServiceEntity> getBookingServices() {

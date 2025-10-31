@@ -3,6 +3,7 @@ package com.javaweb.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -83,6 +84,50 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/api/staff/**").hasAnyRole("STAFF", "ADMIN")
                 .antMatchers("/api/customer/**").hasRole("CUSTOMER")
+                
+             // ========== AUTHENTICATION ==========
+                .antMatchers("/api/auth/**").permitAll() // login, register public
+
+                // ========== IMAGES ==========
+                .antMatchers(HttpMethod.POST, "/api/images/upload").hasAnyRole("ADMIN", "CUSTOMER", "STAFF")
+
+                // ========== USER PROFILE ==========
+                .antMatchers(HttpMethod.PUT, "/api/user/profile").hasAnyRole("ADMIN", "CUSTOMER", "STAFF")
+                .antMatchers(HttpMethod.GET, "/api/user/me").hasAnyRole("ADMIN", "CUSTOMER", "STAFF")
+                .antMatchers(HttpMethod.PUT, "/api/user/{id}/update").hasRole("ADMIN") // chỉ admin update user khác
+
+                // ========== ACCOUNT ==========
+                .antMatchers(HttpMethod.GET, "/api/account/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/account/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/account/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/account/**").hasRole("ADMIN")
+
+                // ========== ROOM TYPES ==========
+                .antMatchers(HttpMethod.GET, "/api/roomtypes/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/roomtypes/create").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/roomtypes/update/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/roomtypes/**").hasRole("ADMIN")
+
+                // ========== SERVICES ==========
+                .antMatchers(HttpMethod.GET, "/api/services/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/services/create").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/services/update/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/services/**").hasRole("ADMIN")
+
+                // ========== SERVICE CATEGORY ==========
+                .antMatchers(HttpMethod.GET, "/api/service-category/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/service-category/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/service-category/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/service-category/**").hasRole("ADMIN")
+
+                // ========== ROOM STATUS ==========
+                .antMatchers(HttpMethod.GET, "/api/room-statuses/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/room-statuses/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/room-statuses/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/room-statuses/**").hasRole("ADMIN")
+
+                // ========== TEST API ==========
+                .antMatchers("/test/**").permitAll()
 
                 // Các request còn lại cần xác thực
                 .anyRequest().authenticated()

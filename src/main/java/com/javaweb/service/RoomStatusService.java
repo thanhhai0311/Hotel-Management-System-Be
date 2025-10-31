@@ -2,8 +2,9 @@ package com.javaweb.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.javaweb.model.dto.request.RoomStatusRequest;
-import com.javaweb.model.dto.response.RoomStatusResponse;
+
+import com.javaweb.model.dto.RoomStatusDTO.RoomStatusRequest;
+import com.javaweb.model.dto.RoomStatusDTO.RoomStatusResponse;
 
 public interface RoomStatusService {
     RoomStatusResponse create(RoomStatusRequest req);

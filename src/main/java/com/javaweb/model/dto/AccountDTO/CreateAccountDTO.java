@@ -1,4 +1,4 @@
-package com.javaweb.model.dto;
+package com.javaweb.model.dto.AccountDTO;
 
 import java.util.Date;
 

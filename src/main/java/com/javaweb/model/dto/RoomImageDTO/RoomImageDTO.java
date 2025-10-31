@@ -1,4 +1,4 @@
-package com.javaweb.model.dto;
+package com.javaweb.model.dto.RoomImageDTO;
 
 public class RoomImageDTO {
     private Integer id;

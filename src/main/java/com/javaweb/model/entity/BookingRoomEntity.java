@@ -22,12 +22,16 @@ public class BookingRoomEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date actualCheckOutTime;
+    
+    @ManyToOne
+    @JoinColumn(name = "idBill")
+    private BillEntity bill;
 
     @ManyToOne
     @JoinColumn(name = "idCustomer")
     private UserEntity customer;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "idRoomPromotion")
     private RoomPromotionEntity roomPromotion;
 
@@ -132,6 +136,16 @@ public class BookingRoomEntity {
 	public void setNotifacationRooms(List<NotifacationRoomEntity> notifacationRooms) {
 		this.notifacationRooms = notifacationRooms;
 	}
+
+	public BillEntity getBill() {
+		return bill;
+	}
+
+	public void setBill(BillEntity bill) {
+		this.bill = bill;
+	}
+	
+	
 
     
 }
