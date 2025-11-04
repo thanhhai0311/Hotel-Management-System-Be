@@ -154,6 +154,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 
                 // ========== TEST API ==========
                 .antMatchers("/test/**").permitAll()
+                
+//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 // Các request còn lại cần xác thực
                 .anyRequest().authenticated()

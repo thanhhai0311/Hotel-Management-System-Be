@@ -13,9 +13,7 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        // Đừng dùng "*" khi allowCredentials = true
-                        // Hãy liệt kê domain chính xác bạn dùng:
+                registry.addMapping("/api/**")
                         .allowedOrigins(
                             "http://localhost:5173",
                             "https://hotel-management-fe.vercel.app",
@@ -31,3 +29,4 @@ public class CorsConfig {
         };
     }
 }
+
