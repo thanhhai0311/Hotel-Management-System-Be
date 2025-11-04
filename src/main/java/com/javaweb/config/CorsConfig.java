@@ -13,16 +13,19 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        // Cho phép tất cả môi trường bạn đang dùng
-                        .allowedOriginPatterns(
-                            "http://localhost:5173",                    // React local
-                            "https://hotel-management-fe.vercel.app",   // FE deploy
-                            "https://hotel-management-system-be-1.onrender.com", // Render self-call
-                            "*" // Cho phép mobile Flutter (vì Flutter không gửi Origin)
+                registry.addMapping("/**")
+                        // Đừng dùng "*" khi allowCredentials = true
+                        // Hãy liệt kê domain chính xác bạn dùng:
+                        .allowedOrigins(
+                            "http://localhost:5173",
+                            "https://hotel-management-fe.vercel.app",
+                            "capacitor://localhost",     // Flutter trên iOS (Capacitor)
+                            "http://localhost",           // Flutter debug trên Android
+                            "https://hotel-management-system-be-1.onrender.com"
                         )
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedMethods("*")
                         .allowedHeaders("*")
+                        .exposedHeaders("Authorization", "Content-Type")
                         .allowCredentials(true);
             }
         };
