@@ -53,6 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+        	.cors()
+        	.and()
             // Tắt CSRF vì ta dùng JWT, không cần session
             .csrf().disable()
 
@@ -85,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/staff/**").hasAnyRole("STAFF", "ADMIN")
                 .antMatchers("/api/customer/**").hasRole("CUSTOMER")
                 
-             // ========== AUTHENTICATION ==========
+                // ========== AUTHENTICATION ==========
                 .antMatchers("/api/auth/**").permitAll() // login, register public
 
                 // ========== IMAGES ==========
