@@ -1,0 +1,9 @@
+package com.javaweb.repository;
+
+import com.javaweb.model.entity.ReviewImageEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ReviewImageRepository extends JpaRepository<ReviewImageEntity, Integer> {
+}
