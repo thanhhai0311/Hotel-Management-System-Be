@@ -1,6 +1,7 @@
 package com.javaweb.model.dto.PromotionDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,8 @@ public class PromotionCreateDTO {
 	
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime endTime;
+	
+//	List<Integer> idRoomTypes;
 	
 	private Boolean isActive;
 	private MultipartFile banner;
@@ -75,4 +78,14 @@ public class PromotionCreateDTO {
 	public void setBanner(MultipartFile banner) {
 		this.banner = banner;
 	}
+
+//	public List<Integer> getIdRoomTypes() {
+//		return idRoomTypes;
+//	}
+//
+//	public void setIdRoomTypes(List<Integer> idRoomTypes) {
+//		this.idRoomTypes = idRoomTypes;
+//	}
+	
+	
 }

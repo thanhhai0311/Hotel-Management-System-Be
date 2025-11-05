@@ -58,6 +58,7 @@ public class RoomTypeConverter {
         dto.setIsSeatingArea(entity.getIsSeatingArea());
         dto.setIsSafetyFeatures(entity.getIsSafetyFeatures());
         dto.setIsSmoking(entity.getIsSmoking());
+        dto.setIsDeleted(entity.getIsDeleted());
         
         if (entity.getTypeImages() != null) {
             dto.setImages(entity.getTypeImages().stream()

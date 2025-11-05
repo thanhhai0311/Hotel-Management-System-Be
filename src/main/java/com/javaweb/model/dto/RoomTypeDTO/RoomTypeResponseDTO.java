@@ -21,6 +21,7 @@ public class RoomTypeResponseDTO {
 	private Boolean isSeatingArea;
 	private Boolean isSafetyFeatures;
 	private Boolean isSmoking;
+	private Boolean isDeleted;
 
 	private List<String> images;
 
@@ -167,6 +168,14 @@ public class RoomTypeResponseDTO {
 
 	public void setImages(List<String> images) {
 		this.images = images;
+	}
+
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -152,31 +153,91 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 		return roomTypeConverter.toResponseDTO(updated);
 	}
 
+//	@Override
+//	public Map<String, Object> getAllRoomTypes(Integer page, Integer size) {
+//		Map<String, Object> response = new HashMap<>();
+//		
+//		 boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+//		            .stream()
+//		            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+//		 
+//		if (page == null || size == null) {
+//			List<RoomTypeEntity> list = roomTypeRepository.findByIsDeletedFalse();
+//			list.sort(Comparator.comparing(RoomTypeEntity::getId));
+//			List<RoomTypeResponseDTO> result = list.stream().map(roomTypeConverter::toResponseDTO)
+//					.collect(Collectors.toList());
+//			response.put("roomTypes", result);
+//			response.put("totalItems", result.size());
+//			response.put("totalPages", 1);
+//			response.put("currentPage", 0);
+//			return response;
+//		}
+//
+//		Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+//		Page<RoomTypeEntity> pageData = roomTypeRepository.findByIsDeletedFalse(pageable);
+//		List<RoomTypeResponseDTO> result = pageData.getContent().stream().map(roomTypeConverter::toResponseDTO)
+//				.collect(Collectors.toList());
+//		response.put("roomTypes", result);
+//		response.put("currentPage", pageData.getNumber());
+//		response.put("totalItems", pageData.getTotalElements());
+//		response.put("totalPages", pageData.getTotalPages());
+//		return response;
+//	}
+	
 	@Override
 	public Map<String, Object> getAllRoomTypes(Integer page, Integer size) {
-		Map<String, Object> response = new HashMap<>();
-		if (page == null || size == null) {
-			List<RoomTypeEntity> list = roomTypeRepository.findByIsDeletedFalse();
-			list.sort(Comparator.comparing(RoomTypeEntity::getId));
-			List<RoomTypeResponseDTO> result = list.stream().map(roomTypeConverter::toResponseDTO)
-					.collect(Collectors.toList());
-			response.put("roomTypes", result);
-			response.put("totalItems", result.size());
-			response.put("totalPages", 1);
-			response.put("currentPage", 0);
-			return response;
-		}
+	    Map<String, Object> response = new HashMap<>();
 
-		Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
-		Page<RoomTypeEntity> pageData = roomTypeRepository.findByIsDeletedFalse(pageable);
-		List<RoomTypeResponseDTO> result = pageData.getContent().stream().map(roomTypeConverter::toResponseDTO)
-				.collect(Collectors.toList());
-		response.put("roomTypes", result);
-		response.put("currentPage", pageData.getNumber());
-		response.put("totalItems", pageData.getTotalElements());
-		response.put("totalPages", pageData.getTotalPages());
-		return response;
+	    // Kiểm tra vai trò người đang đăng nhập
+	    boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+	            .stream()
+	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+	    List<RoomTypeEntity> list;
+	    Page<RoomTypeEntity> pageData;
+
+	    // Nếu là ADMIN → lấy tất cả
+	    // Nếu KHÔNG phải ADMIN → chỉ lấy roomType chưa bị xóa
+	    if (page == null || size == null) {
+	        if (isAdmin) {
+	            list = roomTypeRepository.findAll();
+	        } else {
+	            list = roomTypeRepository.findByIsDeletedFalse();
+	        }
+
+	        list.sort(Comparator.comparing(RoomTypeEntity::getId));
+
+	        List<RoomTypeResponseDTO> result = list.stream()
+	                .map(roomTypeConverter::toResponseDTO)
+	                .collect(Collectors.toList());
+
+	        response.put("roomTypes", result);
+	        response.put("totalItems", result.size());
+	        response.put("totalPages", 1);
+	        response.put("currentPage", 0);
+	        return response;
+	    }
+
+	    Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+
+	    if (isAdmin) {
+	        pageData = roomTypeRepository.findAll(pageable);
+	    } else {
+	        pageData = roomTypeRepository.findByIsDeletedFalse(pageable);
+	    }
+
+	    List<RoomTypeResponseDTO> result = pageData.getContent().stream()
+	            .map(roomTypeConverter::toResponseDTO)
+	            .collect(Collectors.toList());
+
+	    response.put("roomTypes", result);
+	    response.put("currentPage", pageData.getNumber());
+	    response.put("totalItems", pageData.getTotalElements());
+	    response.put("totalPages", pageData.getTotalPages());
+
+	    return response;
 	}
+
 
 	@Override
 	public void deleteRoomType(Integer id) {
@@ -212,11 +273,18 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 			Integer size) {
 		Map<String, Object> result = new HashMap<>();
 
+		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+				.anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
 		Specification<RoomTypeEntity> spec = (root, query, cb) -> {
 			List<Predicate> predicates = new ArrayList<>();
 
-			// Chỉ lấy roomType chưa bị xóa
-			predicates.add(cb.isFalse(root.get("isDeleted")));
+//			// Chỉ lấy roomType chưa bị xóa
+//			predicates.add(cb.isFalse(root.get("isDeleted")));
+
+			if (!isAdmin) {
+				predicates.add(cb.isFalse(root.get("isDeleted")));
+			}
 
 			if (name != null && !name.trim().isEmpty()) {
 				predicates.add(cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
@@ -261,27 +329,27 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 			if (isPrivateBathroom != null) {
 				predicates.add(cb.equal(root.get("isPrivateBathroom"), isPrivateBathroom));
 			}
-			
+
 			if (isFreeToiletries != null) {
 				predicates.add(cb.equal(root.get("isFreeToiletries"), isFreeToiletries));
 			}
-			
+
 			if (isMiniBar != null) {
 				predicates.add(cb.equal(root.get("isMiniBar"), isMiniBar));
 			}
-			
+
 			if (isWorkDesk != null) {
 				predicates.add(cb.equal(root.get("isWorkDesk"), isWorkDesk));
 			}
-			
+
 			if (isSeatingArea != null) {
 				predicates.add(cb.equal(root.get("isSeatingArea"), isSeatingArea));
 			}
-			
+
 			if (isSafetyFeatures != null) {
 				predicates.add(cb.equal(root.get("isSafetyFeatures"), isSafetyFeatures));
 			}
-			
+
 			if (isSoundproofing != null) {
 				predicates.add(cb.equal(root.get("isSoundproofing"), isSoundproofing));
 			}
@@ -329,10 +397,19 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 		RoomTypeEntity roomType = roomTypeRepository.findById(id).orElseThrow(
 				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy loại phòng với ID: " + id));
 
-		// Kiểm tra soft delete (nếu có flag)
-		if (Boolean.TRUE.equals(roomType.getIsDeleted())) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Loại phòng này đã bị xóa");
+		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+				.anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+		if (!isAdmin) {
+			if (Boolean.TRUE.equals(roomType.getIsDeleted())) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Loại phòng này đã bị xóa");
+			}
 		}
+
+		// Kiểm tra soft delete (nếu có flag)
+//		if (Boolean.TRUE.equals(roomType.getIsDeleted())) {
+//			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Loại phòng này đã bị xóa");
+//		}
 
 		return roomTypeConverter.toResponseDTO(roomType);
 	}
