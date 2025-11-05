@@ -88,5 +88,6 @@ public class RoomTypeConverter {
         if (dto.getIsSeatingArea() != null) entity.setIsSeatingArea(dto.getIsSeatingArea());
         if (dto.getIsSafetyFeatures() != null) entity.setIsSafetyFeatures(dto.getIsSafetyFeatures());
         if (dto.getIsSmoking() != null) entity.setIsSmoking(dto.getIsSmoking());
+        if(dto.getIsDeleted() != null) entity.setIsDeleted(dto.getIsDeleted());
     }
 }

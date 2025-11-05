@@ -17,9 +17,11 @@ public interface RoomTypeService {
 	void deleteRoomType(Integer id);
 
 	Map<String, Object> searchRoomTypes(String name, Float minPrice, Float maxPrice, Integer bedCount,
-			Integer maxOccupancy, Float minArea, Float maxArea, Boolean isSmoking, Boolean isAirConditioning,
-			Integer page, Integer size);
-	
+			Integer maxOccupancy, Float minArea, Float maxArea, Boolean isPrivateBathroom, Boolean isFreeToiletries,
+			Boolean isMiniBar, Boolean isWorkDesk, Boolean isSeatingArea, Boolean isSafetyFeatures,
+			Boolean isSoundproofing, Boolean isSmoking, Boolean isAirConditioning, Boolean isDeleted, Integer page,
+			Integer size);
+
 	RoomTypeResponseDTO getRoomTypeById(Integer id);
 
 }

@@ -150,6 +150,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			    .antMatchers(HttpMethod.POST, "/api/reviews").hasAnyRole("CUSTOMER", "ADMIN")
 			    .antMatchers(HttpMethod.PUT, "/api/reviews/**").hasAnyRole("CUSTOMER", "ADMIN")
 			    .antMatchers(HttpMethod.DELETE, "/api/reviews/**").hasAnyRole("CUSTOMER","ADMIN")
+			    
+			    // ========= ROOM IMAGES =========
+                .antMatchers(HttpMethod.GET, "/api/room-images/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/room-images/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/room-images/**").hasRole("ADMIN")
+                
+                // ========= SERVICE IMAGES =========
+                .antMatchers(HttpMethod.GET, "/api/service-images/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/service-images/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/service-images/**").hasRole("ADMIN")
+                
+                // ========= ROOM TYPE IMAGES =========
+                .antMatchers(HttpMethod.GET, "/api/room-type-images/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/room-type-images/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/room-type-images/**").hasRole("ADMIN")
 
                 
                 // ========== TEST API ==========

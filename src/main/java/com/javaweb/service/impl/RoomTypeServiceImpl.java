@@ -206,8 +206,10 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
 	@Override
 	public Map<String, Object> searchRoomTypes(String name, Float minPrice, Float maxPrice, Integer bedCount,
-			Integer maxOccupancy, Float minArea, Float maxArea, Boolean isSmoking, Boolean isAirConditioning,
-			Integer page, Integer size) {
+			Integer maxOccupancy, Float minArea, Float maxArea, Boolean isPrivateBathroom, Boolean isFreeToiletries,
+			Boolean isMiniBar, Boolean isWorkDesk, Boolean isSeatingArea, Boolean isSafetyFeatures,
+			Boolean isSoundproofing, Boolean isSmoking, Boolean isAirConditioning, Boolean isDeleted, Integer page,
+			Integer size) {
 		Map<String, Object> result = new HashMap<>();
 
 		Specification<RoomTypeEntity> spec = (root, query, cb) -> {
@@ -252,6 +254,38 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 				predicates.add(cb.equal(root.get("isAirConditioning"), isAirConditioning));
 			}
 
+			if (isDeleted != null) {
+				predicates.add(cb.equal(root.get("isDeleted"), isDeleted));
+			}
+
+			if (isPrivateBathroom != null) {
+				predicates.add(cb.equal(root.get("isPrivateBathroom"), isPrivateBathroom));
+			}
+			
+			if (isFreeToiletries != null) {
+				predicates.add(cb.equal(root.get("isFreeToiletries"), isFreeToiletries));
+			}
+			
+			if (isMiniBar != null) {
+				predicates.add(cb.equal(root.get("isMiniBar"), isMiniBar));
+			}
+			
+			if (isWorkDesk != null) {
+				predicates.add(cb.equal(root.get("isWorkDesk"), isWorkDesk));
+			}
+			
+			if (isSeatingArea != null) {
+				predicates.add(cb.equal(root.get("isSeatingArea"), isSeatingArea));
+			}
+			
+			if (isSafetyFeatures != null) {
+				predicates.add(cb.equal(root.get("isSafetyFeatures"), isSafetyFeatures));
+			}
+			
+			if (isSoundproofing != null) {
+				predicates.add(cb.equal(root.get("isSoundproofing"), isSoundproofing));
+			}
+
 			return cb.and(predicates.toArray(new Predicate[0]));
 		};
 
@@ -289,20 +323,18 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
 		return result;
 	}
-	
+
 	@Override
 	public RoomTypeResponseDTO getRoomTypeById(Integer id) {
-	    RoomTypeEntity roomType = roomTypeRepository.findById(id)
-	            .orElseThrow(() -> new ResponseStatusException(
-	                    HttpStatus.NOT_FOUND, "Không tìm thấy loại phòng với ID: " + id));
+		RoomTypeEntity roomType = roomTypeRepository.findById(id).orElseThrow(
+				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy loại phòng với ID: " + id));
 
-	    // Kiểm tra soft delete (nếu có flag)
-	    if (Boolean.TRUE.equals(roomType.getIsDeleted())) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Loại phòng này đã bị xóa");
-	    }
+		// Kiểm tra soft delete (nếu có flag)
+		if (Boolean.TRUE.equals(roomType.getIsDeleted())) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Loại phòng này đã bị xóa");
+		}
 
-	    return roomTypeConverter.toResponseDTO(roomType);
+		return roomTypeConverter.toResponseDTO(roomType);
 	}
-
 
 }

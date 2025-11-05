@@ -88,6 +88,7 @@ public class ServiceServiceImpl implements ServiceService {
 						ServiceImageEntity img = new ServiceImageEntity();
 						img.setSrc(url);
 						img.setService(service);
+						img.setDetails("Ảnh cho service " + img.getService().getName());
 						images.add(img);
 					}
 				}

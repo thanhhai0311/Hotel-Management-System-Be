@@ -23,7 +23,7 @@ public class ReviewEntity {
     @JoinColumn(name = "idCustomer")
     private UserEntity customer;
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImageEntity> reviewImages;
 
 	public Integer getId() {

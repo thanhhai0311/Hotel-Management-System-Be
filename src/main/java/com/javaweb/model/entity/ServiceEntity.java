@@ -25,7 +25,7 @@ public class ServiceEntity {
     @JoinColumn(name = "idHotel")
     private HotelEntity hotel;
 
-    @OneToMany(mappedBy = "service")
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServiceImageEntity> serviceImages;
 
     @OneToMany(mappedBy = "service")

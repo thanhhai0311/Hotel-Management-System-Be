@@ -76,36 +76,29 @@ public class RoomTypeController {
 			@RequestParam(required = false) Float minPrice, @RequestParam(required = false) Float maxPrice,
 			@RequestParam(required = false) Integer bedCount, @RequestParam(required = false) Integer maxOccupancy,
 			@RequestParam(required = false) Float minArea, @RequestParam(required = false) Float maxArea,
-			@RequestParam(required = false) Boolean isSmoking,
-			@RequestParam(required = false) Boolean isAirConditioning, @RequestParam(required = false) Integer page,
+			@RequestParam(required = false) Boolean isPrivateBathroom,
+			@RequestParam(required = false) Boolean isFreeToiletries, @RequestParam(required = false) Boolean isMiniBar,
+			@RequestParam(required = false) Boolean isWorkDesk, @RequestParam(required = false) Boolean isSeatingArea,
+			@RequestParam(required = false) Boolean isSafetyFeatures,
+			@RequestParam(required = false) Boolean isSoundproofing, @RequestParam(required = false) Boolean isSmoking,
+			@RequestParam(required = false) Boolean isAirConditioning,
+			@RequestParam(required = false) Boolean isDeleted, @RequestParam(required = false) Integer page,
 			@RequestParam(required = false) Integer size) {
-		Map<String, Object> result = roomTypeService.searchRoomTypes(
-	            name, minPrice, maxPrice, bedCount, maxOccupancy,
-	            minArea, maxArea, isSmoking, isAirConditioning,
-	            page, size
-	    );
+		Map<String, Object> result = roomTypeService.searchRoomTypes(name, minPrice, maxPrice, bedCount, maxOccupancy,
+				minArea, maxArea, isPrivateBathroom, isFreeToiletries, isMiniBar, isWorkDesk, isSeatingArea,
+				isSafetyFeatures, isSoundproofing, isSmoking, isAirConditioning, isDeleted, page, size);
 
-	    ApiResponse<Map<String, Object>> response = new ApiResponse<>(
-	            true,
-	            HttpStatus.OK.value(),
-	            "Tìm kiếm loại phòng thành công",
-	            result,
-	            "api/roomtypes/search"
-	    );
-	    return ResponseEntity.ok(response);
+		ApiResponse<Map<String, Object>> response = new ApiResponse<>(true, HttpStatus.OK.value(),
+				"Tìm kiếm loại phòng thành công", result, "api/roomtypes/search");
+		return ResponseEntity.ok(response);
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse<RoomTypeResponseDTO>> getRoomTypeById(@PathVariable Integer id) {
-	    RoomTypeResponseDTO roomType = roomTypeService.getRoomTypeById(id);
-	    ApiResponse<RoomTypeResponseDTO> response = new ApiResponse<>(
-	            true,
-	            HttpStatus.OK.value(),
-	            "Lấy thông tin loại phòng thành công",
-	            roomType,
-	            "api/roomtypes/" + id
-	    );
-	    return ResponseEntity.ok(response);
+		RoomTypeResponseDTO roomType = roomTypeService.getRoomTypeById(id);
+		ApiResponse<RoomTypeResponseDTO> response = new ApiResponse<>(true, HttpStatus.OK.value(),
+				"Lấy thông tin loại phòng thành công", roomType, "api/roomtypes/" + id);
+		return ResponseEntity.ok(response);
 	}
 
 }

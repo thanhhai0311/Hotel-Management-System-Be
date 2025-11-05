@@ -1,31 +1,30 @@
 package com.javaweb.service.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.javaweb.converter.ReviewConverter;
-import com.javaweb.model.dto.ReviewDTO.ReviewDTO;
-import com.javaweb.model.dto.ReviewImageDTO.ReviewImageDTO;
+import com.javaweb.model.dto.ReviewDTO.ReviewCreateDTO;
+import com.javaweb.model.dto.ReviewDTO.ReviewResponseDTO;
+import com.javaweb.model.dto.ReviewDTO.ReviewUpdateDTO;
 import com.javaweb.model.entity.ReviewEntity;
 import com.javaweb.model.entity.ReviewImageEntity;
 import com.javaweb.model.entity.UserEntity;
 import com.javaweb.repository.ReviewImageRepository;
 import com.javaweb.repository.ReviewRepository;
 import com.javaweb.repository.UserRepository;
+import com.javaweb.service.CloudinaryService;
 import com.javaweb.service.ReviewService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -40,103 +39,103 @@ public class ReviewServiceImpl implements ReviewService {
     private UserRepository userRepository;
 
     @Autowired
-    private ReviewConverter converter;
+    private CloudinaryService cloudinaryService;
 
-//    @Override
-//    public ReviewDTO createReview(ReviewDTO dto) {
-//        ReviewEntity review = converter.toEntity(dto);
-//        review.setDay(new Date());
-//
-//        UserEntity customer = userRepository.findById(dto.getCustomerId())
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy khách hàng"));
-//        review.setCustomer(customer);
-//
-//        ReviewEntity saved = reviewRepository.save(review);
-//
-//        if (dto.getReviewImages() != null) {
-//            List<ReviewImageEntity> images = dto.getReviewImages().stream()
-//                    .map(converter::toImageEntity)
-//                    .peek(img -> img.setReview(saved))
-//                    .collect(Collectors.toList());
-//            reviewImageRepository.saveAll(images);
-//            saved.setReviewImages(images);
-//        }
-//
-//        return converter.toDTO(saved);
-//    }
-//
-//    @Override
-//    public ReviewDTO updateReview(Integer id, ReviewDTO dto) {
-//        ReviewEntity review = reviewRepository.findById(id)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đánh giá"));
-//
-//        if (dto.getDetails() != null) review.setDetails(dto.getDetails());
-//        if (dto.getStar() != null) review.setStar(dto.getStar());
-//        if (dto.getType() != null) review.setType(dto.getType());
-//
-//        ReviewEntity updated = reviewRepository.save(review);
-//        return converter.toDTO(updated);
-//    }
+    @Autowired
+    private ReviewConverter reviewConverter;
 
     @Override
-    public void deleteReview(Integer id) {
-        if (!reviewRepository.existsById(id))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy review để xóa");
+    public ReviewResponseDTO createReview(ReviewCreateDTO dto) throws IOException {
+        ReviewEntity review = new ReviewEntity();
+        review.setDetails(dto.getDetails());
+        review.setStar(dto.getStar());
+        review.setType(dto.getType());
+        review.setDay(new Date());
 
-        reviewRepository.deleteById(id);
-    }
+        // Tìm khách hàng
+        UserEntity customer = userRepository.findById(dto.getIdCustomer())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy khách hàng"));
+        review.setCustomer(customer);
 
-    @Override
-    public ReviewDTO getReviewById(Integer id) {
-        return converter.toDTO(
-                reviewRepository.findById(id)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy review"))
-        );
-    }
-
-    @Override
-    public Map<String, Object> getAllReviews(Integer page, Integer pageSize) {
-        List<ReviewEntity> reviews;
-        long totalElements;
-        int totalPages;
-
-        // Nếu không truyền page và pageSize → lấy tất cả
-        if (page == null || pageSize == null) {
-            reviews = reviewRepository.findAll();
-            totalElements = reviews.size();
-            totalPages = 1;
-        } else {
-            Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-            Page<ReviewEntity> pageResult = reviewRepository.findAll(pageable);
-            reviews = pageResult.getContent();
-            totalElements = pageResult.getTotalElements();
-            totalPages = pageResult.getTotalPages();
+        // Upload ảnh nếu có
+        List<ReviewImageEntity> images = new ArrayList<>();
+        if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+            for (MultipartFile file : dto.getImages()) {
+                if (file != null && !file.isEmpty()) {
+                    String url = cloudinaryService.uploadFile(file);
+                    ReviewImageEntity img = new ReviewImageEntity();
+                    img.setSrc(url);
+                    img.setReview(review);
+                    img.setDetails("Ảnh cho review của KH " + img.getReview().getCustomer().getName());
+                    images.add(img);
+                }
+            }
         }
 
-        List<ReviewDTO> reviewDTOs = reviews.stream()
-                .map(converter::toDTO)
-                .collect(Collectors.toList());
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("content", reviewDTOs);
-        result.put("totalElements", totalElements);
-        result.put("totalPages", totalPages);
-        result.put("page", page != null ? page : 0);
-        result.put("pageSize", pageSize != null ? pageSize : totalElements);
-
-        return result;
+        review.setReviewImages(images);
+        ReviewEntity saved = reviewRepository.save(review);
+        return reviewConverter.toResponseDTO(saved);
     }
+    
+    @Override
+    @Transactional
+    public ReviewResponseDTO updateReview(Integer id, ReviewUpdateDTO dto) throws IOException {
+        ReviewEntity review = reviewRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đánh giá có id = " + id));
 
-	@Override
-	public ReviewDTO createReview(ReviewDTO dto, MultipartFile[] images) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        // === Cập nhật thông tin cơ bản ===
+        if (dto.getDetails() != null && !dto.getDetails().trim().isEmpty())
+            review.setDetails(dto.getDetails());
+        if (dto.getStar() != null)
+            review.setStar(dto.getStar());
+        if (dto.getType() != null)
+            review.setType(dto.getType());
+        review.setDay(new Date());
 
-	@Override
-	public ReviewDTO updateReview(Integer id, ReviewDTO dto, MultipartFile[] newImages, List<Integer> deleteImageIds) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        if (dto.getIdCustomer() != null) {
+            UserEntity customer = userRepository.findById(dto.getIdCustomer())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Không tìm thấy khách hàng id = " + dto.getIdCustomer()));
+            review.setCustomer(customer);
+        }
 
+        // === Xóa ảnh cũ ===
+        if (dto.getImageIdsToDelete() != null && !dto.getImageIdsToDelete().isEmpty()) {
+            for (Integer imgId : dto.getImageIdsToDelete()) {
+                ReviewImageEntity image = reviewImageRepository.findById(imgId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Không tìm thấy ảnh có id = " + imgId));
+                if (!image.getReview().getId().equals(review.getId())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Ảnh id = " + imgId + " không thuộc về đánh giá id = " + review.getId());
+                }
+                try {
+                    cloudinaryService.deleteFileByUrl(image.getSrc());
+                } catch (Exception e) {
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                            "Lỗi khi xóa ảnh Cloudinary: " + e.getMessage());
+                }
+                reviewImageRepository.delete(image);
+                review.getReviewImages().remove(image);
+            }
+        }
+
+        // === Thêm ảnh mới ===
+        if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+            for (MultipartFile file : dto.getImages()) {
+                if (file != null && !file.isEmpty()) {
+                    String url = cloudinaryService.uploadFile(file);
+                    ReviewImageEntity newImg = new ReviewImageEntity();
+                    newImg.setSrc(url);
+                    newImg.setReview(review);
+                    reviewImageRepository.save(newImg);
+                    review.getReviewImages().add(newImg);
+                }
+            }
+        }
+
+        ReviewEntity updated = reviewRepository.save(review);
+        return reviewConverter.toResponseDTO(updated);
+    }
+    
 }
