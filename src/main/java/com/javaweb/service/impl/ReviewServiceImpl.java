@@ -3,11 +3,20 @@ package com.javaweb.service.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -136,6 +145,118 @@ public class ReviewServiceImpl implements ReviewService {
 
         ReviewEntity updated = reviewRepository.save(review);
         return reviewConverter.toResponseDTO(updated);
+    }
+
+    @Override
+    public Map<String, Object> getAllReviews(Integer page, Integer size) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Nếu không truyền page và size -> lấy toàn bộ
+        if (page == null || size == null) {
+            List<ReviewEntity> allReviews = reviewRepository.findAll(Sort.by(Sort.Direction.DESC, "day"));
+            List<ReviewResponseDTO> reviewDTOs = allReviews.stream()
+                    .map(reviewConverter::toResponseDTO)
+                    .collect(Collectors.toList());
+
+            response.put("reviews", reviewDTOs);
+            response.put("totalItems", reviewDTOs.size());
+            response.put("totalPages", 1);
+            response.put("currentPage", 0);
+            return response;
+        }
+
+        // Nếu có phân trang
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "day"));
+        Page<ReviewEntity> reviewPage = reviewRepository.findAll(pageable);
+
+        List<ReviewResponseDTO> reviewDTOs = reviewPage.getContent().stream()
+                .map(reviewConverter::toResponseDTO)
+                .collect(Collectors.toList());
+
+        response.put("reviews", reviewDTOs);
+        response.put("currentPage", reviewPage.getNumber());
+        response.put("totalItems", reviewPage.getTotalElements());
+        response.put("totalPages", reviewPage.getTotalPages());
+
+        return response;
+    }
+
+    @Transactional
+	@Override
+	public void deleteReview(Integer id) {
+    	// Tìm review theo ID
+        ReviewEntity review = reviewRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Không tìm thấy đánh giá có ID = " + id));
+
+        // Xóa ảnh liên quan (nếu có)
+        if (review.getReviewImages() != null && !review.getReviewImages().isEmpty()) {
+            for (ReviewImageEntity image : review.getReviewImages()) {
+                try {
+                    cloudinaryService.deleteFileByUrl(image.getSrc());
+                } catch (Exception e) {
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                            "Lỗi khi xóa ảnh Cloudinary: " + e.getMessage());
+                }
+                reviewImageRepository.delete(image);
+            }
+        }
+
+        // Xóa review
+        reviewRepository.delete(review);
+    }
+
+    @Override
+    public ReviewResponseDTO getReviewById(Integer id) {
+        ReviewEntity review = reviewRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Không tìm thấy đánh giá có ID = " + id));
+
+        return reviewConverter.toResponseDTO(review);
+    }
+
+    @Override
+    public Page<ReviewResponseDTO> searchReviews(
+            String details,
+            Integer star,
+            String type,
+            Integer customerId,
+            Date day,
+            int page,
+            int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "day"));
+
+        Specification<ReviewEntity> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (details != null && !details.trim().isEmpty()) {
+                predicates.add(cb.like(cb.lower(root.get("details")), "%" + details.toLowerCase() + "%"));
+            }
+
+            if (star != null) {
+                predicates.add(cb.equal(root.get("star"), star));
+            }
+
+            if (type != null && !type.trim().isEmpty()) {
+                predicates.add(cb.equal(root.get("type"), type));
+            }
+
+            if (customerId != null) {
+                predicates.add(cb.equal(root.get("customer").get("id"), customerId));
+            }
+
+            if (day != null) {
+                // So sánh theo ngày, có thể dùng between nếu muốn mở rộng theo khoảng
+                predicates.add(cb.equal(root.get("day"), day));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<ReviewEntity> reviewPage = reviewRepository.findAll(spec, pageable);
+
+        return reviewPage.map(reviewConverter::toResponseDTO);
     }
     
 }

@@ -1,8 +1,14 @@
 package com.javaweb.service.impl;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +21,7 @@ import com.javaweb.converter.UserConverter;
 import com.javaweb.model.dto.UserDTO.UserProfileUpdateDTO;
 import com.javaweb.model.dto.UserDTO.UserResponseDTO;
 import com.javaweb.model.dto.UserDTO.UserUpdateDTO;
+import com.javaweb.model.dto.UserDTO.UserWithAccountResponseDTO;
 import com.javaweb.model.entity.AccountEntity;
 import com.javaweb.model.entity.UserEntity;
 import com.javaweb.repository.AccountRepository;
@@ -171,6 +178,58 @@ public class UserServiceImpl implements UserService {
 	    accountRepository.save(account);
 
 	    return userConverter.toResponseDTO(user);
+	}
+
+	 // ---------------- All users ----------------
+    @Override
+    public List<UserWithAccountResponseDTO> getAllUsers() {
+        return userRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<UserWithAccountResponseDTO> getAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        return userRepository.findAll(pageable).map(this::toDTO);
+    }
+
+    // ---------------- By Role ----------------
+    @Override
+    public List<UserWithAccountResponseDTO> getUsersByRole(Integer idRole) {
+        return userRepository.findByRoleId(idRole).stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<UserWithAccountResponseDTO> getUsersByRole(Integer idRole, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        return userRepository.findByRoleId(idRole, pageable).map(this::toDTO);
+    }
+	
+	private UserWithAccountResponseDTO toDTO(UserEntity user) {
+		UserWithAccountResponseDTO dto = new UserWithAccountResponseDTO();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setPhone(user.getPhone());
+        dto.setGender(user.getGender());
+        dto.setAddress(user.getAddress());
+        dto.setIdentification(user.getIdentification());
+        dto.setDob(user.getDob());
+
+        if (user.getAccount() != null) {
+            dto.setAccountId(user.getAccount().getId());
+            dto.setEmail(user.getAccount().getEmail());
+            dto.setActive(user.getAccount().isActive());
+            if (user.getAccount().getRole() != null)
+                dto.setRoleName(user.getAccount().getRole().getName());
+        }
+        return dto;
+    }
+
+	@Override
+	public UserWithAccountResponseDTO getUserById(Integer id) {
+		UserEntity user = userRepository.findById(id)
+	            .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+	                    org.springframework.http.HttpStatus.NOT_FOUND, "Không tìm thấy người dùng có ID = " + id));
+	    return toDTO(user);
 	}
 
 

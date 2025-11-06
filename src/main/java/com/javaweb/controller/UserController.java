@@ -11,6 +11,7 @@ import com.javaweb.model.dto.UserDTO.UserProfileUpdateDTO;
 import com.javaweb.model.dto.UserDTO.UserResponse;
 import com.javaweb.model.dto.UserDTO.UserResponseDTO;
 import com.javaweb.model.dto.UserDTO.UserUpdateDTO;
+import com.javaweb.model.dto.UserDTO.UserWithAccountResponseDTO;
 import com.javaweb.model.entity.UserEntity;
 import com.javaweb.model.response.ApiResponse;
 import com.javaweb.service.UserService;
@@ -57,28 +58,64 @@ public class UserController {
 		try {
 			UserResponseDTO result = userService.updateUser(id, dto);
 			ApiResponse<UserResponseDTO> response = new ApiResponse<>(true, HttpStatus.OK.value(),
-					"Cập nhật thông tin cá nhân thành công", result, "api/users/" + id + "/update");
+					"Cập nhật thông tin cá nhân thành công", result, "api/user/" + id + "/update");
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {
 			ApiResponse<Void> error = new ApiResponse<>(false, 500, "Đã xảy ra lỗi: " + e.getMessage(), null,
-					"api/users/" + id + "/update");
+					"api/user/" + id + "/update");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
 		}
 	}
-	
+
 	@PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'STAFF')")
 	@PutMapping("/profile")
 	public ResponseEntity<?> updateProfile(@RequestBody UserProfileUpdateDTO dto) {
-	    UserResponseDTO updated = userService.updateProfile(dto);
-	    ApiResponse<UserResponseDTO> response = new ApiResponse<>(
-	            true,
-	            HttpStatus.OK.value(),
-	            "Cập nhật thông tin cá nhân thành công",
-	            updated,
-	            "/api/users/profile"
-	    );
-	    return ResponseEntity.ok(response);
+		UserResponseDTO updated = userService.updateProfile(dto);
+		ApiResponse<UserResponseDTO> response = new ApiResponse<>(true, HttpStatus.OK.value(),
+				"Cập nhật thông tin cá nhân thành công", updated, "/api/user/profile");
+		return ResponseEntity.ok(response);
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("/getAll")
+	public ResponseEntity<?> getAllUsers(@RequestParam(required = false) Integer idRole,
+			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+
+		Object data;
+		String message;
+
+		if (idRole == null) { 
+			message = "Lấy danh sách tất cả người dùng thành công";
+			if (page != null && size != null)
+				data = userService.getAllUsers(page, size);
+			else
+				data = userService.getAllUsers();
+		} else { 
+			message = "Lấy danh sách người dùng theo vai trò thành công (idRole = " + idRole + ")";
+			if (page != null && size != null)
+				data = userService.getUsersByRole(idRole, page, size);
+			else
+				data = userService.getUsersByRole(idRole);
+		}
+
+		ApiResponse<Object> res = new ApiResponse<>(true, HttpStatus.OK.value(), message, data, "api/user/getAll");
+		return ResponseEntity.ok(res);
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getUserById(@PathVariable Integer id) {
+		UserWithAccountResponseDTO user = userService.getUserById(id);
+
+	    ApiResponse<UserWithAccountResponseDTO> res = new ApiResponse<>(
+	            true,
+	            HttpStatus.OK.value(),
+	            "Lấy thông tin người dùng thành công",
+	            user,
+	            "api/users/" + id
+	    );
+
+	    return ResponseEntity.ok(res);
+	}
 
 }

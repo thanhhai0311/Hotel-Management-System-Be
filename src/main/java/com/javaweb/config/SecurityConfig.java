@@ -97,6 +97,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/user/profile").hasAnyRole("ADMIN", "CUSTOMER", "STAFF")
                 .antMatchers(HttpMethod.GET, "/api/user/me").hasAnyRole("ADMIN", "CUSTOMER", "STAFF")
                 .antMatchers(HttpMethod.PUT, "/api/user/{id}/update").hasRole("ADMIN") // chỉ admin update user khác
+                
+                // ========== USER MANAGEMENT ==========
+                .antMatchers(HttpMethod.GET, "/api/user/getAll").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/user/{id}").hasRole("ADMIN")
 
                 // ========== ACCOUNT ==========
                 .antMatchers(HttpMethod.GET, "/api/account/**").hasRole("ADMIN")
@@ -146,10 +150,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			    .antMatchers(HttpMethod.DELETE, "/api/room-promotions/delete/**").hasRole("ADMIN")
 			    
 			    // ========== REVIEW ==========
-			    .antMatchers(HttpMethod.GET, "/api/reviews/**").permitAll() 
-			    .antMatchers(HttpMethod.POST, "/api/reviews").hasAnyRole("CUSTOMER", "ADMIN")
-			    .antMatchers(HttpMethod.PUT, "/api/reviews/**").hasAnyRole("CUSTOMER", "ADMIN")
-			    .antMatchers(HttpMethod.DELETE, "/api/reviews/**").hasAnyRole("CUSTOMER","ADMIN")
+			    .antMatchers(HttpMethod.GET, 
+			            "/api/reviews/getAll",
+			            "/api/reviews/search",
+			            "/api/reviews/{id}",
+			            "/api/reviews/**"
+			    ).permitAll() // ai cũng có thể xem review
+			    .antMatchers(HttpMethod.POST, "/api/reviews/create").hasAnyRole("CUSTOMER", "ADMIN") // tạo review
+			    .antMatchers(HttpMethod.PUT, "/api/reviews/update/**").hasAnyRole("CUSTOMER", "ADMIN") // cập nhật review
+			    .antMatchers(HttpMethod.DELETE, "/api/reviews/**").hasAnyRole("CUSTOMER", "ADMIN") // xóa review
+			    
+			    // ========== REVIEW IMAGE ==========
+			    .antMatchers(HttpMethod.GET, "/api/review-images/**").permitAll() // ai cũng có thể xem ảnh review
+			    .antMatchers(HttpMethod.DELETE, "/api/review-images/deleteBySrc").hasAnyRole("CUSTOMER", "ADMIN") // xóa ảnh theo src
+			    .antMatchers(HttpMethod.POST, "/api/review-images/**").hasAnyRole("CUSTOMER", "ADMIN") // upload ảnh (nếu sau này thêm)
 			    
 			    // ========= ROOM IMAGES =========
                 .antMatchers(HttpMethod.GET, "/api/room-images/**").permitAll()
