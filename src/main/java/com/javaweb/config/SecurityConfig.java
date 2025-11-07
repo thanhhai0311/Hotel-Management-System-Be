@@ -179,6 +179,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/room-type-images/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/room-type-images/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/room-type-images/**").hasRole("ADMIN")
+                
+                // ========== SHIFT ==========
+                .antMatchers(HttpMethod.GET, "/api/shifts/**").hasAnyRole("ADMIN", "STAFF")
+                .antMatchers(HttpMethod.POST, "/api/shifts/create").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/shifts/update/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/shifts/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/shifts/update-active/**").hasRole("ADMIN")
 
                 
                 // ========== TEST API ==========

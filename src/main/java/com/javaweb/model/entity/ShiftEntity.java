@@ -1,6 +1,7 @@
 package com.javaweb.model.entity;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -23,14 +24,17 @@ public class ShiftEntity {
 	
 	 // Lưu giờ bắt đầu của ca
     @Column(name = "startTime")
-    private Time startTime;
+    private LocalTime  startTime;
 
     // Lưu giờ kết thúc của ca
     @Column(name = "endTime")
-    private Time endTime;
+    private LocalTime  endTime;
 
 	@Column(name = "details")
 	private String details;
+	
+	@Column(name = "isActive")
+    private Boolean isActive = true;
 	
 	@OneToMany(mappedBy = "shift")
 	private List<ShiftingEntity> shiftings;
@@ -51,19 +55,19 @@ public class ShiftEntity {
 		this.name = name;
 	}
 
-	public Time getStartTime() {
+	public LocalTime getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Time startTime) {
+	public void setStartTime(LocalTime startTime) {
 		this.startTime = startTime;
 	}
 
-	public Time getEndTime() {
+	public LocalTime getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Time endTime) {
+	public void setEndTime(LocalTime endTime) {
 		this.endTime = endTime;
 	}
 
@@ -82,5 +86,14 @@ public class ShiftEntity {
 	public void setShiftings(List<ShiftingEntity> shiftings) {
 		this.shiftings = shiftings;
 	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+	
 
 }
