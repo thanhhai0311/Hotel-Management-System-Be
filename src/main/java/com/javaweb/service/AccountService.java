@@ -7,7 +7,6 @@ import com.javaweb.model.dto.AccountDTO.AdminUpdateUserDTO;
 import com.javaweb.model.dto.AccountDTO.CreateAccountDTO;
 import com.javaweb.model.dto.UserDTO.UserResponseDTO;
 import com.javaweb.model.entity.AccountEntity;
-import com.javaweb.model.entity.RoleEntity;
 
 public interface AccountService {
 	AccountEntity toggleAccountActive(Integer id);

@@ -1,6 +1,6 @@
 package com.javaweb.model.dto.AccountDTO;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -41,7 +41,7 @@ public class CreateAccountDTO {
 
     @Past(message = "Ngày sinh phải nhỏ hơn ngày hiện tại")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date dob;
+    private LocalDate dob;
 
 	public String getEmail() {
 		return email;
@@ -99,11 +99,11 @@ public class CreateAccountDTO {
 		this.address = address;
 	}
 
-	public Date getDob() {
+	public LocalDate getDob() {
 		return dob;
 	}
 
-	public void setDob(Date dob) {
+	public void setDob(LocalDate dob) {
 		this.dob = dob;
 	}
     

@@ -1,6 +1,6 @@
 package com.javaweb.model.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,8 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "users")
@@ -37,9 +35,8 @@ public class UserEntity {
     @Column(name = "identification")
     private String identification;
     
-    @Temporal(TemporalType.DATE)
 	@Column(name = "dob")
-	private Date dob;
+	private LocalDate dob;
     
     @OneToMany(mappedBy = "employee")
     private List<EvaluateEntity> evaluates;
@@ -109,11 +106,11 @@ public class UserEntity {
 		this.address = address;
 	}
 
-	public Date getDob() {
+	public LocalDate getDob() {
 		return dob;
 	}
 
-	public void setDob(Date dob) {
+	public void setDob(LocalDate dob) {
 		this.dob = dob;
 	}
 
@@ -197,6 +194,7 @@ public class UserEntity {
 		this.identification = identification;
 	}
     
+	
     
     
 }

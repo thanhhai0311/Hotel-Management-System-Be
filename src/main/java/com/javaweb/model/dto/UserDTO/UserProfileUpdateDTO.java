@@ -1,6 +1,6 @@
 package com.javaweb.model.dto.UserDTO;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class UserProfileUpdateDTO {
     private String name;
@@ -8,7 +8,7 @@ public class UserProfileUpdateDTO {
     private String gender;
     private String address;
     private String identification;
-    private Date dob;
+    private LocalDate dob;
 
     // Trường đổi mật khẩu
     private String currentPassword;
@@ -43,10 +43,10 @@ public class UserProfileUpdateDTO {
 	public void setIdentification(String identification) {
 		this.identification = identification;
 	}
-	public Date getDob() {
+	public LocalDate getDob() {
 		return dob;
 	}
-	public void setDob(Date dob) {
+	public void setDob(LocalDate dob) {
 		this.dob = dob;
 	}
 	public String getCurrentPassword() {

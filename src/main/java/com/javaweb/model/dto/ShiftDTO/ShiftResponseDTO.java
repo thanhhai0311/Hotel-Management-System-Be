@@ -1,7 +1,5 @@
 package com.javaweb.model.dto.ShiftDTO;
 
-import java.sql.Time;
-
 public class ShiftResponseDTO {
 	private Integer id;
 	private String name;

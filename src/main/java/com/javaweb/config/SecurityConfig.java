@@ -186,6 +186,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/shifts/update/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/shifts/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/shifts/update-active/**").hasRole("ADMIN")
+                
+                // ========== SHIFTING ==========
+                .antMatchers(HttpMethod.GET, "/api/shiftings/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/shiftings/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/shiftings/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/shiftings/**").hasRole("ADMIN")
 
                 
                 // ========== TEST API ==========

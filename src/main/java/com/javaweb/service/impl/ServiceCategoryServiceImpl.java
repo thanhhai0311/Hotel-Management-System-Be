@@ -11,7 +11,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.javaweb.model.dto.ServiceCategoryDTO.ServiceCategoryRequest;
 import com.javaweb.model.dto.ServiceCategoryDTO.ServiceCategoryResponse;
-import com.javaweb.model.entity.RoomTypeEntity;
 import com.javaweb.model.entity.ServiceCategoryEntity;
 import com.javaweb.repository.ServiceCategoryRepository;
 import com.javaweb.service.ServiceCategoryService;

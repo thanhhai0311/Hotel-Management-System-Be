@@ -1,6 +1,6 @@
 package com.javaweb.model.dto.AccountDTO;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AdminUpdateUserDTO {
     // Thông tin tài khoản
@@ -15,7 +15,7 @@ public class AdminUpdateUserDTO {
     private String gender;
     private String address;
     private String identification;
-    private Date dob;
+    private LocalDate dob;
 	public String getEmail() {
 		return email;
 	}
@@ -70,10 +70,10 @@ public class AdminUpdateUserDTO {
 	public void setIdentification(String identification) {
 		this.identification = identification;
 	}
-	public Date getDob() {
+	public LocalDate getDob() {
 		return dob;
 	}
-	public void setDob(Date dob) {
+	public void setDob(LocalDate dob) {
 		this.dob = dob;
 	}
     

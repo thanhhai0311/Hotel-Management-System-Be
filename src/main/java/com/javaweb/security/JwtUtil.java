@@ -1,12 +1,20 @@
 package com.javaweb.security;
 
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+
 import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import io.jsonwebtoken.*;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.security.Keys;
 
 @Component
@@ -20,7 +28,7 @@ public class JwtUtil {
 
     private Key signingKey;
 
-    // ✅ Chỉ khởi tạo key 1 lần khi app start
+    // Chỉ khởi tạo key 1 lần khi app start
     @PostConstruct
     public void initKey() {
         signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());

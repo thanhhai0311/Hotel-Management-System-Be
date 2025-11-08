@@ -1,7 +1,6 @@
 package com.javaweb.model.dto.PromotionDTO;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;

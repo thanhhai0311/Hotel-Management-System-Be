@@ -1,7 +1,5 @@
 package com.javaweb.model.dto.ShiftDTO;
 
-import java.sql.Time;
-
 public class ShiftUpdateDTO {
 	private String name;
 	private String startTime;

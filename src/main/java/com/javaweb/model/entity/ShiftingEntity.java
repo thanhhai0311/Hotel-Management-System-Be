@@ -1,7 +1,15 @@
 package com.javaweb.model.entity;
 
-import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "shifting")
@@ -13,9 +21,8 @@ public class ShiftingEntity {
     @Column(name = "details")
     private String details;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "day")
-    private Date day;
+    private LocalDate day;
 
     @ManyToOne
     @JoinColumn(name = "idEmployee")
@@ -41,11 +48,11 @@ public class ShiftingEntity {
 		this.details = details;
 	}
 
-	public Date getDay() {
+	public LocalDate getDay() {
 		return day;
 	}
 
-	public void setDay(Date day) {
+	public void setDay(LocalDate day) {
 		this.day = day;
 	}
 

@@ -1,6 +1,6 @@
 package com.javaweb.model.dto.AuthDTO;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class RegisterRequest {
 	private String email;
@@ -10,7 +10,7 @@ public class RegisterRequest {
 	private String address;
 	private String gender;
 	private String roleName; // ví dụ: "CUSTOMER"
-	private Date dob;
+	private LocalDate dob;
 
 	// getters/setters
 	public String getEmail() {
@@ -69,11 +69,11 @@ public class RegisterRequest {
 		this.roleName = roleName;
 	}
 
-	public Date getDob() {
+	public LocalDate getDob() {
 		return dob;
 	}
 
-	public void setDob(Date dob) {
+	public void setDob(LocalDate dob) {
 		this.dob = dob;
 	}
 
