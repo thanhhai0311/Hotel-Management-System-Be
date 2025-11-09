@@ -67,6 +67,7 @@ public class AuthService {
 		user.setGender(request.getGender());
 		user.setAccount(account);
 		user.setDob(request.getDob());
+		user.setIdentification(request.getIdentification());
 
 		userRepository.save(user);
 

@@ -11,6 +11,7 @@ public class RegisterRequest {
 	private String gender;
 	private String roleName; // ví dụ: "CUSTOMER"
 	private LocalDate dob;
+	private String identification;
 
 	// getters/setters
 	public String getEmail() {
@@ -76,5 +77,15 @@ public class RegisterRequest {
 	public void setDob(LocalDate dob) {
 		this.dob = dob;
 	}
+
+	public String getIdentification() {
+		return identification;
+	}
+
+	public void setIdentification(String identification) {
+		this.identification = identification;
+	}
+	
+	
 
 }

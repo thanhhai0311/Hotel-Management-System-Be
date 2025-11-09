@@ -11,5 +11,6 @@ public interface ServiceCategoryService {
 	ServiceCategoryResponse update(Integer id, ServiceCategoryRequest req);
     void delete(Integer id);
     ServiceCategoryResponse getById(Integer id);
-    Page<ServiceCategoryResponse> getAll(Pageable pageable, String keyword);
+//    Page<ServiceCategoryResponse> getAll(Pageable pageable, String keyword);
+    Page<ServiceCategoryResponse> getAll(Pageable pageable);
 }

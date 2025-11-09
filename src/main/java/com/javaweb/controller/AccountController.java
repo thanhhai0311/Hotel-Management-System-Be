@@ -72,11 +72,11 @@ public class AccountController {
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping
-	public ResponseEntity<ApiResponse<Object>> getAllAccounts(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword) {
+	public ResponseEntity<ApiResponse<Object>> getAllAccounts(@RequestParam(required = false) Integer page,
+			@RequestParam(required = false) Integer size) {
 
 		// Gọi service xử lý
-		Object accountsPage = accountService.getAllAccounts(page, size, keyword);
+		Object accountsPage = accountService.getAllAccounts(page, size);
 
 		ApiResponse<Object> response = new ApiResponse<>(true, HttpStatus.OK.value(),
 				"Lấy danh sách tài khoản thành công", accountsPage, "/api/account");

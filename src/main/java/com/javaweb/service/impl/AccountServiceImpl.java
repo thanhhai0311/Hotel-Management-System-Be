@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -153,28 +154,70 @@ public class AccountServiceImpl implements AccountService {
 		return accountRepository.save(account);
 	}
 
+//	@Override
+//	public Object getAllAccounts(int page, int size, String keyword) {
+//	    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+//	    Page<AccountEntity> accountPage;
+//
+//	    if (keyword == null || keyword.trim().isEmpty()) {
+//	        accountPage = accountRepository.findAll(pageable);
+//	    } else {
+//	        accountPage = accountRepository.findByEmailContainingIgnoreCase(keyword, pageable);
+//	    }
+//
+//	    // Chuyển entity sang DTO
+//	    Page<AccountDTO> dtoPage = accountPage.map(account ->
+//	            new AccountDTO(
+//	                    account.getId(),
+//	                    account.getEmail(),
+//	                    account.isActive(),
+//	                    account.getRole() != null ? account.getRole().getName() : null
+//	            )
+//	    );
+//
+//	    return dtoPage;
+//	}
+	
 	@Override
-	public Object getAllAccounts(int page, int size, String keyword) {
-	    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
-	    Page<AccountEntity> accountPage;
+	public Page<AccountDTO> getAllAccounts(Integer page, Integer size) {
+	    try {
+	        // 🔹 Nếu không truyền page/size hoặc truyền giá trị không hợp lệ → lấy toàn bộ
+	        if (page == null || size == null || page < 0 || size < 0) {
+	            List<AccountEntity> list = accountRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 
-	    if (keyword == null || keyword.trim().isEmpty()) {
-	        accountPage = accountRepository.findAll(pageable);
-	    } else {
-	        accountPage = accountRepository.findByEmailContainingIgnoreCase(keyword, pageable);
+	            List<AccountDTO> dtos = list.stream()
+	                    .map(account -> new AccountDTO(
+	                            account.getId(),
+	                            account.getEmail(),
+	                            account.isActive(),
+	                            account.getRole() != null ? account.getRole().getName() : null
+	                    ))
+	                    .collect(Collectors.toList());
+
+	            // Trả về Page giả để thống nhất kiểu dữ liệu
+	            return new PageImpl<>(dtos);
+	        }
+
+	        // 🔹 Nếu có page và size → phân trang
+	        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+	        Page<AccountEntity> accountPage = accountRepository.findAll(pageable);
+
+	        return accountPage.map(account ->
+	                new AccountDTO(
+	                        account.getId(),
+	                        account.getEmail(),
+	                        account.isActive(),
+	                        account.getRole() != null ? account.getRole().getName() : null
+	                )
+	        );
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw new ResponseStatusException(
+	                HttpStatus.INTERNAL_SERVER_ERROR,
+	                "Lỗi khi lấy danh sách tài khoản: " + e.getMessage()
+	        );
 	    }
-
-	    // Chuyển entity sang DTO
-	    Page<AccountDTO> dtoPage = accountPage.map(account ->
-	            new AccountDTO(
-	                    account.getId(),
-	                    account.getEmail(),
-	                    account.isActive(),
-	                    account.getRole() != null ? account.getRole().getName() : null
-	            )
-	    );
-
-	    return dtoPage;
 	}
 
 	@Override

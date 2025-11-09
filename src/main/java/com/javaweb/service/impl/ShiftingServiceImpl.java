@@ -1,6 +1,8 @@
 package com.javaweb.service.impl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,20 +38,32 @@ public class ShiftingServiceImpl implements ShiftingService {
 
 	@Override
 	public ShiftingResponseDTO create(ShiftingCreateDTO dto) {
-		ShiftingEntity entity = new ShiftingEntity();
-		entity.setDetails(dto.getDetails());
-		entity.setDay(dto.getDay());
+		try {
+			UserEntity employee = userRepository.findById(dto.getIdEmployee())
+					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy nhân viên"));
+			ShiftEntity shift = shiftRepository.findById(dto.getIdShift())
+					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy ca làm"));
 
-		UserEntity employee = userRepository.findById(dto.getIdEmployee())
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy nhân viên"));
-		ShiftEntity shift = shiftRepository.findById(dto.getIdShift())
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy ca làm"));
+			boolean exists = shiftingRepository.existsByEmployee_IdAndDay(dto.getIdEmployee(), dto.getDay());
+			if (exists) {
+				throw new RuntimeException("Nhân viên này đã có ca làm trong ngày " + dto.getDay());
+			}
+			
+			ShiftingEntity entity = new ShiftingEntity();
+			
+			entity.setDetails(dto.getDetails());
+			entity.setDay(dto.getDay());
+			entity.setEmployee(employee);
+			entity.setShift(shift);
 
-		entity.setEmployee(employee);
-		entity.setShift(shift);
-
-		ShiftingEntity saved = shiftingRepository.save(entity);
-		return converter.toResponseDTO(saved);
+			ShiftingEntity saved = shiftingRepository.save(entity);
+			return converter.toResponseDTO(saved);
+			
+		} catch (RuntimeException e) {
+	        throw e;
+	    } catch (Exception e) {
+	        throw new RuntimeException("Lỗi khi tạo ca làm: " + e.getMessage());
+	    }
 	}
 
 	@Override
@@ -152,6 +166,21 @@ public class ShiftingServiceImpl implements ShiftingService {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("day").descending());
 		Page<ShiftingEntity> result = shiftingRepository.findAll(pageable);
 		return result.map(converter::toResponseDTO);
+	}
+
+	@Override
+	public List<ShiftingResponseDTO> searchByDatetime(LocalDateTime datetime) {
+		LocalDate day = datetime.toLocalDate();
+		LocalTime time = datetime.toLocalTime();
+
+		ShiftEntity shift = shiftRepository.findShiftByTime(time);
+		if (shift == null) {
+			throw new RuntimeException("Không tìm thấy ca làm việc nào phù hợp với thời gian: " + time);
+		}
+
+		List<ShiftingEntity> shiftings = shiftingRepository.findAllByDayAndShift(day, shift);
+
+		return shiftings.stream().map(converter::toResponseDTO).collect(Collectors.toList());
 	}
 
 }

@@ -11,5 +11,5 @@ public interface RoomStatusService {
     RoomStatusResponse update(Integer id, RoomStatusRequest req);
     void delete(Integer id);
     RoomStatusResponse getById(Integer id);
-    Page<RoomStatusResponse> getAll(Pageable pageable, String keyword);
+    Page<RoomStatusResponse> getAll(Pageable pageable);
 }

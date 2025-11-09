@@ -1,6 +1,7 @@
 package com.javaweb.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -18,4 +19,5 @@ public interface ShiftingService {
     List<ShiftingResponseDTO> searchAll(Integer idEmployee, Integer idShift, LocalDate day);
     List<ShiftingResponseDTO> getAll();
     Page<ShiftingResponseDTO> getAllPaged(int page, int size);
+    List<ShiftingResponseDTO> searchByDatetime(LocalDateTime datetime);
 }

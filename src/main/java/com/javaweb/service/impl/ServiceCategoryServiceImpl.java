@@ -1,10 +1,14 @@
 package com.javaweb.service.impl;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -73,17 +77,50 @@ public class ServiceCategoryServiceImpl implements ServiceCategoryService {
 		return toResponse(entity);
 	}
 
+//	@Override
+//	public Page<ServiceCategoryResponse> getAll(Pageable pageable, String keyword) {
+//		Page<ServiceCategoryEntity> page = ((keyword == null || keyword.trim().isEmpty()))
+//                ? serviceCategoryRepository.findAll(pageable)
+//                : serviceCategoryRepository.findAll(pageable)
+//                  .map(e -> e); 
+//        return page.map(this::toResponse);
+//	}
+//
+//	private ServiceCategoryResponse toResponse(ServiceCategoryEntity e) {
+//		return new ServiceCategoryResponse(e.getId(), e.getName(), e.getDetails());
+//	}
+	
 	@Override
-	public Page<ServiceCategoryResponse> getAll(Pageable pageable, String keyword) {
-		Page<ServiceCategoryEntity> page = ((keyword == null || keyword.trim().isEmpty()))
-                ? serviceCategoryRepository.findAll(pageable)
-                : serviceCategoryRepository.findAll(pageable)
-                  .map(e -> e); 
-        return page.map(this::toResponse);
+	public Page<ServiceCategoryResponse> getAll(Pageable pageable) {
+	    try {
+	        // 🔹 Nếu không truyền pageable hoặc không phân trang → lấy toàn bộ
+	        if (pageable == null || pageable.isUnpaged()) {
+	            List<ServiceCategoryEntity> list = serviceCategoryRepository.findAll(Sort.by("id").ascending());
+
+	            List<ServiceCategoryResponse> dtos = list.stream()
+	                    .map(this::toResponse)
+	                    .collect(Collectors.toList());
+
+	            // Trả về PageImpl giả để thống nhất kiểu trả về
+	            return new PageImpl<>(dtos);
+	        }
+
+	        // 🔹 Nếu có pageable → phân trang bình thường
+	        Page<ServiceCategoryEntity> page = serviceCategoryRepository.findAll(pageable);
+	        return page.map(this::toResponse);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw new ResponseStatusException(
+	                HttpStatus.INTERNAL_SERVER_ERROR,
+	                "Lỗi khi lấy danh sách loại dịch vụ: " + e.getMessage()
+	        );
+	    }
 	}
 
 	private ServiceCategoryResponse toResponse(ServiceCategoryEntity e) {
-		return new ServiceCategoryResponse(e.getId(), e.getName(), e.getDetails());
+	    return new ServiceCategoryResponse(e.getId(), e.getName(), e.getDetails());
 	}
+
 
 }

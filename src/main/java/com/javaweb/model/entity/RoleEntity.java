@@ -17,7 +17,7 @@ public class RoleEntity {
     @Column(name = "details")
     private String details;
     
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     private List<AccountEntity> accountEntity;
 
 	public Integer getId() {

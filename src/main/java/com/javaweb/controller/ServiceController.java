@@ -62,8 +62,8 @@ public class ServiceController {
 	}
 
 	@GetMapping("/getAll")
-	public ResponseEntity<?> getAllServices(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<?> getAllServices(@RequestParam(required = false) Integer page,
+			@RequestParam(required = false) Integer size) {
 		try {
 			Map<String, Object> data = serviceService.getAllServices(page, size);
 			ApiResponse<Map<String, Object>> response = new ApiResponse<>(true, HttpStatus.OK.value(),
@@ -152,7 +152,7 @@ public class ServiceController {
 			@RequestParam(required = false) Float maxPrice, @RequestParam(required = false) Integer isAvaiable,
 			@RequestParam(required = false) String unit, @RequestParam(required = false) Integer quantity,
 			@RequestParam(required = false) Integer idHotel, @RequestParam(required = false) Integer idCategory,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
 
 		try {
 			Page<ServiceResponseDTO> result = serviceService.searchServices(name, details, minPrice, maxPrice,

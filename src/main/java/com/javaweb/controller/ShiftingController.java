@@ -1,6 +1,7 @@
 package com.javaweb.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.javaweb.model.dto.ShiftingDTO.ShiftingCreateDTO;
+import com.javaweb.model.dto.ShiftingDTO.ShiftingResponseDTO;
+import com.javaweb.model.dto.ShiftingDTO.ShiftingSearchByTimeRequestDTO;
 import com.javaweb.model.dto.ShiftingDTO.ShiftingUpdateDTO;
 import com.javaweb.model.response.ApiResponse;
 import com.javaweb.service.ShiftingService;
@@ -86,6 +89,18 @@ public class ShiftingController {
 
 		return ResponseEntity
 				.ok(new ApiResponse<>(true, 200, "Lấy danh sách phân ca thành công", result, "api/shiftings/getAll"));
+	}
+
+	@PostMapping("/search-by-datetime")
+	public ResponseEntity<?> searchByDatetime(@RequestBody ShiftingSearchByTimeRequestDTO request) {
+		try {
+			List<ShiftingResponseDTO> result = shiftingService.searchByDatetime(request.getDatetime());
+			return ResponseEntity.ok(new ApiResponse<>(true, 200, "Lấy danh sách phân ca thành công", result,
+					"api/shiftings/search-by-datetime"));
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, 404,
+					"Đã xảy ra lỗi: " + e.getMessage(), null, "api/shiftings/search-by-datetime"));
+		}
 	}
 
 }

@@ -37,7 +37,7 @@ public class ShiftController {
 				.body(new ApiResponse<>(true, 201, "Tạo ca làm thành công", response, "api/shifts/create"));
 	}
 
-	@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+	@PreAuthorize("hayRole('ADMIN')")
 	@GetMapping("/getAll")
 	public ResponseEntity<?> getAll(@RequestParam(required = false) Integer page,
 			@RequestParam(required = false) Integer size) {
@@ -46,7 +46,7 @@ public class ShiftController {
 				.ok(new ApiResponse<>(true, 200, "Lấy danh sách ca làm thành công", data, "api/shifts/getAll"));
 	}
 
-	@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+	@PreAuthorize("hayRole('ADMIN')")
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
 		ShiftResponseDTO dto = shiftService.getShiftById(id);
@@ -69,7 +69,7 @@ public class ShiftController {
 		return ResponseEntity.ok(new ApiResponse<>(true, 200, "Xóa ca làm thành công", null, "api/shifts/" + id));
 	}
 
-	@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+	@PreAuthorize("hayRole('ADMIN')")
 	@GetMapping("/search")
 	public ResponseEntity<?> searchShifts(@RequestParam(required = false) String name,
 			@RequestParam(required = false) String details, @RequestParam(required = false) Boolean isActive,
@@ -88,7 +88,7 @@ public class ShiftController {
 				.ok(new ApiResponse<>(true, 200, "Tìm kiếm ca làm thành công", result, "api/shifts/search"));
 	}
 
-	@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+	@PreAuthorize("hayRole('ADMIN')")
 	@PutMapping("/update-active/{id}")
 	public ResponseEntity<?> updateShiftActive(@PathVariable Integer id, @RequestParam Boolean isActive) {
 		ShiftResponseDTO res = shiftService.updateShiftActive(id, isActive);

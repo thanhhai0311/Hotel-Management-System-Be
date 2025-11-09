@@ -15,7 +15,7 @@ public interface AccountService {
     AccountEntity updateAccount(Integer id, AccountEntity account);
     void deleteAccount(Integer id);
     AccountEntity updateAccountRole(Integer accountId, Integer roleId);
-    Object getAllAccounts(int page, int size, String keyword);
+    Object getAllAccounts(Integer page, Integer size);
 	AccountDTO findById(Integer id);
 	UserResponseDTO updateUserByAdmin(Integer id, AdminUpdateUserDTO dto);
 

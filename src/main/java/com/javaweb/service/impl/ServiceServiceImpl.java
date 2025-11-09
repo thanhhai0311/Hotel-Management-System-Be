@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -111,12 +112,26 @@ public class ServiceServiceImpl implements ServiceService {
 	}
 
 	@Override
-	public Map<String, Object> getAllServices(int page, int size) {
+	public Map<String, Object> getAllServices(Integer page, Integer size) {
 		try {
+			List<ServiceResponseDTO> services;
+			// Nếu không truyền page và size (hoặc < 0) -> lấy tất cả
+			if (page == null || size == null || page < 0 || size < 0) {
+				List<ServiceEntity> allServices = serviceRepository.findAll(Sort.by("id").ascending());
+				services = allServices.stream().map(serviceConverter::toResponseDTO).collect(Collectors.toList());
+
+				Map<String, Object> response = new HashMap<>();
+				response.put("services", services);
+				response.put("totalItems", services.size());
+				response.put("totalPages", 1);
+				response.put("currentPage", 0);
+				return response;
+			}
+			
 			Pageable pageable = PageRequest.of(page, size);
 			Page<ServiceEntity> servicePage = serviceRepository.findAll(pageable);
 
-			List<ServiceResponseDTO> services = servicePage.getContent().stream().map(serviceConverter::toResponseDTO)
+			services = servicePage.getContent().stream().map(serviceConverter::toResponseDTO)
 					.collect(Collectors.toList());
 
 			Map<String, Object> response = new HashMap<>();
@@ -272,11 +287,11 @@ public class ServiceServiceImpl implements ServiceService {
 
 	@Override
 	public Page<ServiceResponseDTO> searchServices(String name, String details, Float minPrice, Float maxPrice,
-			Integer isAvaiable, String unit, Integer quantity, Integer idHotel, Integer idCategory, int page,
-			int size) {
+			Integer isAvaiable, String unit, Integer quantity, Integer idHotel, Integer idCategory, Integer page,
+			Integer size) {
 
 		try {
-			Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+//			Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
 
 			Specification<ServiceEntity> spec = (root, query, cb) -> {
 				List<Predicate> predicates = new ArrayList<>();
@@ -319,7 +334,14 @@ public class ServiceServiceImpl implements ServiceService {
 
 				return cb.and(predicates.toArray(new Predicate[0]));
 			};
+			
+			if (page == null || size == null || page < 0 || size < 0) {
+				List<ServiceEntity> list = serviceRepository.findAll(spec, Sort.by("id").ascending());
+				List<ServiceResponseDTO> dtos = list.stream().map(serviceConverter::toResponseDTO).collect(Collectors.toList());
+				return new PageImpl<>(dtos); // trả về Page giả (full data)
+			}
 
+			Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
 			Page<ServiceEntity> pageResult = serviceRepository.findAll(spec, pageable);
 			return pageResult.map(serviceConverter::toResponseDTO);
 

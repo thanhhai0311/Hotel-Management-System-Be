@@ -1,9 +1,13 @@
 package com.javaweb.service.impl;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -74,12 +78,33 @@ public class RoomStatusServiceImpl implements RoomStatusService {
     }
 
     @Override
-    public Page<RoomStatusResponse> getAll(Pageable pageable, String keyword) {
-        Page<RoomStatusEntity> page = ((keyword == null || keyword.trim().isEmpty()))
-                ? roomStatusRepository.findAll(pageable)
-                : roomStatusRepository.findAll(pageable);
-        return page.map(this::toResponse);
+    public Page<RoomStatusResponse> getAll(Pageable pageable) {
+        try {
+            // 🔹 Nếu không truyền pageable hoặc không phân trang → lấy toàn bộ
+            if (pageable == null || pageable.isUnpaged()) {
+                List<RoomStatusEntity> list = roomStatusRepository.findAll(Sort.by("id").ascending());
+
+                List<RoomStatusResponse> dtos = list.stream()
+                        .map(this::toResponse)
+                        .collect(Collectors.toList());
+
+                // Trả về PageImpl giả để thống nhất kiểu trả về
+                return new PageImpl<>(dtos);
+            }
+
+            // 🔹 Nếu có pageable → phân trang bình thường
+            Page<RoomStatusEntity> page = roomStatusRepository.findAll(pageable);
+            return page.map(this::toResponse);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Lỗi khi lấy danh sách trạng thái phòng: " + e.getMessage()
+            );
+        }
     }
+
 
     private RoomStatusResponse toResponse(RoomStatusEntity e) {
         return new RoomStatusResponse(e.getId(), e.getName(), e.getDetails());
