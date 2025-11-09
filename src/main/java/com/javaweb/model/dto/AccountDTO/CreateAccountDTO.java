@@ -13,35 +13,36 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 public class CreateAccountDTO {
 
-    // ==== ACCOUNT ====
-    @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không hợp lệ")
-    private String email;
+	// ==== ACCOUNT ====
+	@NotBlank(message = "Email không được để trống")
+	@Email(message = "Email không hợp lệ")
+	private String email;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
-    @Size(min = 6, max = 50, message = "Mật khẩu phải có từ 6 đến 50 ký tự")
-    private String password;
+	@NotBlank(message = "Mật khẩu không được để trống")
+	@Size(min = 6, max = 50, message = "Mật khẩu phải có từ 6 đến 50 ký tự")
+	private String password;
 
-    @NotNull(message = "ID Role là bắt buộc")
-    private Integer idRole;
+	@NotNull(message = "ID Role là bắt buộc")
+	private Integer idRole;
 
-
-    // ==== USER ====
+	// ==== USER ====
 //    @NotBlank(message = "Tên người dùng không được để trống")
-    private String name;
+	private String name;
 
-    @Pattern(regexp = "^(\\+84|0)[0-9]{9,10}$", message = "Số điện thoại không hợp lệ (VD: 0981234567 hoặc +84981234567)")
-    private String phone;
+	@Pattern(regexp = "^(\\+84|0)[0-9]{9,10}$", message = "Số điện thoại không hợp lệ (VD: 0981234567 hoặc +84981234567)")
+	private String phone;
+
+	private String identification;
 
 //    @NotBlank(message = "Giới tính không được để trống (Nam/Nữ)")
-    private String gender;
+	private String gender;
 
 //    @NotBlank(message = "Địa chỉ không được để trống")
-    private String address;
+	private String address;
 
-    @Past(message = "Ngày sinh phải nhỏ hơn ngày hiện tại")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dob;
+	@Past(message = "Ngày sinh phải nhỏ hơn ngày hiện tại")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate dob;
 
 	public String getEmail() {
 		return email;
@@ -106,6 +107,13 @@ public class CreateAccountDTO {
 	public void setDob(LocalDate dob) {
 		this.dob = dob;
 	}
-    
-    
+
+	public String getIdentification() {
+		return identification;
+	}
+
+	public void setIdentification(String identification) {
+		this.identification = identification;
+	}
+
 }

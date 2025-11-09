@@ -102,6 +102,7 @@ public class AccountServiceImpl implements AccountService {
         user.setAddress(dto.getAddress());
         user.setDob(dto.getDob());
         user.setAccount(account);
+        user.setIdentification(dto.getIdentification());
         
         userRepository.save(user);
         
