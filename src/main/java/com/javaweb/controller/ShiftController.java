@@ -73,7 +73,7 @@ public class ShiftController {
 	@GetMapping("/search")
 	public ResponseEntity<?> searchShifts(@RequestParam(required = false) String name,
 			@RequestParam(required = false) String details, @RequestParam(required = false) Boolean isActive,
-			@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
+			@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "50") Integer size) {
 
 		Object result;
 

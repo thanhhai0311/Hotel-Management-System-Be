@@ -90,12 +90,6 @@
 			<artifactId>cloudinary-http44</artifactId>
 			<version>1.37.0</version>
 		</dependency>
-
-		<dependency>
-			<groupId>com.thanhhai</groupId>
-			<artifactId>java-string-boot-non-jwt</artifactId>
-			<version>1.0</version>
-		</dependency>
 	</dependencies>
 
 
