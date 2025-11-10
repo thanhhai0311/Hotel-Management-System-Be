@@ -33,11 +33,11 @@ public class S3Service {
 
 	@PostConstruct
 	public void init() {
-		System.out.println("=== AWS CONFIG CHECK ===");
-		System.out.println("Bucket Name: " + bucketName);
-		System.out.println("Access Key: " + ACCESS_KEY);
-		System.out.println("Secret Key: " + SECRET_KEY);
-		System.out.println("========================");
+//		System.out.println("=== AWS CONFIG CHECK ===");
+//		System.out.println("Bucket Name: " + bucketName);
+//		System.out.println("Access Key: " + ACCESS_KEY);
+//		System.out.println("Secret Key: " + SECRET_KEY);
+//		System.out.println("========================");
 
 		AwsBasicCredentials awsCreds = AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY);
 		this.s3 = S3Client.builder().region(Region.AP_SOUTHEAST_1)
