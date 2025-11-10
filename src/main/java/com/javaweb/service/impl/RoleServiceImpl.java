@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.javaweb.converter.RoleConverter;
 import com.javaweb.model.dto.RoleDTO.RoleDTO;
+import com.javaweb.model.dto.RoleDTO.RoleResponseDTO;
 import com.javaweb.model.entity.AccountEntity;
 import com.javaweb.model.entity.RoleEntity;
 import com.javaweb.repository.AccountRepository;
@@ -30,33 +31,33 @@ public class RoleServiceImpl implements RoleService {
     private AccountRepository accountRepository;
 
     @Override
-    public RoleDTO createRole(RoleDTO dto) {
+    public RoleResponseDTO createRole(RoleDTO dto) {
     	if (roleRepository.existsByName(dto.getName())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, 
                     "Tên Role '" + dto.getName() + "' đã tồn tại. Vui lòng chọn tên khác.");
         }
         RoleEntity entity = roleConverter.toEntity(dto);
         RoleEntity savedEntity = roleRepository.save(entity);
-        return roleConverter.toDTO(savedEntity);
+        return roleConverter.toResponseDTO(savedEntity);
     }
 
     @Override
-    public List<RoleDTO> getAllRoles() {
+    public List<RoleResponseDTO> getAllRoles() {
         return roleRepository.findAll().stream()
-                .map(roleConverter::toDTO)
+                .map(roleConverter::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public RoleDTO getRoleById(Integer id) {
+    public RoleResponseDTO getRoleById(Integer id) {
         RoleEntity role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
                         "Không tìm thấy Role với ID = " + id));
-        return roleConverter.toDTO(role);
+        return roleConverter.toResponseDTO(role);
     }
 
     @Override
-    public RoleDTO updateRole(Integer id, RoleDTO dto) {
+    public RoleResponseDTO updateRole(Integer id, RoleDTO dto) {
         RoleEntity existingRole = roleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
                         "Không tìm thấy Role với ID = " + id));
@@ -71,7 +72,7 @@ public class RoleServiceImpl implements RoleService {
         RoleEntity updatedEntity = roleConverter.toEntity(existingRole, dto);
         
         RoleEntity savedEntity = roleRepository.save(updatedEntity);
-        return roleConverter.toDTO(savedEntity);
+        return roleConverter.toResponseDTO(savedEntity);
     }
 
 //    @Override

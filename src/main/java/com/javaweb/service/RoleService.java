@@ -3,16 +3,17 @@ package com.javaweb.service;
 import java.util.List;
 
 import com.javaweb.model.dto.RoleDTO.RoleDTO;
+import com.javaweb.model.dto.RoleDTO.RoleResponseDTO;
 
 public interface RoleService {
 
-	RoleDTO createRole(RoleDTO dto);
+	RoleResponseDTO createRole(RoleDTO dto);
 
-	List<RoleDTO> getAllRoles();
+	List<RoleResponseDTO> getAllRoles();
 
-	RoleDTO getRoleById(Integer id);
+	RoleResponseDTO getRoleById(Integer id);
 
-	RoleDTO updateRole(Integer id, RoleDTO dto);
+	RoleResponseDTO updateRole(Integer id, RoleDTO dto);
 
 	void deleteRole(Integer id);
 }

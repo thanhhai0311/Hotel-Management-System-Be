@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.javaweb.model.dto.RoleDTO.RoleDTO;
+import com.javaweb.model.dto.RoleDTO.RoleResponseDTO;
 import com.javaweb.model.response.ApiResponse;
 import com.javaweb.service.RoleService;
 
@@ -29,10 +30,10 @@ public class RoleController {
 	private RoleService roleService;
 
 	@PostMapping
-	public ResponseEntity<ApiResponse<RoleDTO>> createRole(@RequestBody RoleDTO dto) {
+	public ResponseEntity<ApiResponse<RoleResponseDTO>> createRole(@RequestBody RoleDTO dto) {
 		try {
-			RoleDTO response = roleService.createRole(dto);
-			ApiResponse<RoleDTO> res = new ApiResponse<>(true, HttpStatus.CREATED.value(), "Tạo Role thành công",
+			RoleResponseDTO response = roleService.createRole(dto);
+			ApiResponse<RoleResponseDTO> res = new ApiResponse<>(true, HttpStatus.CREATED.value(), "Tạo Role thành công",
 					response, "/api/roles");
 			return ResponseEntity.status(HttpStatus.CREATED).body(res);
 		} catch (Exception e) {
@@ -44,19 +45,19 @@ public class RoleController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<RoleDTO>>> getAllRoles() {
-		List<RoleDTO> roles = roleService.getAllRoles();
-		ApiResponse<List<RoleDTO>> res = new ApiResponse<>(true, HttpStatus.OK.value(), "Lấy danh sách Role thành công",
+	public ResponseEntity<ApiResponse<List<RoleResponseDTO>>> getAllRoles() {
+		List<RoleResponseDTO> roles = roleService.getAllRoles();
+		ApiResponse<List<RoleResponseDTO>> res = new ApiResponse<>(true, HttpStatus.OK.value(), "Lấy danh sách Role thành công",
 				roles, "/api/roles");
 		return ResponseEntity.ok(res);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ApiResponse<RoleDTO>> getRoleById(@PathVariable Integer id) {
+	public ResponseEntity<ApiResponse<RoleResponseDTO>> getRoleById(@PathVariable Integer id) {
 		// Dùng try-catch để bắt ResponseStatusException từ Service
 		try {
-			RoleDTO role = roleService.getRoleById(id);
-			ApiResponse<RoleDTO> res = new ApiResponse<>(true, HttpStatus.OK.value(), "Lấy thông tin Role thành công",
+			RoleResponseDTO role = roleService.getRoleById(id);
+			ApiResponse<RoleResponseDTO> res = new ApiResponse<>(true, HttpStatus.OK.value(), "Lấy thông tin Role thành công",
 					role, "/api/roles/" + id);
 			return ResponseEntity.ok(res);
 		} catch (ResponseStatusException e) {
@@ -66,10 +67,10 @@ public class RoleController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<ApiResponse<RoleDTO>> updateRole(@PathVariable Integer id, @RequestBody RoleDTO dto) {
+	public ResponseEntity<ApiResponse<RoleResponseDTO>> updateRole(@PathVariable Integer id, @RequestBody RoleDTO dto) {
 		try {
-			RoleDTO updatedRole = roleService.updateRole(id, dto);
-			ApiResponse<RoleDTO> res = new ApiResponse<>(true, HttpStatus.OK.value(), "Cập nhật Role thành công",
+			RoleResponseDTO updatedRole = roleService.updateRole(id, dto);
+			ApiResponse<RoleResponseDTO> res = new ApiResponse<>(true, HttpStatus.OK.value(), "Cập nhật Role thành công",
 					updatedRole, "/api/roles/" + id);
 			return ResponseEntity.ok(res);
 		} catch (ResponseStatusException e) {

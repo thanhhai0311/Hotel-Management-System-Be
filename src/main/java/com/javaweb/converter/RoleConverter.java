@@ -3,6 +3,7 @@ package com.javaweb.converter;
 import org.springframework.stereotype.Component;
 
 import com.javaweb.model.dto.RoleDTO.RoleDTO;
+import com.javaweb.model.dto.RoleDTO.RoleResponseDTO;
 import com.javaweb.model.entity.RoleEntity;
 
 @Component
@@ -10,6 +11,14 @@ public class RoleConverter {
 
 	public RoleDTO toDTO(RoleEntity entity) {
 		RoleDTO dto = new RoleDTO();
+		dto.setName(entity.getName());
+		dto.setDetails(entity.getDetails());
+		return dto;
+	}
+	
+	public RoleResponseDTO toResponseDTO(RoleEntity entity) {
+		RoleResponseDTO dto = new RoleResponseDTO();
+		dto.setId(entity.getId());
 		dto.setName(entity.getName());
 		dto.setDetails(entity.getDetails());
 		return dto;
