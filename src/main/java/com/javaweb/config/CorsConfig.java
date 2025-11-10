@@ -13,7 +13,7 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
+                registry.addMapping("/api/**")
                         .allowedOrigins(
                             "http://localhost:5173",
                             "https://hotel-management-fe.vercel.app",
@@ -21,7 +21,8 @@ public class CorsConfig {
                             "http://localhost",           // Flutter debug trên Android
                             "https://hotel-management-system-be-1.onrender.com"
                         )
-                        .allowedMethods("*")
+//                        .allowedMethods("*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .exposedHeaders("Authorization", "Content-Type")
                         .allowCredentials(true);
