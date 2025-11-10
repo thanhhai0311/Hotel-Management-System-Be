@@ -18,8 +18,7 @@ public class CorsConfig {
                             "http://localhost:5173",
                             "https://hotel-management-fe.vercel.app",
                             "capacitor://localhost",     // Flutter trên iOS (Capacitor)
-                            "http://localhost",           // Flutter debug trên Android
-                            "https://hotel-management-system-be-1.onrender.com"
+                            "http://localhost"           // Flutter debug trên Android
                         )
 //                        .allowedMethods("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
