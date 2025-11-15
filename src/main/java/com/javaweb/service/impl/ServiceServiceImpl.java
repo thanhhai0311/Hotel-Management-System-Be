@@ -23,9 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.javaweb.converter.ServiceConverter;
-import com.javaweb.model.dto.ServiceCategoryDTO.ServiceUpdateDTO;
 import com.javaweb.model.dto.ServiceDTO.ServiceCreateDTO;
 import com.javaweb.model.dto.ServiceDTO.ServiceResponseDTO;
+import com.javaweb.model.dto.ServiceDTO.ServiceUpdateDTO;
 import com.javaweb.model.entity.HotelEntity;
 import com.javaweb.model.entity.ServiceCategoryEntity;
 import com.javaweb.model.entity.ServiceEntity;
@@ -68,7 +68,7 @@ public class ServiceServiceImpl implements ServiceService {
 			service.setPrice(dto.getPrice());
 			service.setIsAvaiable(dto.getIsAvaiable());
 			service.setUnit(dto.getUnit());
-			service.setQuantity(dto.getQuantity());
+//			service.setQuantity(dto.getQuantity());
 
 			// Liên kết hotel
 			HotelEntity hotel = hotelRepository.findById(dto.getIdHotel())
@@ -180,8 +180,8 @@ public class ServiceServiceImpl implements ServiceService {
 				service.setIsAvaiable(dto.getIsAvaiable());
 			if (dto.getUnit() != null)
 				service.setUnit(dto.getUnit());
-			if (dto.getQuantity() != null)
-				service.setQuantity(dto.getQuantity());
+//			if (dto.getQuantity() != null)
+//				service.setQuantity(dto.getQuantity());
 
 			// Cập nhật quan hệ Hotel
 			if (dto.getIdHotel() != null) {
@@ -287,7 +287,7 @@ public class ServiceServiceImpl implements ServiceService {
 
 	@Override
 	public Page<ServiceResponseDTO> searchServices(String name, String details, Float minPrice, Float maxPrice,
-			Integer isAvaiable, String unit, Integer quantity, Integer idHotel, Integer idCategory, Integer page,
+			Integer isAvaiable, String unit, Integer idHotel, Integer idCategory, Integer page,
 			Integer size) {
 
 		try {
@@ -320,9 +320,9 @@ public class ServiceServiceImpl implements ServiceService {
 					predicates.add(cb.like(cb.lower(root.get("unit")), "%" + unit.toLowerCase() + "%"));
 				}
 
-				if (quantity != null) {
-					predicates.add(cb.equal(root.get("quantity"), quantity));
-				}
+//				if (quantity != null) {
+//					predicates.add(cb.equal(root.get("quantity"), quantity));
+//				}
 
 				if (idHotel != null) {
 					predicates.add(cb.equal(root.get("hotel").get("id"), idHotel));

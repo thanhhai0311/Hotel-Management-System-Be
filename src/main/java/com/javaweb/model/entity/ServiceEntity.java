@@ -15,7 +15,7 @@ public class ServiceEntity {
     private Float price;
     private Integer isAvaiable;
     private String unit;
-    private Integer quantity;
+//    private Integer quantity;
 
     @ManyToOne
     @JoinColumn(name = "idServiceCategory")
@@ -77,14 +77,6 @@ public class ServiceEntity {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
-	}
-
-	public Integer getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
 	}
 
 	public ServiceCategoryEntity getServiceCategory() {

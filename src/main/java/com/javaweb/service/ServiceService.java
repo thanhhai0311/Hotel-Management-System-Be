@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 
-import com.javaweb.model.dto.ServiceCategoryDTO.ServiceUpdateDTO;
 import com.javaweb.model.dto.ServiceDTO.ServiceCreateDTO;
 import com.javaweb.model.dto.ServiceDTO.ServiceResponseDTO;
+import com.javaweb.model.dto.ServiceDTO.ServiceUpdateDTO;
 
 public interface ServiceService {
 	ServiceResponseDTO createService(ServiceCreateDTO dto) throws IOException;
@@ -21,5 +21,5 @@ public interface ServiceService {
 	void deleteService(Integer id);
 
 	Page<ServiceResponseDTO> searchServices(String name, String details, Float minPrice, Float maxPrice,
-			Integer isAvaiable, String unit, Integer quantity, Integer idHotel, Integer idCategory, Integer page, Integer size);
+			Integer isAvaiable, String unit, Integer idHotel, Integer idCategory, Integer page, Integer size);
 }

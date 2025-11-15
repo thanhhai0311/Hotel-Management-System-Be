@@ -9,7 +9,7 @@ public class ServiceResponseDTO {
     private Float price;
     private Integer isAvaiable;
     private String unit;
-    private Integer quantity;
+//    private Integer quantity;
 
     private Integer hotelId;
     private String hotelName;
@@ -65,14 +65,6 @@ public class ServiceResponseDTO {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
-	}
-
-	public Integer getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
 	}
 
 	public Integer getHotelId() {

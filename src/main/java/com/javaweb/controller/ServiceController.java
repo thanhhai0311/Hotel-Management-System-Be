@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.javaweb.model.dto.ServiceCategoryDTO.ServiceUpdateDTO;
 import com.javaweb.model.dto.ServiceDTO.ServiceCreateDTO;
 import com.javaweb.model.dto.ServiceDTO.ServiceResponseDTO;
+import com.javaweb.model.dto.ServiceDTO.ServiceUpdateDTO;
 import com.javaweb.model.response.ApiResponse;
 import com.javaweb.service.ServiceService;
 
@@ -150,13 +150,13 @@ public class ServiceController {
 	public ResponseEntity<?> searchServices(@RequestParam(required = false) String name,
 			@RequestParam(required = false) String details, @RequestParam(required = false) Float minPrice,
 			@RequestParam(required = false) Float maxPrice, @RequestParam(required = false) Integer isAvaiable,
-			@RequestParam(required = false) String unit, @RequestParam(required = false) Integer quantity,
-			@RequestParam(required = false) Integer idHotel, @RequestParam(required = false) Integer idCategory,
-			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+			@RequestParam(required = false) String unit, @RequestParam(required = false) Integer idHotel,
+			@RequestParam(required = false) Integer idCategory, @RequestParam(required = false) Integer page,
+			@RequestParam(required = false) Integer size) {
 
 		try {
 			Page<ServiceResponseDTO> result = serviceService.searchServices(name, details, minPrice, maxPrice,
-					isAvaiable, unit, quantity, idHotel, idCategory, page, size);
+					isAvaiable, unit, idHotel, idCategory, page, size);
 
 			ApiResponse<Page<ServiceResponseDTO>> response = new ApiResponse<>(true, HttpStatus.OK.value(),
 					"Tìm kiếm dịch vụ thành công", result, "api/services/search");

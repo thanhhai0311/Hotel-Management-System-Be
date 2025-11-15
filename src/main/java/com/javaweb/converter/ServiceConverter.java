@@ -18,7 +18,7 @@ public class ServiceConverter {
         dto.setPrice(entity.getPrice());
         dto.setIsAvaiable(entity.getIsAvaiable());
         dto.setUnit(entity.getUnit());
-        dto.setQuantity(entity.getQuantity());
+//        dto.setQuantity(entity.getQuantity());
 
         if (entity.getHotel() != null) {
             dto.setHotelId(entity.getHotel().getId());

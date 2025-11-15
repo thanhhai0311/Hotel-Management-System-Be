@@ -110,76 +110,76 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/account/**").hasRole("ADMIN")
 
                 // ========== ROOM TYPES ==========
-                .antMatchers(HttpMethod.GET, "/api/roomtypes/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/roomtypes/create").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/roomtypes/update/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/roomtypes/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/roomtypes/**").permitAll()
 
                 // ========== SERVICES ==========
-                .antMatchers(HttpMethod.GET, "/api/services/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/services/create").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/services/update/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/services/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/services/**").permitAll()
 
                 // ========== SERVICE CATEGORY ==========
-                .antMatchers(HttpMethod.GET, "/api/service-category/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/service-category/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/service-category/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/service-category/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/service-category/**").permitAll()
 
                 // ========== ROOM STATUS ==========
-                .antMatchers(HttpMethod.GET, "/api/room-statuses/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/room-statuses/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/room-statuses/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/room-statuses/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/room-statuses/**").permitAll()
                 
                 // ========== ROOM ==========
-                .antMatchers("/api/rooms/getAll", "/api/rooms/search", "/api/rooms/**").permitAll()
                 .antMatchers("/api/rooms/create", "/api/rooms/update/**", "/api/rooms/delete/**", "/api/rooms/{id}").hasRole("ADMIN")
-
+                .antMatchers("/api/rooms/getAll", "/api/rooms/search", "/api/rooms/**").permitAll()
+                
 			    // ========== PROMOTION ==========
-                .antMatchers(HttpMethod.GET, "/api/promotions/getAll", "/api/promotions/search", "/api/promotions/{id}").permitAll()
 			    .antMatchers(HttpMethod.POST, "/api/promotions/create").hasRole("ADMIN")
 			    .antMatchers(HttpMethod.PUT, "/api/promotions/update/**").hasRole("ADMIN")
 			    .antMatchers(HttpMethod.DELETE, "/api/promotions/delete/**").hasRole("ADMIN")
 			    .antMatchers(HttpMethod.PUT, "/api/promotions/update-status/**").hasRole("ADMIN")
+			    .antMatchers(HttpMethod.GET, "/api/promotions/getAll", "/api/promotions/search", "/api/promotions/{id}").permitAll()
 			    
 			    // ========== ROOM PROMOTION ==========
-			    .antMatchers(HttpMethod.GET, "/api/room-promotions/**").permitAll()
 			    .antMatchers(HttpMethod.POST, "/api/room-promotions/create").hasRole("ADMIN")
 			    .antMatchers(HttpMethod.PUT, "/api/room-promotions/update/**").hasRole("ADMIN")
 			    .antMatchers(HttpMethod.DELETE, "/api/room-promotions/delete/**").hasRole("ADMIN")
+			    .antMatchers(HttpMethod.GET, "/api/room-promotions/**").permitAll()
 			    
 			    // ========== REVIEW ==========
+			    .antMatchers(HttpMethod.POST, "/api/reviews/create").hasAnyRole("CUSTOMER", "ADMIN") // tạo review
+			    .antMatchers(HttpMethod.PUT, "/api/reviews/update/**").hasAnyRole("CUSTOMER", "ADMIN") // cập nhật review
+			    .antMatchers(HttpMethod.DELETE, "/api/reviews/**").hasAnyRole("CUSTOMER", "ADMIN") // xóa review
 			    .antMatchers(HttpMethod.GET, 
 			            "/api/reviews/getAll",
 			            "/api/reviews/search",
 			            "/api/reviews/{id}",
 			            "/api/reviews/**"
 			    ).permitAll() // ai cũng có thể xem review
-			    .antMatchers(HttpMethod.POST, "/api/reviews/create").hasAnyRole("CUSTOMER", "ADMIN") // tạo review
-			    .antMatchers(HttpMethod.PUT, "/api/reviews/update/**").hasAnyRole("CUSTOMER", "ADMIN") // cập nhật review
-			    .antMatchers(HttpMethod.DELETE, "/api/reviews/**").hasAnyRole("CUSTOMER", "ADMIN") // xóa review
 			    
 			    // ========== REVIEW IMAGE ==========
-			    .antMatchers(HttpMethod.GET, "/api/review-images/**").permitAll() // ai cũng có thể xem ảnh review
 			    .antMatchers(HttpMethod.DELETE, "/api/review-images/deleteBySrc").hasAnyRole("CUSTOMER", "ADMIN") // xóa ảnh theo src
 			    .antMatchers(HttpMethod.POST, "/api/review-images/**").hasAnyRole("CUSTOMER", "ADMIN") // upload ảnh (nếu sau này thêm)
+			    .antMatchers(HttpMethod.GET, "/api/review-images/**").permitAll() // ai cũng có thể xem ảnh review
 			    
 			    // ========= ROOM IMAGES =========
-                .antMatchers(HttpMethod.GET, "/api/room-images/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/api/room-images/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/room-images/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/room-images/**").permitAll()
                 
                 // ========= SERVICE IMAGES =========
-                .antMatchers(HttpMethod.GET, "/api/service-images/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/service-images/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/service-images/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/service-images/**").permitAll()
                 
                 // ========= ROOM TYPE IMAGES =========
-                .antMatchers(HttpMethod.GET, "/api/room-type-images/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/room-type-images/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/room-type-images/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/room-type-images/**").permitAll()
                 
                 // ========== SHIFT ==========
                 .antMatchers(HttpMethod.GET, "/api/shifts/**").hasAnyRole("ADMIN", "STAFF")

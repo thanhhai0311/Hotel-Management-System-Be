@@ -9,7 +9,7 @@ public class ServiceCreateDTO {
     private Float price;
     private Integer isAvaiable;
     private String unit;
-    private Integer quantity;
+//    private Integer quantity;
 
     private Integer idHotel;
     private Integer idCategory;
@@ -54,14 +54,6 @@ public class ServiceCreateDTO {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
-	}
-
-	public Integer getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
 	}
 
 	public Integer getIdHotel() {
