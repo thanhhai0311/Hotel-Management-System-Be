@@ -1,14 +1,5 @@
 package com.javaweb.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.javaweb.converter.RoleConverter;
 import com.javaweb.model.dto.RoleDTO.RoleDTO;
 import com.javaweb.model.dto.RoleDTO.RoleResponseDTO;
@@ -17,23 +8,31 @@ import com.javaweb.model.entity.RoleEntity;
 import com.javaweb.repository.AccountRepository;
 import com.javaweb.repository.RoleRepository;
 import com.javaweb.service.RoleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleRepository roleRepository;
-    
+
     @Autowired
     private RoleConverter roleConverter;
-    
+
     @Autowired
     private AccountRepository accountRepository;
 
     @Override
     public RoleResponseDTO createRole(RoleDTO dto) {
-    	if (roleRepository.existsByName(dto.getName())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+        if (roleRepository.existsByName(dto.getName())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Tên Role '" + dto.getName() + "' đã tồn tại. Vui lòng chọn tên khác.");
         }
         RoleEntity entity = roleConverter.toEntity(dto);
@@ -51,7 +50,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleResponseDTO getRoleById(Integer id) {
         RoleEntity role = roleRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Không tìm thấy Role với ID = " + id));
         return roleConverter.toResponseDTO(role);
     }
@@ -59,18 +58,18 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleResponseDTO updateRole(Integer id, RoleDTO dto) {
         RoleEntity existingRole = roleRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Không tìm thấy Role với ID = " + id));
 
         if (dto.getName() != null && !dto.getName().equals(existingRole.getName())) {
             if (roleRepository.existsByName(dto.getName())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, 
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "Tên Role '" + dto.getName() + "' đã tồn tại cho một Role khác.");
             }
         }
-        
+
         RoleEntity updatedEntity = roleConverter.toEntity(existingRole, dto);
-        
+
         RoleEntity savedEntity = roleRepository.save(updatedEntity);
         return roleConverter.toResponseDTO(savedEntity);
     }
@@ -88,21 +87,22 @@ public class RoleServiceImpl implements RoleService {
 //        
 //        roleRepository.delete(role);
 //    }
-    
+
     @Override
     @Transactional
     public void deleteRole(Integer id) {
         RoleEntity role = roleRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Không tìm thấy Role với ID = " + id));
 
         List<AccountEntity> accountsToUpdate = role.getAccountEntity();
 
         if (accountsToUpdate != null && !accountsToUpdate.isEmpty()) {
-            for (AccountEntity account : accountsToUpdate) {
-                account.setRole(null); 
-            }
-            accountRepository.saveAll(accountsToUpdate);
+//            for (AccountEntity account : accountsToUpdate) {
+//                account.setRole(null);
+//            }
+//            accountRepository.saveAll(accountsToUpdate);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Không thể xoá vì Role đang được sử dụng.");
         }
         roleRepository.delete(role);
     }

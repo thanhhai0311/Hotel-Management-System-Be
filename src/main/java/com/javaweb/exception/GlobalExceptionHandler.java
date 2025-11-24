@@ -1,19 +1,21 @@
 package com.javaweb.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
+import com.javaweb.model.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.javaweb.model.response.ApiResponse;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -111,5 +113,66 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIllegalArgumentException(
+            IllegalArgumentException ex,
+            HttpServletRequest request) {
+
+        ApiResponse<Object> response = new ApiResponse<>(
+                false,
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(), // Lấy đúng câu thông báo bạn viết trong Service
+                null,
+                request.getRequestURI()
+        );
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMaxUploadSizeException(
+            MaxUploadSizeExceededException ex,
+            HttpServletRequest request) {
+
+        ApiResponse<Object> response = new ApiResponse<>(
+                false,
+                HttpStatus.PAYLOAD_TOO_LARGE.value(), // Trả về code 413
+                "File tải lên quá lớn! Vui lòng kiểm tra giới hạn dung lượng.",
+                null,
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(response);
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ApiResponse<Object>> handleBindException(
+            BindException ex,
+            HttpServletRequest request) {
+
+        String errorMessage = "Dữ liệu gửi lên không hợp lệ";
+
+        if (ex.getBindingResult().hasErrors()) {
+            FieldError error = ex.getBindingResult().getFieldError();
+
+            if (error != null) {
+                // KIỂM TRA MÃ LỖI: Nếu là lỗi sai kiểu dữ liệu (typeMismatch)
+                if ("typeMismatch".equals(error.getCode())) {
+                    errorMessage = "Định dạng dữ liệu không đúng cho trường: '" + error.getField() + "'. Vui lòng kiểm tra lại (Ví dụ: Bạn đang gửi Text vào trường yêu cầu File).";
+                } else {
+                    // Các lỗi khác thì lấy message mặc định
+                    errorMessage = error.getDefaultMessage();
+                }
+            }
+        }
+
+        ApiResponse<Object> response = new ApiResponse<>(
+                false,
+                HttpStatus.BAD_REQUEST.value(),
+                errorMessage,
+                null,
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

@@ -1,22 +1,29 @@
 package com.javaweb.service.impl;
 
-import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.persistence.criteria.Predicate;
-
+import com.javaweb.converter.ShiftConverter;
+import com.javaweb.model.dto.ShiftDTO.ShiftCreateDTO;
+import com.javaweb.model.dto.ShiftDTO.ShiftResponseDTO;
+import com.javaweb.model.dto.ShiftDTO.ShiftUpdateDTO;
+import com.javaweb.model.entity.ShiftEntity;
+import com.javaweb.repository.ShiftRepository;
+import com.javaweb.service.ShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.javaweb.converter.ShiftConverter;
-import com.javaweb.model.dto.ShiftDTO.*;
-import com.javaweb.model.entity.ShiftEntity;
-import com.javaweb.repository.ShiftRepository;
-import com.javaweb.service.ShiftService;
+import javax.persistence.criteria.Predicate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ShiftServiceImpl implements ShiftService {
@@ -57,6 +64,12 @@ public class ShiftServiceImpl implements ShiftService {
     public void deleteShift(Integer id) {
         ShiftEntity entity = shiftRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy ca làm có ID = " + id));
+        if (!entity.getShiftings().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Không thể xoá ca làm vì ca làm đang được sử dụng"
+            );
+        }
         shiftRepository.delete(entity);
     }
 
@@ -108,7 +121,7 @@ public class ShiftServiceImpl implements ShiftService {
         };
         return shiftRepository.findAll(spec, pageable).map(shiftConverter::toResponseDTO);
     }
-    
+
     @Override
     public List<ShiftResponseDTO> searchAllShifts(String name, String details, Boolean isActive) {
         Specification<ShiftEntity> spec = (root, query, cb) -> {
@@ -130,7 +143,7 @@ public class ShiftServiceImpl implements ShiftService {
         List<ShiftEntity> shifts = shiftRepository.findAll(spec, Sort.by("id").ascending());
         return shifts.stream().map(shiftConverter::toResponseDTO).collect(Collectors.toList());
     }
-    
+
     @Override
     public ShiftResponseDTO updateShiftActive(Integer id, Boolean isActive) {
         ShiftEntity entity = shiftRepository.findById(id)

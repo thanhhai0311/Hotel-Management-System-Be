@@ -1,9 +1,10 @@
 package com.javaweb.service.impl;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
+import com.javaweb.model.dto.RoomStatusDTO.RoomStatusRequest;
+import com.javaweb.model.dto.RoomStatusDTO.RoomStatusResponse;
+import com.javaweb.model.entity.RoomStatusEntity;
+import com.javaweb.repository.RoomStatusRepository;
+import com.javaweb.service.RoomStatusService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -12,11 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.javaweb.model.dto.RoomStatusDTO.RoomStatusRequest;
-import com.javaweb.model.dto.RoomStatusDTO.RoomStatusResponse;
-import com.javaweb.model.entity.RoomStatusEntity;
-import com.javaweb.repository.RoomStatusRepository;
-import com.javaweb.service.RoomStatusService;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class RoomStatusServiceImpl implements RoomStatusService {
@@ -63,9 +62,9 @@ public class RoomStatusServiceImpl implements RoomStatusService {
         RoomStatusEntity entity = roomStatusRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy trạng thái"));
 
-         if (entity.getRooms() != null && !entity.getRooms().isEmpty()) {
-             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Không thể xóa: Trạng thái đang được sử dụng");
-         }
+        if (entity.getRooms() != null && !entity.getRooms().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Không thể xóa: Trạng thái phòng đang được sử dụng");
+        }
 
         roomStatusRepository.delete(entity);
     }
