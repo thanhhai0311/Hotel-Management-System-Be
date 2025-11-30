@@ -15,16 +15,18 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
                         .allowedOrigins(
-                            "http://localhost:5173",
-                            "https://hotel-management-fe.vercel.app",
-                            "capacitor://localhost",     // Flutter trên iOS (Capacitor)
-                            "http://localhost"           // Flutter debug trên Android
+                                "http://localhost:5173",
+                                "https://hotel-management-fe.vercel.app",
+                                "capacitor://localhost",     // Flutter trên iOS (Capacitor)
+                                "http://localhost",           // Flutter debug trên Android
+                                "https://hotel-management-system-ruddy-zeta.vercel.app"
                         )
 //                        .allowedMethods("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("Authorization","Content-Type","Accept","Origin","X-Requested-With")
+                        .allowedHeaders("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With")
                         .exposedHeaders("Authorization", "Content-Type")
-                        .allowCredentials(true);
+                        .allowCredentials(true)
+                        .maxAge(3600);
             }
         };
     }
