@@ -1,21 +1,13 @@
 package com.javaweb.model.entity;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "roomtype")
 public class RoomTypeEntity {
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -50,165 +42,173 @@ public class RoomTypeEntity {
     private Boolean isSafetyFeatures = false;
 
     private Boolean isSmoking = false;
-    
+
     @Column(nullable = false)
     private Boolean isDeleted = false;
-    
+
     @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TypeImageEntity> typeImages = new ArrayList<>();
 
-	public Integer getId() {
-		return id;
-	}
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomEntity> rooms = new ArrayList<>();
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getDetails() {
-		return details;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDetails(String details) {
-		this.details = details;
-	}
+    public String getDetails() {
+        return details;
+    }
 
-	public Integer getBedCount() {
-		return bedCount;
-	}
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
-	public void setBedCount(Integer bedCount) {
-		this.bedCount = bedCount;
-	}
+    public Integer getBedCount() {
+        return bedCount;
+    }
 
-	public Integer getMaxOccupancy() {
-		return maxOccupancy;
-	}
+    public void setBedCount(Integer bedCount) {
+        this.bedCount = bedCount;
+    }
 
-	public void setMaxOccupancy(Integer maxOccupancy) {
-		this.maxOccupancy = maxOccupancy;
-	}
+    public Integer getMaxOccupancy() {
+        return maxOccupancy;
+    }
 
-	public Float getPrice() {
-		return price;
-	}
+    public void setMaxOccupancy(Integer maxOccupancy) {
+        this.maxOccupancy = maxOccupancy;
+    }
 
-	public void setPrice(Float price) {
-		this.price = price;
-	}
+    public Float getPrice() {
+        return price;
+    }
 
-	public Float getArea() {
-		return area;
-	}
+    public void setPrice(Float price) {
+        this.price = price;
+    }
 
-	public void setArea(Float area) {
-		this.area = area;
-	}
+    public Float getArea() {
+        return area;
+    }
 
-	public Boolean getIsPrivateBathroom() {
-		return isPrivateBathroom;
-	}
+    public void setArea(Float area) {
+        this.area = area;
+    }
 
-	public void setIsPrivateBathroom(Boolean isPrivateBathroom) {
-		this.isPrivateBathroom = isPrivateBathroom;
-	}
+    public Boolean getIsPrivateBathroom() {
+        return isPrivateBathroom;
+    }
 
-	public Boolean getIsFreeToiletries() {
-		return isFreeToiletries;
-	}
+    public void setIsPrivateBathroom(Boolean isPrivateBathroom) {
+        this.isPrivateBathroom = isPrivateBathroom;
+    }
 
-	public void setIsFreeToiletries(Boolean isFreeToiletries) {
-		this.isFreeToiletries = isFreeToiletries;
-	}
+    public Boolean getIsFreeToiletries() {
+        return isFreeToiletries;
+    }
 
-	public Boolean getIsAirConditioning() {
-		return isAirConditioning;
-	}
+    public void setIsFreeToiletries(Boolean isFreeToiletries) {
+        this.isFreeToiletries = isFreeToiletries;
+    }
 
-	public void setIsAirConditioning(Boolean isAirConditioning) {
-		this.isAirConditioning = isAirConditioning;
-	}
+    public Boolean getIsAirConditioning() {
+        return isAirConditioning;
+    }
 
-	public Boolean getIsSoundproofing() {
-		return isSoundproofing;
-	}
+    public void setIsAirConditioning(Boolean isAirConditioning) {
+        this.isAirConditioning = isAirConditioning;
+    }
 
-	public void setIsSoundproofing(Boolean isSoundproofing) {
-		this.isSoundproofing = isSoundproofing;
-	}
+    public Boolean getIsSoundproofing() {
+        return isSoundproofing;
+    }
 
-	public Boolean getIsTV() {
-		return isTV;
-	}
+    public void setIsSoundproofing(Boolean isSoundproofing) {
+        this.isSoundproofing = isSoundproofing;
+    }
 
-	public void setIsTV(Boolean isTV) {
-		this.isTV = isTV;
-	}
+    public Boolean getIsTV() {
+        return isTV;
+    }
 
-	public Boolean getIsMiniBar() {
-		return isMiniBar;
-	}
+    public void setIsTV(Boolean isTV) {
+        this.isTV = isTV;
+    }
 
-	public void setIsMiniBar(Boolean isMiniBar) {
-		this.isMiniBar = isMiniBar;
-	}
+    public Boolean getIsMiniBar() {
+        return isMiniBar;
+    }
 
-	public Boolean getIsWorkDesk() {
-		return isWorkDesk;
-	}
+    public void setIsMiniBar(Boolean isMiniBar) {
+        this.isMiniBar = isMiniBar;
+    }
 
-	public void setIsWorkDesk(Boolean isWorkDesk) {
-		this.isWorkDesk = isWorkDesk;
-	}
+    public Boolean getIsWorkDesk() {
+        return isWorkDesk;
+    }
 
-	public Boolean getIsSeatingArea() {
-		return isSeatingArea;
-	}
+    public void setIsWorkDesk(Boolean isWorkDesk) {
+        this.isWorkDesk = isWorkDesk;
+    }
 
-	public void setIsSeatingArea(Boolean isSeatingArea) {
-		this.isSeatingArea = isSeatingArea;
-	}
+    public Boolean getIsSeatingArea() {
+        return isSeatingArea;
+    }
 
-	public Boolean getIsSafetyFeatures() {
-		return isSafetyFeatures;
-	}
+    public void setIsSeatingArea(Boolean isSeatingArea) {
+        this.isSeatingArea = isSeatingArea;
+    }
 
-	public void setIsSafetyFeatures(Boolean isSafetyFeatures) {
-		this.isSafetyFeatures = isSafetyFeatures;
-	}
+    public Boolean getIsSafetyFeatures() {
+        return isSafetyFeatures;
+    }
 
-	public Boolean getIsSmoking() {
-		return isSmoking;
-	}
+    public void setIsSafetyFeatures(Boolean isSafetyFeatures) {
+        this.isSafetyFeatures = isSafetyFeatures;
+    }
 
-	public void setIsSmoking(Boolean isSmoking) {
-		this.isSmoking = isSmoking;
-	}
+    public Boolean getIsSmoking() {
+        return isSmoking;
+    }
 
-	public List<TypeImageEntity> getTypeImages() {
-		return typeImages;
-	}
+    public void setIsSmoking(Boolean isSmoking) {
+        this.isSmoking = isSmoking;
+    }
 
-	public void setTypeImages(List<TypeImageEntity> typeImages) {
-		this.typeImages = typeImages;
-	}
+    public List<TypeImageEntity> getTypeImages() {
+        return typeImages;
+    }
 
-	public Boolean getIsDeleted() {
-		return isDeleted;
-	}
+    public void setTypeImages(List<TypeImageEntity> typeImages) {
+        this.typeImages = typeImages;
+    }
 
-	public void setIsDeleted(Boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
-	
-	
-  
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public void setRooms(List<RoomEntity> rooms) {
+        this.rooms = rooms;
+    }
+
+    public List<RoomEntity> getRooms() {
+        return rooms;
+    }
 }
