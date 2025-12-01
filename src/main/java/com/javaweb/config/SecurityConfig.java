@@ -133,8 +133,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/room-statuses/**").permitAll()
 
                 // ========== ROOM ==========
-                .antMatchers("/api/rooms/create", "/api/rooms/update/**", "/api/rooms/delete/**", "/api/rooms/{id}").hasRole("ADMIN")
-                .antMatchers("/api/rooms/getAll", "/api/rooms/search", "/api/rooms/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/rooms/getAll", "/api/rooms/search").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/rooms/create").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/rooms/update/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/rooms/delete/**").hasRole("ADMIN")
 
                 // ========== PROMOTION ==========
                 .antMatchers(HttpMethod.POST, "/api/promotions/create").hasRole("ADMIN")
