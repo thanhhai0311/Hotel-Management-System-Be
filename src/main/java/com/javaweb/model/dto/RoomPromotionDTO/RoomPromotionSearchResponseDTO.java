@@ -1,6 +1,6 @@
 package com.javaweb.model.dto.RoomPromotionDTO;
 
-public class RoomPromotionResponseDTO {
+public class RoomPromotionSearchResponseDTO {
     private Integer id;
     private String details;
 
@@ -9,7 +9,9 @@ public class RoomPromotionResponseDTO {
 
     private Integer promotionId;
     private String promotionName;
-    
+
+    private float discount;
+
     public Integer getId() {
         return id;
     }
@@ -56,5 +58,13 @@ public class RoomPromotionResponseDTO {
 
     public void setPromotionName(String promotionName) {
         this.promotionName = promotionName;
+    }
+
+    public float getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(float discount) {
+        this.discount = discount;
     }
 }

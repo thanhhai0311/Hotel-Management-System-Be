@@ -1,18 +1,8 @@
 package com.javaweb.service.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.persistence.criteria.Predicate;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.javaweb.model.dto.RoomPromotionDTO.RoomPromotionCreateDTO;
 import com.javaweb.model.dto.RoomPromotionDTO.RoomPromotionResponseDTO;
+import com.javaweb.model.dto.RoomPromotionDTO.RoomPromotionSearchResponseDTO;
 import com.javaweb.model.entity.PromotionEntity;
 import com.javaweb.model.entity.RoomPromotionEntity;
 import com.javaweb.model.entity.RoomTypeEntity;
@@ -20,6 +10,22 @@ import com.javaweb.repository.PromotionRepository;
 import com.javaweb.repository.RoomPromotionRepository;
 import com.javaweb.repository.RoomTypeRepository;
 import com.javaweb.service.RoomPromotionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RoomPromotionServiceImpl implements RoomPromotionService {
@@ -127,7 +133,7 @@ public class RoomPromotionServiceImpl implements RoomPromotionService {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
 
-        List<RoomPromotionResponseDTO> data;
+        List<RoomPromotionSearchResponseDTO> data;
         long totalItems;
         int totalPages = 1;
         int currentPage = 0;
@@ -135,15 +141,19 @@ public class RoomPromotionServiceImpl implements RoomPromotionService {
         if (page != null && pageSize != null) {
             Pageable pageable = PageRequest.of(page, pageSize, Sort.by("id").descending());
             Page<RoomPromotionEntity> pageData = roomPromotionRepository.findAll(spec, pageable);
-            data = pageData.getContent().stream().map(this::toDTO).collect(Collectors.toList());
+            data = pageData.getContent().stream().map(this::toDTOSearch).collect(Collectors.toList());
             totalItems = pageData.getTotalElements();
             totalPages = pageData.getTotalPages();
             currentPage = pageData.getNumber();
         } else {
             List<RoomPromotionEntity> all = roomPromotionRepository.findAll(spec, Sort.by("id").descending());
-            data = all.stream().map(this::toDTO).collect(Collectors.toList());
+            data = all.stream().map(this::toDTOSearch).collect(Collectors.toList());
             totalItems = all.size();
         }
+
+//        for (int i = 0; i < data.size(); i++) {
+//            data.get(i).setDiscount(promotionRepository.getById(data.get(i).getId()).getDiscount());
+//        }
 
         Map<String, Object> res = new HashMap<>();
         res.put("items", data);
@@ -166,6 +176,25 @@ public class RoomPromotionServiceImpl implements RoomPromotionService {
         if (e.getPromotion() != null) {
             dto.setPromotionId(e.getPromotion().getId());
             dto.setPromotionName(e.getPromotion().getName());
+        }
+
+        return dto;
+    }
+
+    private RoomPromotionSearchResponseDTO toDTOSearch(RoomPromotionEntity e) {
+        RoomPromotionSearchResponseDTO dto = new RoomPromotionSearchResponseDTO();
+        dto.setId(e.getId());
+        dto.setDetails(e.getDetails());
+
+        if (e.getRoomType() != null) {
+            dto.setRoomTypeId(e.getRoomType().getId());
+            dto.setRoomTypeName(e.getRoomType().getName());
+        }
+
+        if (e.getPromotion() != null) {
+            dto.setPromotionId(e.getPromotion().getId());
+            dto.setPromotionName(e.getPromotion().getName());
+            dto.setDiscount(e.getPromotion().getDiscount());
         }
 
         return dto;

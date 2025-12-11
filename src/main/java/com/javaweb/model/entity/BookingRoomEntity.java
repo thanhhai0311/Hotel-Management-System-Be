@@ -1,7 +1,7 @@
 package com.javaweb.model.entity;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -11,18 +11,14 @@ public class BookingRoomEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date contractCheckInTime;
+    private LocalDateTime contractCheckInTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date contractCheckOutTime;
+    private LocalDateTime contractCheckOutTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date actualCheckInTime;
+    private LocalDateTime actualCheckInTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date actualCheckOutTime;
-    
+    private LocalDateTime actualCheckOutTime;
+
     @ManyToOne
     @JoinColumn(name = "idBill")
     private BillEntity bill;
@@ -49,103 +45,101 @@ public class BookingRoomEntity {
     @OneToMany(mappedBy = "bookingRoom")
     private List<NotifacationRoomEntity> notifacationRooms;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Date getContractCheckInTime() {
-		return contractCheckInTime;
-	}
+    public LocalDateTime getContractCheckInTime() {
+        return contractCheckInTime;
+    }
 
-	public void setContractCheckInTime(Date contractCheckInTime) {
-		this.contractCheckInTime = contractCheckInTime;
-	}
+    public void setContractCheckInTime(LocalDateTime contractCheckInTime) {
+        this.contractCheckInTime = contractCheckInTime;
+    }
 
-	public Date getContractCheckOutTime() {
-		return contractCheckOutTime;
-	}
+    public LocalDateTime getContractCheckOutTime() {
+        return contractCheckOutTime;
+    }
 
-	public void setContractCheckOutTime(Date contractCheckOutTime) {
-		this.contractCheckOutTime = contractCheckOutTime;
-	}
+    public void setContractCheckOutTime(LocalDateTime contractCheckOutTime) {
+        this.contractCheckOutTime = contractCheckOutTime;
+    }
 
-	public Date getActualCheckInTime() {
-		return actualCheckInTime;
-	}
+    public LocalDateTime getActualCheckInTime() {
+        return actualCheckInTime;
+    }
 
-	public void setActualCheckInTime(Date actualCheckInTime) {
-		this.actualCheckInTime = actualCheckInTime;
-	}
+    public void setActualCheckInTime(LocalDateTime actualCheckInTime) {
+        this.actualCheckInTime = actualCheckInTime;
+    }
 
-	public Date getActualCheckOutTime() {
-		return actualCheckOutTime;
-	}
+    public LocalDateTime getActualCheckOutTime() {
+        return actualCheckOutTime;
+    }
 
-	public void setActualCheckOutTime(Date actualCheckOutTime) {
-		this.actualCheckOutTime = actualCheckOutTime;
-	}
+    public void setActualCheckOutTime(LocalDateTime actualCheckOutTime) {
+        this.actualCheckOutTime = actualCheckOutTime;
+    }
 
-	public UserEntity getCustomer() {
-		return customer;
-	}
+    public UserEntity getCustomer() {
+        return customer;
+    }
 
-	public void setCustomer(UserEntity customer) {
-		this.customer = customer;
-	}
+    public void setCustomer(UserEntity customer) {
+        this.customer = customer;
+    }
 
-	public RoomPromotionEntity getRoomPromotion() {
-		return roomPromotion;
-	}
+    public RoomPromotionEntity getRoomPromotion() {
+        return roomPromotion;
+    }
 
-	public void setRoomPromotion(RoomPromotionEntity roomPromotion) {
-		this.roomPromotion = roomPromotion;
-	}
+    public void setRoomPromotion(RoomPromotionEntity roomPromotion) {
+        this.roomPromotion = roomPromotion;
+    }
 
-	public RoomEntity getRoom() {
-		return room;
-	}
+    public RoomEntity getRoom() {
+        return room;
+    }
 
-	public void setRoom(RoomEntity room) {
-		this.room = room;
-	}
+    public void setRoom(RoomEntity room) {
+        this.room = room;
+    }
 
-	public UserEntity getEmployee() {
-		return employee;
-	}
+    public UserEntity getEmployee() {
+        return employee;
+    }
 
-	public void setEmployee(UserEntity employee) {
-		this.employee = employee;
-	}
+    public void setEmployee(UserEntity employee) {
+        this.employee = employee;
+    }
 
-	public List<BookingServiceEntity> getBookingServices() {
-		return bookingServices;
-	}
+    public List<BookingServiceEntity> getBookingServices() {
+        return bookingServices;
+    }
 
-	public void setBookingServices(List<BookingServiceEntity> bookingServices) {
-		this.bookingServices = bookingServices;
-	}
+    public void setBookingServices(List<BookingServiceEntity> bookingServices) {
+        this.bookingServices = bookingServices;
+    }
 
-	public List<NotifacationRoomEntity> getNotifacationRooms() {
-		return notifacationRooms;
-	}
+    public List<NotifacationRoomEntity> getNotifacationRooms() {
+        return notifacationRooms;
+    }
 
-	public void setNotifacationRooms(List<NotifacationRoomEntity> notifacationRooms) {
-		this.notifacationRooms = notifacationRooms;
-	}
+    public void setNotifacationRooms(List<NotifacationRoomEntity> notifacationRooms) {
+        this.notifacationRooms = notifacationRooms;
+    }
 
-	public BillEntity getBill() {
-		return bill;
-	}
+    public BillEntity getBill() {
+        return bill;
+    }
 
-	public void setBill(BillEntity bill) {
-		this.bill = bill;
-	}
-	
-	
+    public void setBill(BillEntity bill) {
+        this.bill = bill;
+    }
 
-    
+
 }
