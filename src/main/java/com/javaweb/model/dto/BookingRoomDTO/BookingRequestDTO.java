@@ -7,8 +7,9 @@ public class BookingRequestDTO {
     private List<BookingItemDTO> bookings;
     private String customerName;
     private String customerPhone;
-    //    private String customerEmail;
-    private Integer paymentMethodId;
+    private String identification;
+//    private String customerEmail;
+//    private Integer paymentMethodId;
 
     public Integer getCustomerId() {
         return customerId;
@@ -50,11 +51,19 @@ public class BookingRequestDTO {
 //        this.customerEmail = customerEmail;
 //    }
 
-    public Integer getPaymentMethodId() {
-        return paymentMethodId;
+//    public Integer getPaymentMethodId() {
+//        return paymentMethodId;
+//    }
+//
+//    public void setPaymentMethodId(Integer paymentMethodId) {
+//        this.paymentMethodId = paymentMethodId;
+//    }
+
+    public String getIdentification() {
+        return identification;
     }
 
-    public void setPaymentMethodId(Integer paymentMethodId) {
-        this.paymentMethodId = paymentMethodId;
+    public void setIdentification(String identification) {
+        this.identification = identification;
     }
 }

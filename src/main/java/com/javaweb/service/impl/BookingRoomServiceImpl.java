@@ -51,11 +51,13 @@ public class BookingRoomServiceImpl implements BookingRoomService {
             Optional<UserEntity> existingUser = userRepository.findOneByPhone(request.getCustomerPhone());
             if (existingUser.isPresent()) {
                 customer = existingUser.get();
-                // customer.setName(request.getCustomerName());
+                customer.setName(request.getCustomerName());
+                customer.setIdentification(request.getIdentification());
             } else {
                 UserEntity newUser = new UserEntity();
                 newUser.setName(request.getCustomerName());
                 newUser.setPhone(request.getCustomerPhone());
+                newUser.setIdentification(request.getIdentification());
                 newUser.setAccount(null);
                 customer = userRepository.save(newUser);
             }
@@ -104,13 +106,13 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         PaymentStatusEntity draftStatus = paymentStatusRepository.findById(1)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi cấu hình trạng thái thanh toán"));
 
-        PaymentMethodEntity draftMethod = paymentMethodRepository.findById(request.getPaymentMethodId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy phương thức thanh toán"));
+//        PaymentMethodEntity draftMethod = paymentMethodRepository.findById(request.getPaymentMethodId())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy phương thức thanh toán"));
 
         BillEntity draftBill = new BillEntity();
         draftBill.setCustomer(customer);
         draftBill.setPaymentStatus(draftStatus);
-        draftBill.setPaymentMethod(draftMethod);
+        draftBill.setPaymentMethod(null);
         draftBill.setPaymentDate(new Date());
         draftBill.setTotalBeforeTax(0f);
         draftBill.setTotalAfterTax(0f);
