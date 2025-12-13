@@ -99,7 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/user/{id}/update").hasRole("ADMIN") // chỉ admin update user khác
 
                 // ========== USER MANAGEMENT ==========
-                .antMatchers(HttpMethod.GET, "/api/user/getAll").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/user/getAll").hasAnyRole("ADMIN", "STAFF")
                 .antMatchers(HttpMethod.GET, "/api/user/{id}").hasRole("ADMIN")
 
                 // ========== ACCOUNT ==========
@@ -194,6 +194,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/shiftings/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/shiftings/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/shiftings/**").hasRole("ADMIN")
+
+                // ========== BOOKING ROOMS ==========
+                .antMatchers(HttpMethod.POST, "/api/booking/create").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
 
                 // ========== ROLES ==========
                 .antMatchers("/api/roles/**").hasRole("ADMIN")
