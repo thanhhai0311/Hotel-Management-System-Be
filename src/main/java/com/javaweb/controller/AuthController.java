@@ -1,7 +1,14 @@
 package com.javaweb.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.javaweb.model.dto.AuthDTO.LoginRequest;
+import com.javaweb.model.dto.AuthDTO.LoginResponse;
+import com.javaweb.model.dto.AuthDTO.RegisterRequest;
+import com.javaweb.model.dto.AuthDTO.RegisterWithOtpDTO;
+import com.javaweb.model.entity.AccountEntity;
+import com.javaweb.model.response.ApiResponse;
+import com.javaweb.repository.AccountRepository;
+import com.javaweb.security.JwtUtil;
+import com.javaweb.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import com.javaweb.model.dto.AuthDTO.LoginRequest;
-import com.javaweb.model.dto.AuthDTO.LoginResponse;
-import com.javaweb.model.dto.AuthDTO.RegisterRequest;
-import com.javaweb.model.entity.AccountEntity;
-import com.javaweb.repository.AccountRepository;
-import com.javaweb.security.JwtUtil;
-import com.javaweb.service.AuthService;
-import com.javaweb.model.response.ApiResponse;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -126,7 +126,7 @@ public class AuthController {
     /**
      * ✅ API đăng ký người dùng mới
      */
-    @PostMapping("/register")
+    @PostMapping("/register/admin")
     public ResponseEntity<ApiResponse<String>> register(@RequestBody RegisterRequest request, HttpServletRequest httpRequest) {
         try {
             String message = authService.register(request);
@@ -151,5 +151,18 @@ public class AuthController {
             );
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+    }
+
+    @PostMapping("/register/customer")
+    public ResponseEntity<?> registerCustomer(@RequestBody RegisterWithOtpDTO request) {
+        authService.registerWithOtp(request);
+        return ResponseEntity.ok("Đăng ký thành công!");
+    }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<?> sendOtp(@RequestParam String email) {
+        authService.sendOtpEmail(email);
+
+        return ResponseEntity.ok("Mã xác thực đã được gửi đến: " + email);
     }
 }

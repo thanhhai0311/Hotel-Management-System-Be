@@ -1,22 +1,28 @@
 package com.javaweb.repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.javaweb.model.entity.AccountEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.javaweb.model.entity.AccountEntity;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Integer> {
     Optional<AccountEntity> findByEmail(String email);
-//    AccountEntity findById(Integer id);
+
+    //    AccountEntity findById(Integer id);
     boolean existsByEmail(String email);
+
     List<AccountEntity> findAll();
+
     boolean existsById(Integer id);
-	void deleteById(Integer id);
-	Page<AccountEntity> findByEmailContainingIgnoreCase(String email, Pageable pageable);
+
+    void deleteById(Integer id);
+
+    Page<AccountEntity> findByEmailContainingIgnoreCase(String email, Pageable pageable);
+
+    Optional<AccountEntity> findOneByEmail(String email);
 }

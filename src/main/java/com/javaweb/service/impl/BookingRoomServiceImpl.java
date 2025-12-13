@@ -31,6 +31,8 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     private PaymentStatusRepository paymentStatusRepository;
     @Autowired
     private RoomPromotionRepository roomPromotionRepository;
+    @Autowired
+    private PaymentMethodRepository paymentMethodRepository;
 
     private static final LocalTime STANDARD_CHECKIN_TIME = LocalTime.of(14, 0); // 14:00 PM
     private static final LocalTime STANDARD_CHECKOUT_TIME = LocalTime.of(12, 0); // 12:00 PM
@@ -38,10 +40,26 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     @Override
     @Transactional
     public Map<String, Object> createBooking(BookingRequestDTO request) {
-
-        // 1. Kiểm tra khách hàng
-        UserEntity customer = userRepository.findById(request.getCustomerId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Khách hàng không tồn tại"));
+        UserEntity customer;
+        if (request.getCustomerId() != null) {
+            customer = userRepository.findById(request.getCustomerId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Khách hàng không tồn tại"));
+        } else {
+            if (request.getCustomerPhone() == null || request.getCustomerName() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Thiếu tên hoặc SĐT khách hàng");
+            }
+            Optional<UserEntity> existingUser = userRepository.findOneByPhone(request.getCustomerPhone());
+            if (existingUser.isPresent()) {
+                customer = existingUser.get();
+                // customer.setName(request.getCustomerName());
+            } else {
+                UserEntity newUser = new UserEntity();
+                newUser.setName(request.getCustomerName());
+                newUser.setPhone(request.getCustomerPhone());
+                newUser.setAccount(null);
+                customer = userRepository.save(newUser);
+            }
+        }
 
         if (request.getBookings() == null || request.getBookings().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Danh sách đặt phòng trống");
@@ -82,17 +100,17 @@ public class BookingRoomServiceImpl implements BookingRoomService {
             }
         }
 
-        // ==============================================================
-        // TẠO DỮ LIỆU
-        // ==============================================================
-
         // 4. Tạo Draft Bill
         PaymentStatusEntity draftStatus = paymentStatusRepository.findById(1)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi cấu hình trạng thái thanh toán"));
 
+        PaymentMethodEntity draftMethod = paymentMethodRepository.findById(request.getPaymentMethodId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy phương thức thanh toán"));
+
         BillEntity draftBill = new BillEntity();
         draftBill.setCustomer(customer);
         draftBill.setPaymentStatus(draftStatus);
+        draftBill.setPaymentMethod(draftMethod);
         draftBill.setPaymentDate(new Date());
         draftBill.setTotalBeforeTax(0f);
         draftBill.setTotalAfterTax(0f);
@@ -152,30 +170,23 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         draftBill.setTotalBeforeTax(totalAmount);
         float tax = totalAmount * 0.1f;
         draftBill.setTotalAfterTax(totalAmount + tax);
-
         BillEntity savedBill = billRepository.save(draftBill);
-
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("billId", draftBill.getId());
-//        response.put("totalAmount", draftBill.getTotalAfterTax());
-//        response.put("status", "SUCCESS");
-//        response.put("message", "Tạo đơn đặt phòng thành công");
         Map<String, Object> billInfo = new LinkedHashMap<>(); // Dùng LinkedHashMap để giữ thứ tự key đẹp
         billInfo.put("id", savedBill.getId());
 
         // --- Xử lý UserEntity (Customer) ---
         // Kiểm tra null để tránh lỗi NullPointerException
         if (savedBill.getCustomer() != null) {
-            // LƯU Ý: Kiểm tra bên UserEntity của bạn, hàm lấy tên là getFullName() hay getUserName()
             billInfo.put("customerName", savedBill.getCustomer().getName());
             billInfo.put("customerId", savedBill.getCustomer().getId());
         }
 
         // --- Xử lý PaymentStatusEntity ---
         if (savedBill.getPaymentStatus() != null) {
-            // LƯU Ý: Kiểm tra bên PaymentStatusEntity, hàm lấy tên là getName() hay getStatus()
             billInfo.put("paymentStatus", savedBill.getPaymentStatus().getName());
             billInfo.put("paymentStatusId", savedBill.getPaymentStatus().getId());
+            billInfo.put("paymentMethodId", savedBill.getPaymentMethod().getId());
+            billInfo.put("paymentMethod", savedBill.getPaymentMethod().getName());
         }
 
         billInfo.put("paymentDate", savedBill.getPaymentDate());
@@ -189,7 +200,6 @@ public class BookingRoomServiceImpl implements BookingRoomService {
 
             // Thông tin phòng
             if (booking.getRoom() != null) {
-                // LƯU Ý: Kiểm tra bên RoomEntity xem là getName() hay getRoomNumber()
                 detail.put("roomNumber", booking.getRoom().getRoomNumber());
                 detail.put("roomId", booking.getRoom().getId());
 

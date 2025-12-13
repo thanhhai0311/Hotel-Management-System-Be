@@ -2,16 +2,16 @@ package com.javaweb.model.dto.AuthDTO;
 
 import java.time.LocalDate;
 
-public class RegisterRequest {
+public class RegisterWithOtpDTO {
     private String email;
     private String password;
     private String name;
     private String phone;
     private String address;
     private String gender;
-    private String roleName; // ví dụ: "CUSTOMER"
     private LocalDate dob;
     private String identification;
+    private String otpCode;
 
     // getters/setters
     public String getEmail() {
@@ -62,14 +62,6 @@ public class RegisterRequest {
         this.gender = gender;
     }
 
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
     public LocalDate getDob() {
         return dob;
     }
@@ -85,5 +77,12 @@ public class RegisterRequest {
     public void setIdentification(String identification) {
         this.identification = identification;
     }
-    
+
+    public String getOtpCode() {
+        return otpCode;
+    }
+
+    public void setOtpCode(String otpCode) {
+        this.otpCode = otpCode;
+    }
 }
