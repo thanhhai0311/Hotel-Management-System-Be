@@ -21,4 +21,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Page<UserEntity> findByRoleId(Integer roleId, Pageable pageable);
 
     Optional<UserEntity> findOneByPhone(String phone);
+    
 }

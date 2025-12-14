@@ -19,6 +19,9 @@ public class BookingRoomEntity {
 
     private LocalDateTime actualCheckOutTime;
 
+    @Column(name = "status")
+    private Integer status = 1;
+
     @ManyToOne
     @JoinColumn(name = "idBill")
     private BillEntity bill;
@@ -141,5 +144,11 @@ public class BookingRoomEntity {
         this.bill = bill;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
 
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

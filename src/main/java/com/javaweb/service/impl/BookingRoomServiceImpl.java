@@ -1,12 +1,19 @@
 package com.javaweb.service.impl;
 
+import com.javaweb.converter.BookingRoomConverter;
 import com.javaweb.model.dto.BookingRoomDTO.BookingItemDTO;
 import com.javaweb.model.dto.BookingRoomDTO.BookingRequestDTO;
+import com.javaweb.model.dto.BookingRoomDTO.BookingResponseDTO;
 import com.javaweb.model.entity.*;
 import com.javaweb.repository.*;
 import com.javaweb.service.BookingRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,6 +40,8 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     private RoomPromotionRepository roomPromotionRepository;
     @Autowired
     private PaymentMethodRepository paymentMethodRepository;
+    @Autowired
+    private BookingRoomConverter bookingRoomConverter;
 
     private static final LocalTime STANDARD_CHECKIN_TIME = LocalTime.of(14, 0); // 14:00 PM
     private static final LocalTime STANDARD_CHECKOUT_TIME = LocalTime.of(12, 0); // 12:00 PM
@@ -162,6 +171,12 @@ public class BookingRoomServiceImpl implements BookingRoomService {
             float roomPrice = roomType.getPrice();
             float bookingPrice = roomPrice * nights;
 
+            if (item.getRoomPromotionId() != null) {
+                RoomPromotionEntity rp = roomPromotionRepository.findById(item.getRoomPromotionId()).get();
+                float discount = rp.getPromotion().getDiscount();
+                bookingPrice = bookingPrice - bookingPrice * discount;
+            }
+
             totalAmount += bookingPrice;
             bookingEntities.add(booking);
         }
@@ -187,6 +202,9 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         if (savedBill.getPaymentStatus() != null) {
             billInfo.put("paymentStatus", savedBill.getPaymentStatus().getName());
             billInfo.put("paymentStatusId", savedBill.getPaymentStatus().getId());
+        }
+
+        if (savedBill.getPaymentMethod() != null) {
             billInfo.put("paymentMethodId", savedBill.getPaymentMethod().getId());
             billInfo.put("paymentMethod", savedBill.getPaymentMethod().getName());
         }
@@ -238,5 +256,174 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         response.put("data", dataMap);
 
         return response;
+    }
+
+    @Override
+    public List<BookingResponseDTO> getAllBookings(Integer page, Integer limit) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+        boolean isAdminOrStaff = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN") || r.getAuthority().equals("ROLE_STAFF"));
+        List<BookingRoomEntity> entities;
+        Sort sort = Sort.by("id").descending();
+        Pageable pageable = (page != null && limit != null)
+                ? PageRequest.of(page - 1, limit, sort)
+                : null;
+        if (isAdminOrStaff) {
+            if (pageable != null) {
+                entities = bookingRoomRepository.findAll(pageable).getContent();
+            } else {
+                entities = bookingRoomRepository.findAll(sort);
+            }
+        } else {
+            UserEntity currentUser = userRepository.findByAccount_Email(currentEmail).get();
+            if (currentUser == null) {
+                return Collections.emptyList();
+            }
+            if (pageable != null) {
+                entities = bookingRoomRepository.findByCustomer_Id(currentUser.getId(), pageable).getContent();
+            } else {
+                entities = bookingRoomRepository.findByCustomer_Id(currentUser.getId(), sort);
+            }
+        }
+
+        return entities.stream()
+                .map(bookingRoomConverter::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookingResponseDTO getBookingById(Integer id) {
+        BookingRoomEntity bookingEntity = bookingRoomRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đơn đặt phòng với ID: " + id));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+
+        boolean isAdminOrStaff = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN") || r.getAuthority().equals("ROLE_STAFF"));
+
+        if (!isAdminOrStaff) {
+            UserEntity currentUser = userRepository.findByAccount_Email(currentEmail).get();
+
+            if (currentUser == null || !bookingEntity.getCustomer().getId().equals(currentUser.getId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền xem đơn đặt phòng này!");
+            }
+        }
+        return bookingRoomConverter.toResponseDTO(bookingEntity);
+    }
+
+//    @Override
+//    @Transactional
+//    public void cancelBooking(Integer id) {
+//        BookingRoomEntity booking = bookingRoomRepository.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đơn đặt phòng!"));
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String currentEmail = authentication.getName();
+//
+//        boolean isAdminOrStaff = authentication.getAuthorities().stream()
+//                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN") || r.getAuthority().equals("ROLE_STAFF"));
+//
+//        if (!isAdminOrStaff) {
+//            UserEntity currentUser = userRepository.findByAccount_Email(currentEmail).get();
+//            if (currentUser == null || !booking.getCustomer().getId().equals(currentUser.getId())) {
+//                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền hủy đơn đặt phòng này!");
+//            }
+//        }
+//
+//        if (booking.getActualCheckInTime() != null) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Khách đã check-in, không thể hủy đơn! Vui lòng làm thủ tục check-out.");
+//        }
+//
+//        BillEntity bill = booking.getBill();
+//        if (bill == null) {
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Dữ liệu lỗi: Đơn đặt phòng không có hóa đơn.");
+//        }
+//
+//        if (bill.getPaymentStatus() != null && bill.getPaymentStatus().getName().equalsIgnoreCase("Canceled")) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Đơn đặt phòng này đã bị hủy trước đó!");
+//        }
+//
+//        PaymentStatusEntity cancelStatus = (PaymentStatusEntity) paymentStatusRepository.findByName("Canceled")
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi cấu hình: Không tìm thấy trạng thái 'Đã hủy' trong DB"));
+//
+//        bill.setPaymentStatus(cancelStatus);
+//
+//
+//        billRepository.save(bill);
+//    }
+
+    @Override
+    @Transactional
+    public void cancelBooking(Integer bookingId) {
+        BookingRoomEntity bookingRoom = bookingRoomRepository.findById(bookingId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy phòng đặt này!"));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+        boolean isAdminOrStaff = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN") || r.getAuthority().equals("ROLE_STAFF"));
+
+        if (!isAdminOrStaff) {
+            UserEntity currentUser = userRepository.findByAccount_Email(currentEmail).get();
+            if (currentUser == null || !bookingRoom.getCustomer().getId().equals(currentUser.getId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền hủy phòng này!");
+            }
+        }
+
+        if (bookingRoom.getActualCheckInTime() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phòng này đã check-in, không thể hủy!");
+        }
+
+        if (bookingRoom.getStatus() != null && bookingRoom.getStatus() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phòng này đã bị hủy trước đó rồi!");
+        }
+
+        bookingRoom.setStatus(0);
+        bookingRoomRepository.save(bookingRoom);
+
+        BillEntity bill = bookingRoom.getBill();
+        if (bill != null) {
+            updateBillTotal(bill);
+
+            boolean allCancelled = bill.getBookingRooms().stream()
+                    .allMatch(br -> br.getStatus() == 0);
+            if (allCancelled) {
+                PaymentStatusEntity cancelStatus = (PaymentStatusEntity) paymentStatusRepository.findByName("Canceled")
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi cấu hình: Không tìm thấy trạng thái 'Đã hủy' trong DB"));
+
+                bill.setPaymentStatus(cancelStatus);
+            }
+            billRepository.save(bill);
+        }
+    }
+
+    // Hàm phụ tính lại tiền (Ví dụ đơn giản)
+    private void updateBillTotal(BillEntity bill) {
+        float newTotal = 0;
+        for (BookingRoomEntity br : bill.getBookingRooms()) {
+            if (br.getStatus() == 1) { // Chỉ cộng tiền những phòng còn Active
+                // newTotal += br.getRoom().getRoomType().getPrice();
+                // Cộng thêm tiền dịch vụ nếu có...
+                float discount = 1f;
+                if (br.getRoomPromotion() != null) {
+                    discount = br.getRoomPromotion().getPromotion().getDiscount();
+                }
+                newTotal += br.getRoom().getRoomType().getPrice() - br.getRoom().getRoomType().getPrice() * discount;
+            }
+        }
+        bill.setTotalBeforeTax(newTotal);
+        bill.setTotalAfterTax(newTotal + newTotal * 0.1f);
+    }
+
+    @Override
+    public void checkIn(Integer id) {
+
+    }
+
+    @Override
+    public void checkOut(Integer id) {
+
     }
 }
