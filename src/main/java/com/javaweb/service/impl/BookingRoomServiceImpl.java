@@ -172,7 +172,8 @@ public class BookingRoomServiceImpl implements BookingRoomService {
             float bookingPrice = roomPrice * nights;
 
             if (item.getRoomPromotionId() != null) {
-                RoomPromotionEntity rp = roomPromotionRepository.findById(item.getRoomPromotionId()).get();
+                RoomPromotionEntity rp = roomPromotionRepository.findById(item.getRoomPromotionId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy khuyến mãi"));
                 float discount = rp.getPromotion().getDiscount();
                 bookingPrice = bookingPrice - bookingPrice * discount;
             }
@@ -419,11 +420,37 @@ public class BookingRoomServiceImpl implements BookingRoomService {
 
     @Override
     public void checkIn(Integer id) {
+        BookingRoomEntity booking = bookingRoomRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đơn đặt phòng!"));
 
+        if (booking.getStatus() != null && booking.getStatus() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Đơn này đã bị hủy, không thể check-in!");
+        }
+
+        if (booking.getActualCheckInTime() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Khách đã check-in rồi, không thể thực hiện lại!");
+        }
+
+        booking.setActualCheckInTime(LocalDateTime.now()); // Gán giờ hiện tại
+
+        bookingRoomRepository.save(booking);
     }
 
     @Override
     public void checkOut(Integer id) {
+        BookingRoomEntity booking = bookingRoomRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đơn đặt phòng!"));
 
+        if (booking.getActualCheckInTime() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Khách chưa check-in, không thể check-out!");
+        }
+
+        if (booking.getActualCheckOutTime() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Khách đã check-out rồi!");
+        }
+
+        booking.setActualCheckOutTime(LocalDateTime.now());
+
+        bookingRoomRepository.save(booking);
     }
 }

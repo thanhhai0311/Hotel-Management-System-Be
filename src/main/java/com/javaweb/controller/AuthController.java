@@ -69,7 +69,7 @@ public class AuthController {
 
             String roleRes = "ROLE_" + account.getRole().getName().toUpperCase();
 
-            LoginResponse data = new LoginResponse(token, roleRes);
+            LoginResponse data = new LoginResponse(token, roleRes, account.getUser().getId());
 
             ApiResponse<LoginResponse> response = new ApiResponse<>(
                     true,

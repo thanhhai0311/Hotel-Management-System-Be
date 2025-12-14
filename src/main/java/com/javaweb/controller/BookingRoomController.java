@@ -87,4 +87,16 @@ public class BookingRoomController {
         bookingRoomService.cancelBooking(id);
         return ResponseEntity.ok("Hủy đặt phòng thành công!");
     }
+
+    @PutMapping("/check-in/{id}")
+    public ResponseEntity<?> checkIn(@PathVariable Integer id) {
+        bookingRoomService.checkIn(id);
+        return ResponseEntity.ok("Check-in thành công!");
+    }
+    
+    @PutMapping("/check-out/{id}")
+    public ResponseEntity<?> checkOut(@PathVariable Integer id) {
+        bookingRoomService.checkOut(id);
+        return ResponseEntity.ok("Check-out thành công!");
+    }
 }

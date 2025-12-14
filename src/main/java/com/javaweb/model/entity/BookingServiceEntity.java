@@ -1,18 +1,8 @@
 package com.javaweb.model.entity;
 
-import java.util.Date;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "bookingservice")
@@ -21,11 +11,11 @@ public class BookingServiceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date startTime;
+    //    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime startTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date endTime;
+    //    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime endTime;
 
     @ManyToOne
     @JoinColumn(name = "idBookingRoom")
@@ -40,60 +30,60 @@ public class BookingServiceEntity {
 
     @OneToMany(mappedBy = "bookingService")
     private List<DoingServiceEntity> doingServices;
-    
-	public Integer getId() {
-		return id;
-	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public Date getStartTime() {
-		return startTime;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
 
-	public Date getEndTime() {
-		return endTime;
-	}
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
 
-	public BookingRoomEntity getBookingRoom() {
-		return bookingRoom;
-	}
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
 
-	public void setBookingRoom(BookingRoomEntity bookingRoom) {
-		this.bookingRoom = bookingRoom;
-	}
+    public BookingRoomEntity getBookingRoom() {
+        return bookingRoom;
+    }
 
-	public ServiceEntity getService() {
-		return service;
-	}
+    public void setBookingRoom(BookingRoomEntity bookingRoom) {
+        this.bookingRoom = bookingRoom;
+    }
 
-	public void setService(ServiceEntity service) {
-		this.service = service;
-	}
+    public ServiceEntity getService() {
+        return service;
+    }
 
-	public List<NotifacationServiceEntity> getNotifacationServices() {
-		return notifacationServices;
-	}
+    public void setService(ServiceEntity service) {
+        this.service = service;
+    }
 
-	public void setNotifacationServices(List<NotifacationServiceEntity> notifacationServices) {
-		this.notifacationServices = notifacationServices;
-	}
+    public List<NotifacationServiceEntity> getNotifacationServices() {
+        return notifacationServices;
+    }
 
-	public List<DoingServiceEntity> getDoingServices() {
-		return doingServices;
-	}
+    public void setNotifacationServices(List<NotifacationServiceEntity> notifacationServices) {
+        this.notifacationServices = notifacationServices;
+    }
 
-	public void setDoingServices(List<DoingServiceEntity> doingServices) {
-		this.doingServices = doingServices;
-	}    
+    public List<DoingServiceEntity> getDoingServices() {
+        return doingServices;
+    }
+
+    public void setDoingServices(List<DoingServiceEntity> doingServices) {
+        this.doingServices = doingServices;
+    }
 }
