@@ -2,7 +2,12 @@ package com.javaweb.converter;
 
 import com.javaweb.model.dto.BookingRoomDTO.BookingResponseDTO;
 import com.javaweb.model.entity.BookingRoomEntity;
+import com.javaweb.model.entity.BookingServiceEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class BookingRoomConverter {
@@ -60,25 +65,23 @@ public class BookingRoomConverter {
             }
         }
 
-        // 7. Map danh sách Dịch vụ (Booking Services)
-//        List<BookingResponseDTO.BookingServiceInfoDTO> serviceList = new ArrayList<>();
-//        if (entity.getBookingServices() != null && !entity.getBookingServices().isEmpty()) {
-//            serviceList = entity.getBookingServices().stream()
-//                    .map(this::toServiceDTO) // Gọi hàm phụ bên dưới
-//                    .collect(Collectors.toList());
-//        }
-//        dto.setServices(serviceList);
-//
+//         7. Map danh sách Dịch vụ (Booking Services)
+        List<BookingResponseDTO.BookingServiceInfoDTO> serviceList = new ArrayList<>();
+        if (entity.getBookingServices() != null && !entity.getBookingServices().isEmpty()) {
+            serviceList = entity.getBookingServices().stream()
+                    .map(this::toServiceDTO)
+                    .collect(Collectors.toList());
+        }
+        dto.setServices(serviceList);
         return dto;
     }
 
-    // Hàm phụ để map từng dịch vụ nhỏ (giúp code gọn hơn)
-//    private BookingResponseDTO.BookingServiceInfoDTO toServiceDTO(BookingServiceEntity bs) {
-//        String svName = (bs.getService() != null) ? bs.getService().getName() : "Unknown Service";
-//        Double svPrice = (bs.getPrice() != null) ? Double.valueOf(bs.getPrice()) : 0.0;
-//        int qty = (bs.getQuantity() != null) ? bs.getQuantity() : 0;
-//
-//        return new BookingResponseDTO.BookingServiceInfoDTO(svName, qty, svPrice);
-//    }
+    private BookingResponseDTO.BookingServiceInfoDTO toServiceDTO(BookingServiceEntity bs) {
+        String svName = (bs.getService() != null) ? bs.getService().getName() : "Unknown Service";
+        Double svPrice = (bs.getPrice() != null) ? Float.valueOf(bs.getPrice()) : 0.0;
+        int qty = (bs.getQuantity() != null) ? bs.getQuantity() : 0;
+
+        return new BookingResponseDTO.BookingServiceInfoDTO(svName, qty, svPrice);
+    }
 
 }

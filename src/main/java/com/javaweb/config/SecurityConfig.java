@@ -203,6 +203,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/bookings/check-in/**").hasAnyRole("STAFF", "ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/bookings/check-out/**").hasAnyRole("STAFF", "ADMIN")
 
+                // ========== BOOKING SERVICES ==========
+                .antMatchers(HttpMethod.POST, "/api/booking-services/add").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/booking-services/update-quantity/**").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/booking-services/cancel/**").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/booking-services/delete/**").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/booking-services/**").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
+
                 // ========== ROLES ==========
                 .antMatchers("/api/roles/**").hasRole("ADMIN")
 

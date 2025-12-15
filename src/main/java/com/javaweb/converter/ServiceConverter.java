@@ -1,11 +1,12 @@
 package com.javaweb.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.stereotype.Component;
 import com.javaweb.model.dto.ServiceDTO.ServiceResponseDTO;
 import com.javaweb.model.entity.ServiceEntity;
 import com.javaweb.model.entity.ServiceImageEntity;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ServiceConverter {

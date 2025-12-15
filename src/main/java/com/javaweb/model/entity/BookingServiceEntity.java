@@ -10,12 +10,19 @@ public class BookingServiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private Float price; // giá tại thời điểm đặt --> trong trường hợp nếu khách đặt
+    // mà hôm sau thay đổi giá dịch vụ thì vẫn giữ giá cũ cho khách
+
+    private Integer quantity;
 
     //    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime startTime;
+    private LocalDateTime createdTime;
 
     //    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime endTime;
+    private LocalDateTime completedTime;
+
+    // 0: Order (Mới gọi) | 1: Done (Đã phục vụ) | 2: Cancel (Hủy)
+    private Integer status = 0;
 
     @ManyToOne
     @JoinColumn(name = "idBookingRoom")
@@ -31,6 +38,12 @@ public class BookingServiceEntity {
     @OneToMany(mappedBy = "bookingService")
     private List<DoingServiceEntity> doingServices;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.createdTime == null) this.createdTime = LocalDateTime.now();
+        if (this.quantity == null) this.quantity = 1;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -39,20 +52,12 @@ public class BookingServiceEntity {
         this.id = id;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
     }
 
     public BookingRoomEntity getBookingRoom() {
@@ -85,5 +90,37 @@ public class BookingServiceEntity {
 
     public void setDoingServices(List<DoingServiceEntity> doingServices) {
         this.doingServices = doingServices;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCompletedTime() {
+        return completedTime;
+    }
+
+    public void setCompletedTime(LocalDateTime completedTime) {
+        this.completedTime = completedTime;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
     }
 }

@@ -15,9 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -174,7 +174,7 @@ public class BookingRoomServiceImpl implements BookingRoomService {
             if (item.getRoomPromotionId() != null) {
                 RoomPromotionEntity rp = roomPromotionRepository.findById(item.getRoomPromotionId())
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy khuyến mãi"));
-                float discount = rp.getPromotion().getDiscount();
+                float discount = rp.getPromotion().getDiscount() / 100;
                 bookingPrice = bookingPrice - bookingPrice * discount;
             }
 
@@ -314,47 +314,6 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         return bookingRoomConverter.toResponseDTO(bookingEntity);
     }
 
-//    @Override
-//    @Transactional
-//    public void cancelBooking(Integer id) {
-//        BookingRoomEntity booking = bookingRoomRepository.findById(id)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đơn đặt phòng!"));
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String currentEmail = authentication.getName();
-//
-//        boolean isAdminOrStaff = authentication.getAuthorities().stream()
-//                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN") || r.getAuthority().equals("ROLE_STAFF"));
-//
-//        if (!isAdminOrStaff) {
-//            UserEntity currentUser = userRepository.findByAccount_Email(currentEmail).get();
-//            if (currentUser == null || !booking.getCustomer().getId().equals(currentUser.getId())) {
-//                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền hủy đơn đặt phòng này!");
-//            }
-//        }
-//
-//        if (booking.getActualCheckInTime() != null) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Khách đã check-in, không thể hủy đơn! Vui lòng làm thủ tục check-out.");
-//        }
-//
-//        BillEntity bill = booking.getBill();
-//        if (bill == null) {
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Dữ liệu lỗi: Đơn đặt phòng không có hóa đơn.");
-//        }
-//
-//        if (bill.getPaymentStatus() != null && bill.getPaymentStatus().getName().equalsIgnoreCase("Canceled")) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Đơn đặt phòng này đã bị hủy trước đó!");
-//        }
-//
-//        PaymentStatusEntity cancelStatus = (PaymentStatusEntity) paymentStatusRepository.findByName("Canceled")
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi cấu hình: Không tìm thấy trạng thái 'Đã hủy' trong DB"));
-//
-//        bill.setPaymentStatus(cancelStatus);
-//
-//
-//        billRepository.save(bill);
-//    }
-
     @Override
     @Transactional
     public void cancelBooking(Integer bookingId) {
@@ -407,9 +366,9 @@ public class BookingRoomServiceImpl implements BookingRoomService {
             if (br.getStatus() == 1) { // Chỉ cộng tiền những phòng còn Active
                 // newTotal += br.getRoom().getRoomType().getPrice();
                 // Cộng thêm tiền dịch vụ nếu có...
-                float discount = 1f;
+                float discount = 0f;
                 if (br.getRoomPromotion() != null) {
-                    discount = br.getRoomPromotion().getPromotion().getDiscount();
+                    discount = br.getRoomPromotion().getPromotion().getDiscount() / 100;
                 }
                 newTotal += br.getRoom().getRoomType().getPrice() - br.getRoom().getRoomType().getPrice() * discount;
             }
@@ -450,6 +409,7 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         }
 
         booking.setActualCheckOutTime(LocalDateTime.now());
+        booking.setStatus(2); // đã checkout
 
         bookingRoomRepository.save(booking);
     }

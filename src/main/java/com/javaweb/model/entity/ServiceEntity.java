@@ -15,12 +15,12 @@ public class ServiceEntity {
     private Float price;
     private Integer isAvaiable;
     private String unit;
-//    private Integer quantity;
+//    private Integer stock;
 
     @ManyToOne
     @JoinColumn(name = "idServiceCategory")
     private ServiceCategoryEntity serviceCategory;
-    
+
     @ManyToOne
     @JoinColumn(name = "idHotel")
     private HotelEntity hotel;
@@ -31,84 +31,84 @@ public class ServiceEntity {
     @OneToMany(mappedBy = "service")
     private List<BookingServiceEntity> bookingServices;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getDetails() {
-		return details;
-	}
+    public String getDetails() {
+        return details;
+    }
 
-	public void setDetails(String details) {
-		this.details = details;
-	}
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
-	public Float getPrice() {
-		return price;
-	}
+    public Float getPrice() {
+        return price;
+    }
 
-	public void setPrice(Float price) {
-		this.price = price;
-	}
+    public void setPrice(Float price) {
+        this.price = price;
+    }
 
-	public Integer getIsAvaiable() {
-		return isAvaiable;
-	}
+    public Integer getIsAvaiable() {
+        return isAvaiable;
+    }
 
-	public void setIsAvaiable(Integer isAvaiable) {
-		this.isAvaiable = isAvaiable;
-	}
+    public void setIsAvaiable(Integer isAvaiable) {
+        this.isAvaiable = isAvaiable;
+    }
 
-	public String getUnit() {
-		return unit;
-	}
+    public String getUnit() {
+        return unit;
+    }
 
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
-	public ServiceCategoryEntity getServiceCategory() {
-		return serviceCategory;
-	}
+    public ServiceCategoryEntity getServiceCategory() {
+        return serviceCategory;
+    }
 
-	public void setServiceCategory(ServiceCategoryEntity serviceCategory) {
-		this.serviceCategory = serviceCategory;
-	}
+    public void setServiceCategory(ServiceCategoryEntity serviceCategory) {
+        this.serviceCategory = serviceCategory;
+    }
 
-	public List<ServiceImageEntity> getServiceImages() {
-		return serviceImages;
-	}
+    public List<ServiceImageEntity> getServiceImages() {
+        return serviceImages;
+    }
 
-	public void setServiceImages(List<ServiceImageEntity> serviceImages) {
-		this.serviceImages = serviceImages;
-	}
+    public void setServiceImages(List<ServiceImageEntity> serviceImages) {
+        this.serviceImages = serviceImages;
+    }
 
-	public List<BookingServiceEntity> getBookingServices() {
-		return bookingServices;
-	}
+    public List<BookingServiceEntity> getBookingServices() {
+        return bookingServices;
+    }
 
-	public void setBookingServices(List<BookingServiceEntity> bookingServices) {
-		this.bookingServices = bookingServices;
-	}
+    public void setBookingServices(List<BookingServiceEntity> bookingServices) {
+        this.bookingServices = bookingServices;
+    }
 
-	public HotelEntity getHotel() {
-		return hotel;
-	}
+    public HotelEntity getHotel() {
+        return hotel;
+    }
 
-	public void setHotel(HotelEntity hotel) {
-		this.hotel = hotel;
-	}
-    
+    public void setHotel(HotelEntity hotel) {
+        this.hotel = hotel;
+    }
+
 }
