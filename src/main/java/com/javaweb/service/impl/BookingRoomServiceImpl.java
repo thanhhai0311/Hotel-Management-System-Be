@@ -42,6 +42,8 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     private PaymentMethodRepository paymentMethodRepository;
     @Autowired
     private BookingRoomConverter bookingRoomConverter;
+    @Autowired
+    private RoomStatusRepository roomStatusRepository;
 
     private static final LocalTime STANDARD_CHECKIN_TIME = LocalTime.of(14, 0); // 14:00 PM
     private static final LocalTime STANDARD_CHECKOUT_TIME = LocalTime.of(12, 0); // 12:00 PM
@@ -109,6 +111,8 @@ public class BookingRoomServiceImpl implements BookingRoomService {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "Phòng " + lockedRoom.getRoomNumber() + " đã kín lịch trong thời gian bạn chọn.");
             }
+
+//            roomRepository.findById(item.getRoomId()).get().setRoomStatus(roomStatusRepository.findById(2).get());
         }
 
         // 4. Tạo Draft Bill
