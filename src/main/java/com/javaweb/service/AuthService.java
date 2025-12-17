@@ -90,6 +90,7 @@ public class AuthService {
         otpStorage.put(email, new OtpData(otp, expiryTime));
 
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("nguyenthanhhai03112003@gmail.com");
         message.setTo(email);
         message.setSubject("OTP Xác thực đăng ký");
         String content = "Xin chào,\n\n"
