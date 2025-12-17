@@ -42,8 +42,6 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     private PaymentMethodRepository paymentMethodRepository;
     @Autowired
     private BookingRoomConverter bookingRoomConverter;
-    @Autowired
-    private RoomStatusRepository roomStatusRepository;
 
     private static final LocalTime STANDARD_CHECKIN_TIME = LocalTime.of(14, 0); // 14:00 PM
     private static final LocalTime STANDARD_CHECKOUT_TIME = LocalTime.of(12, 0); // 12:00 PM

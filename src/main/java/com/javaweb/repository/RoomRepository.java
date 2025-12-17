@@ -22,7 +22,7 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Integer>, JpaS
     Optional<RoomEntity> findByIdWithLock(@Param("id") Integer id);
 
     @Query("SELECT r FROM RoomEntity r " +
-            "WHERE r.roomStatus.id = 1 " +
+            "WHERE r.roomStatus.id IN (1, 2, 3) " +
             "AND r.id NOT IN (" +
             "   SELECT b.room.id FROM BookingRoomEntity b " +
             "   WHERE b.status = 1 " +
