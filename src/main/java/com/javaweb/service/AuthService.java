@@ -10,7 +10,6 @@ import com.javaweb.repository.RoleRepository;
 import com.javaweb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -62,6 +61,9 @@ public class AuthService {
     @Autowired
     private JavaMailSender emailSender;
 
+    @Autowired
+    private SendGridMailService sendGridMailService;
+
     private final ConcurrentHashMap<String, OtpData> otpStorage = new ConcurrentHashMap<>();
 
     private static final int OTP_MINUTES = 5;
@@ -89,17 +91,32 @@ public class AuthService {
         long expiryTime = System.currentTimeMillis() + OTP_VALID_DURATION;
         otpStorage.put(email, new OtpData(otp, expiryTime));
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("nguyenthanhhai03112003@gmail.com");
-        message.setTo(email);
-        message.setSubject("OTP Xác thực đăng ký");
-        String content = "Xin chào,\n\n"
-                + "Mã OTP xác thực của bạn là: " + otp + "\n\n"
-                + "Mã này sẽ hết hạn trong vòng " + OTP_MINUTES + " phút.\n"
-                + "Vui lòng không chia sẻ mã này cho bất kỳ ai.";
-
-        message.setText(content);
-        emailSender.send(message);
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setFrom("nguyenthanhhai03112003@gmail.com");
+//        message.setTo(email);
+//        message.setSubject("OTP Xác thực đăng ký");
+//        String content = "Xin chào,\n\n"
+//                + "Mã OTP xác thực của bạn là: " + otp + "\n\n"
+//                + "Mã này sẽ hết hạn trong vòng " + OTP_MINUTES + " phút.\n"
+//                + "Vui lòng không chia sẻ mã này cho bất kỳ ai.";
+//
+//        message.setText(content);
+//        emailSender.send(message);
+        String subject = "OTP Xác thực đăng ký";
+        String content =
+                "Xin chào,\n\n" +
+                        "Mã OTP xác thực của bạn là: " + otp + "\n\n" +
+                        "Mã này sẽ hết hạn trong vòng " + OTP_MINUTES + " phút.\n" +
+                        "Vui lòng không chia sẻ mã này cho bất kỳ ai.";
+        try {
+            sendGridMailService.sendTextMail(email, subject, content);
+        } catch (Exception e) {
+            otpStorage.remove(email);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Không thể gửi email OTP. Vui lòng thử lại sau."
+            );
+        }
     }
 
     @Transactional

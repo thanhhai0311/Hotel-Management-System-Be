@@ -15,10 +15,10 @@ import javax.annotation.PostConstruct;
 @Service
 public class SendGridMailService {
 
-    @Value("${SENDGRID_API_KEY}")
+    @Value("${sendgrid.api-key}")
     private String apiKey;
 
-    @Value("${MAIL_FROM}")
+    @Value("${sendgrid.from-email}")
     private String fromEmail;
 
     private SendGrid sendGrid;
