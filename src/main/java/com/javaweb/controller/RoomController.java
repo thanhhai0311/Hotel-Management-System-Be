@@ -94,7 +94,7 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/search/room-availble")
+    @GetMapping("/search/room-available")
     public ResponseEntity<List<RoomResponseDTO>> searchRooms(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkIn,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOut

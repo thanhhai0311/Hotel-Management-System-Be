@@ -212,7 +212,7 @@ public class BookingServiceServiceImpl implements BookingServiceService {
             Float newTotal = currentTotal + amountChange;
             if (newTotal < 0) newTotal = 0.0f;
             bill.setTotalBeforeTax(newTotal);
-            bill.setTotalAfterTax((bill.getTotalBeforeTax() * 0.1f));
+            bill.setTotalAfterTax((bill.getTotalBeforeTax() * 0.1f) + bill.getTotalBeforeTax());
             billRepository.save(bill);
         }
     }

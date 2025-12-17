@@ -88,7 +88,7 @@ public class BookingRoomServiceImpl implements BookingRoomService {
             RoomEntity lockedRoom = roomRepository.findByIdWithLock(item.getRoomId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Phòng ID " + item.getRoomId() + " không tồn tại"));
 
-            if (lockedRoom.getRoomStatus() == null || lockedRoom.getRoomStatus().getId() != 1) {
+            if (lockedRoom.getRoomStatus() == null || lockedRoom.getRoomStatus().getId() == 4) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Phòng " + lockedRoom.getRoomNumber() + " hiện không khả dụng.");
             }
