@@ -6,8 +6,10 @@ import com.javaweb.model.response.ApiResponse;
 import com.javaweb.service.BookingRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -88,13 +90,16 @@ public class BookingRoomController {
         return ResponseEntity.ok("Hủy đặt phòng thành công!");
     }
 
-    @PutMapping("/check-in/{id}")
-    public ResponseEntity<?> checkIn(@PathVariable Integer id) {
-        bookingRoomService.checkIn(id);
+    @PostMapping(value = "/check-in/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> checkIn(
+            @PathVariable Integer id,
+            @RequestParam(value = "cccdImage", required = false) MultipartFile cccdImage
+    ) {
+        bookingRoomService.checkIn(id, cccdImage);
         return ResponseEntity.ok("Check-in thành công!");
     }
-    
-    @PutMapping("/check-out/{id}")
+
+    @PostMapping("/check-out/{id}")
     public ResponseEntity<?> checkOut(@PathVariable Integer id) {
         bookingRoomService.checkOut(id);
         return ResponseEntity.ok("Check-out thành công!");

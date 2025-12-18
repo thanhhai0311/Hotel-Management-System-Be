@@ -59,6 +59,9 @@ public class UserEntity {
     @JoinColumn(name = "idAccount")
     private AccountEntity account;
 
+    @OneToOne(mappedBy = "customer")
+    private CustomerIdentificationEntity customerIdentification;
+
     public Integer getId() {
         return id;
     }

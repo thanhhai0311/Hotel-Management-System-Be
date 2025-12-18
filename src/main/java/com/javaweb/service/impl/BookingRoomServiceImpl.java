@@ -7,6 +7,7 @@ import com.javaweb.model.dto.BookingRoomDTO.BookingResponseDTO;
 import com.javaweb.model.entity.*;
 import com.javaweb.repository.*;
 import com.javaweb.service.BookingRoomService;
+import com.javaweb.service.CustomerIdentificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +16,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -42,6 +45,10 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     private PaymentMethodRepository paymentMethodRepository;
     @Autowired
     private BookingRoomConverter bookingRoomConverter;
+    @Autowired
+    private CustomerIdentificationService identificationService;
+    @Autowired
+    private RoomStatusRepository roomStatusRepository;
 
     private static final LocalTime STANDARD_CHECKIN_TIME = LocalTime.of(14, 0); // 14:00 PM
     private static final LocalTime STANDARD_CHECKOUT_TIME = LocalTime.of(12, 0); // 12:00 PM
@@ -380,7 +387,7 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     }
 
     @Override
-    public void checkIn(Integer id) {
+    public void checkIn(Integer id, MultipartFile cccdImage) {
         BookingRoomEntity booking = bookingRoomRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy đơn đặt phòng!"));
 
@@ -393,6 +400,18 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         }
 
         booking.setActualCheckInTime(LocalDateTime.now()); // Gán giờ hiện tại
+        RoomEntity room = booking.getRoom();
+        room.setRoomStatus(roomStatusRepository.findById(2).get()); // Occupied
+        roomRepository.save(room);
+
+        if (booking.getBill() != null && booking.getBill().getCustomer() != null && cccdImage != null) {
+            try {
+                Integer customerId = booking.getBill().getCustomer().getId();
+                identificationService.processCheckInImage(customerId, cccdImage);
+            } catch (IOException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi upload ảnh: " + e.getMessage());
+            }
+        }
 
         bookingRoomRepository.save(booking);
     }
@@ -413,6 +432,14 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         booking.setActualCheckOutTime(LocalDateTime.now());
         booking.setStatus(2); // đã checkout
 
+        RoomEntity room = booking.getRoom();
+        room.setRoomStatus(roomStatusRepository.findById(1).get()); // Available
+        roomRepository.save(room);
         bookingRoomRepository.save(booking);
+
+        if (booking.getBill() != null && booking.getBill().getCustomer() != null) {
+            Integer customerId = booking.getBill().getCustomer().getId();
+            identificationService.processCheckOutExpiry(customerId);
+        }
     }
 }
