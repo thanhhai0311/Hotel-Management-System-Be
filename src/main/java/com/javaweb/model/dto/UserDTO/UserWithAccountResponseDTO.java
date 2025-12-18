@@ -3,106 +3,116 @@ package com.javaweb.model.dto.UserDTO;
 import java.time.LocalDate;
 
 public class UserWithAccountResponseDTO {
-	private Integer id;
-	private String name;
-	private String phone;
-	private String gender;
-	private String address;
-	private String identification;
-	private LocalDate dob;
+    private Integer id;
+    private String name;
+    private String phone;
+    private String gender;
+    private String address;
+    private String identification;
+    private LocalDate dob;
 
-	// Thông tin account (không bao gồm password)
-	private Integer accountId;
-	private String email;
-	private String roleName;
-	private boolean active;
+    // Thông tin account (không bao gồm password)
+    private Integer accountId;
+    private String email;
+    private String roleName;
+    private boolean active;
 
-	// Getters & Setters
-	public Integer getId() {
-		return id;
-	}
+    private String identificationImage;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    // Getters & Setters
+    public Integer getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public String getGender() {
-		return gender;
-	}
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+    public String getGender() {
+        return gender;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public String getIdentification() {
-		return identification;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setIdentification(String identification) {
-		this.identification = identification;
-	}
+    public String getIdentification() {
+        return identification;
+    }
 
-	public LocalDate getDob() {
-		return dob;
-	}
+    public void setIdentification(String identification) {
+        this.identification = identification;
+    }
 
-	public void setDob(LocalDate dob) {
-		this.dob = dob;
-	}
+    public LocalDate getDob() {
+        return dob;
+    }
 
-	public Integer getAccountId() {
-		return accountId;
-	}
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
 
-	public void setAccountId(Integer accountId) {
-		this.accountId = accountId;
-	}
+    public Integer getAccountId() {
+        return accountId;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getRoleName() {
-		return roleName;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
-	}
+    public String getRoleName() {
+        return roleName;
+    }
 
-	public boolean isActive() {
-		return active;
-	}
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getIdentificationImage() {
+        return identificationImage;
+    }
+
+    public void setIdentificationImage(String identificationImage) {
+        this.identificationImage = identificationImage;
+    }
 }

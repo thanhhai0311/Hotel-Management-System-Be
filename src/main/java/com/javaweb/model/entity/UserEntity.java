@@ -190,5 +190,11 @@ public class UserEntity {
         this.identification = identification;
     }
 
+    public CustomerIdentificationEntity getCustomerIdentification() {
+        return customerIdentification;
+    }
 
+    public void setCustomerIdentification(CustomerIdentificationEntity customerIdentification) {
+        this.customerIdentification = customerIdentification;
+    }
 }
