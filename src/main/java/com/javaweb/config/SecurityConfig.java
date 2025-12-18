@@ -82,6 +82,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**"
                 ).permitAll()
 
+                .antMatchers("/ping").permitAll()
+
                 // Quyền theo vai trò
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/api/staff/**").hasAnyRole("STAFF", "ADMIN")

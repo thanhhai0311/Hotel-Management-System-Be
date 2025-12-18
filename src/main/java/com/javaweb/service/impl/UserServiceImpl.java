@@ -221,7 +221,7 @@ public class UserServiceImpl implements UserService {
                 dto.setRoleName(user.getAccount().getRole().getName());
         }
 
-        if (user.getCustomerIdentification().getIdentificationImage() != null) {
+        if (user.getCustomerIdentification() != null && user.getCustomerIdentification().getIdentificationImage() != null) {
             dto.setIdentificationImage(user.getCustomerIdentification().getIdentificationImage());
         }
         return dto;
