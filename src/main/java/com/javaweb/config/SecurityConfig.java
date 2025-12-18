@@ -215,6 +215,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // ========== BILL SERVICES ==========
                 .antMatchers(HttpMethod.GET, "/api/bills/**").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
 
+                // ========== LOCATIONS ==========
+                .antMatchers(HttpMethod.GET, "/api/locations/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/locations/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/locations/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/locations/**").hasRole("ADMIN")
+                
                 // ========== ROLES ==========
                 .antMatchers("/api/roles/**").hasRole("ADMIN")
 

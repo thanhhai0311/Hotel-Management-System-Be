@@ -1,8 +1,7 @@
 package com.javaweb.model.entity;
 
-import java.util.List;
-
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "hotel")
@@ -13,56 +12,75 @@ public class HotelEntity {
 
     @Column(name = "name")
     private String name;
-    
+
     @Column(name = "address")
     private String address;
-    
+
     @Column(name = "details")
     private String details;
-    
+
     @OneToMany(mappedBy = "hotel")
     private List<RoomEntity> rooms;
-    
+
     @OneToMany(mappedBy = "hotel")
     private List<ServiceEntity> services;
-    
-	public Integer getId() {
-		return id;
-	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<LocationEntity> locations;
 
-	public String getName() {
-		return name;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getDetails() {
-		return details;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setDetails(String details) {
-		this.details = details;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public List<RoomEntity> getRooms() {
-		return rooms;
-	}
+    public String getDetails() {
+        return details;
+    }
 
-	public void setRooms(List<RoomEntity> rooms) {
-		this.rooms = rooms;
-	}
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public List<RoomEntity> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<RoomEntity> rooms) {
+        this.rooms = rooms;
+    }
+
+    public List<ServiceEntity> getServices() {
+        return services;
+    }
+
+    public void setServices(List<ServiceEntity> services) {
+        this.services = services;
+    }
+
+    public List<LocationEntity> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<LocationEntity> locations) {
+        this.locations = locations;
+    }
 }
