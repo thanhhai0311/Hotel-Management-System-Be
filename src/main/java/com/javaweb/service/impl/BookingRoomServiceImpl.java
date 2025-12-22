@@ -16,10 +16,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,7 +55,7 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     private static final LocalTime STANDARD_CHECKOUT_TIME = LocalTime.of(12, 0); // 12:00 PM
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public Map<String, Object> createBooking(BookingRequestDTO request) {
         UserEntity customer;
         if (request.getCustomerId() != null) {
