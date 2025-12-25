@@ -4,10 +4,12 @@ import com.javaweb.converter.BookingRoomConverter;
 import com.javaweb.model.dto.BookingRoomDTO.BookingItemDTO;
 import com.javaweb.model.dto.BookingRoomDTO.BookingRequestDTO;
 import com.javaweb.model.dto.BookingRoomDTO.BookingResponseDTO;
+import com.javaweb.model.dto.CheckoutDTO.CheckoutInfoDTO;
 import com.javaweb.model.entity.*;
 import com.javaweb.repository.*;
 import com.javaweb.service.BookingRoomService;
 import com.javaweb.service.CustomerIdentificationService;
+import com.javaweb.utils.VietQRUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -441,6 +443,92 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         if (booking.getBill() != null && booking.getBill().getCustomer() != null) {
             Integer customerId = booking.getBill().getCustomer().getId();
             identificationService.processCheckOutExpiry(customerId);
+        }
+    }
+
+    @Override
+    public CheckoutInfoDTO getPaymentInfoByBill(Integer billId) {
+        BillEntity bill = billRepository.findById(billId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy hóa đơn!"));
+
+        CheckoutInfoDTO info = new CheckoutInfoDTO();
+        info.setBillId(bill.getId());
+        info.setTotalAmount(bill.getTotalAfterTax());
+
+        if (bill.getCustomer() != null) {
+            info.setCustomerName(bill.getCustomer().getName());
+        }
+
+        List<Integer> roomNumbers = new ArrayList<>();
+        if (bill.getBookingRooms() != null) {
+            for (BookingRoomEntity br : bill.getBookingRooms()) {
+                if (br.getRoom() != null) {
+                    roomNumbers.add(br.getRoom().getRoomNumber());
+                }
+            }
+        }
+        info.setRoomNumbers(roomNumbers);
+
+        // Tạo nội dung chuyển khoản
+        String content = "THANHTOAN BILL " + bill.getId();
+        info.setPaymentContent(content);
+
+        // Tạo QR chuyển khoản
+        String qrUrl = VietQRUtils.generateQRUrl(bill.getTotalAfterTax(), content);
+        info.setQrUrl(qrUrl);
+
+        return info;
+    }
+
+    @Override
+    @Transactional
+    public void confirmCheckoutByBill(Integer billId, Integer paymentMethodId) { // 1: QR Banking, 2: Cash
+        BillEntity bill = billRepository.findById(billId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy hóa đơn!"));
+
+        // Payment status: 1-Pending, 2-Completed, 3-Cancel
+        if (bill.getPaymentStatus() != null && bill.getPaymentStatus().getId() == 2) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hóa đơn này đã được thanh toán rồi!");
+        }
+
+        List<BookingRoomEntity> bookingRooms = bill.getBookingRooms();
+        if (bookingRooms == null || bookingRooms.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hóa đơn không có phòng nào!");
+        }
+
+        for (BookingRoomEntity booking : bookingRooms) {
+            if (booking.getStatus() == null || booking.getStatus() != 2) {
+                // Set thời gian check out là hiện tại
+                if (booking.getActualCheckOutTime() == null) {
+                    booking.setActualCheckOutTime(LocalDateTime.now());
+                }
+
+                // Đổi trạng thái Booking -> Completed/Checkout (2)
+                booking.setStatus(2);
+
+                // Trả phòng (Room) về trạng thái Trống (Available = 1)
+                RoomEntity room = booking.getRoom();
+                room.setRoomStatus(roomStatusRepository.findById(1)
+                        .orElseThrow(() -> new RuntimeException("Lỗi cấu hình Room Status")));
+                roomRepository.save(room);
+            }
+        }
+
+        bookingRoomRepository.saveAll(bookingRooms);
+
+        PaymentStatusEntity paidStatus = paymentStatusRepository.findById(2) // 2 = PAID/COMPLETED
+                .orElseThrow(() -> new RuntimeException("Lỗi cấu hình Payment Status"));
+        bill.setPaymentStatus(paidStatus);
+
+        PaymentMethodEntity method = paymentMethodRepository.findById(paymentMethodId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Phương thức thanh toán sai"));
+        bill.setPaymentMethod(method);
+
+        billRepository.save(bill);
+
+        // Đặt ngày xóa CCCD của khách
+        if (bill.getCustomer() != null) {
+            identificationService.processCheckOutExpiry(bill.getCustomer().getId());
         }
     }
 }

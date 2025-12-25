@@ -2,6 +2,7 @@ package com.javaweb.service;
 
 import com.javaweb.model.dto.BookingRoomDTO.BookingRequestDTO;
 import com.javaweb.model.dto.BookingRoomDTO.BookingResponseDTO;
+import com.javaweb.model.dto.CheckoutDTO.CheckoutInfoDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -19,4 +20,8 @@ public interface BookingRoomService {
     void checkIn(Integer id, MultipartFile cccdImage);
 
     void checkOut(Integer id);
+    
+    void confirmCheckoutByBill(Integer billId, Integer paymentMethodId);
+
+    CheckoutInfoDTO getPaymentInfoByBill(Integer billId);
 }

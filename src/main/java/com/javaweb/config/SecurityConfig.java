@@ -92,6 +92,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // ========== AUTHENTICATION ==========
                 .antMatchers("/api/auth/**").permitAll() // login, register public
 
+                .antMatchers("/api/sepay/**").permitAll()
+
                 // ========== IMAGES ==========
                 .antMatchers(HttpMethod.POST, "/api/images/upload").hasAnyRole("ADMIN", "CUSTOMER", "STAFF")
 
@@ -220,7 +222,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/locations/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/locations/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/locations/**").hasRole("ADMIN")
-                
+
                 // ========== ROLES ==========
                 .antMatchers("/api/roles/**").hasRole("ADMIN")
 

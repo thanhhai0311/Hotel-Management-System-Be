@@ -20,7 +20,7 @@ public class BookingRoomEntity {
     private LocalDateTime actualCheckOutTime;
 
     @Column(name = "status")
-    private Integer status = 1;
+    private Integer status = 1; // 1: chưa checkout, 2: đã checkout
 
     @ManyToOne
     @JoinColumn(name = "idBill")
