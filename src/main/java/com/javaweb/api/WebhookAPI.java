@@ -33,7 +33,7 @@ public class WebhookAPI {
 
         System.out.println("1. Token Server đang giữ (Config): " + sepayApiToken);
         System.out.println("2. Token Swagger gửi lên (Header): " + authorization);
-        
+
         // 1. Bảo mật: Check Token SePay
         if (!authorization.contains(sepayApiToken)) {
             return ResponseEntity.status(403).body("Unauthorized");
@@ -81,8 +81,8 @@ public class WebhookAPI {
 
         // So sánh tiền
         if (receivedAmount >= (bill.getTotalAfterTax() - 1000)) {
-            // paymentMethodId = 2 (Chuyển khoản)
-            bookingRoomService.confirmCheckoutByBill(billId, 2);
+            // paymentMethodId = 1 (QR Bank)
+            bookingRoomService.confirmCheckoutByBill(billId, 1);
 
             System.out.println("SePay: Đã Checkout thành công cho Bill " + billId);
         }
