@@ -10,19 +10,27 @@ public class ServiceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String name;
+
     private String details;
+
+    @Column(nullable = false)
     private Float price;
+
+    @Column(nullable = false)
     private Integer isAvaiable;
+
+    @Column(nullable = false)
     private String unit;
 //    private Integer stock;
 
     @ManyToOne
-    @JoinColumn(name = "idServiceCategory")
+    @JoinColumn(name = "idServiceCategory", nullable = false)
     private ServiceCategoryEntity serviceCategory;
 
     @ManyToOne
-    @JoinColumn(name = "idHotel")
+    @JoinColumn(name = "idHotel", nullable = false)
     private HotelEntity hotel;
 
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -52,6 +52,8 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     private CustomerIdentificationService identificationService;
     @Autowired
     private RoomStatusRepository roomStatusRepository;
+    @Autowired
+    RoleRepository roleRepository;
 
     private static final LocalTime STANDARD_CHECKIN_TIME = LocalTime.of(14, 0); // 14:00 PM
     private static final LocalTime STANDARD_CHECKOUT_TIME = LocalTime.of(12, 0); // 12:00 PM
@@ -77,7 +79,7 @@ public class BookingRoomServiceImpl implements BookingRoomService {
                 newUser.setName(request.getCustomerName());
                 newUser.setPhone(request.getCustomerPhone());
                 newUser.setIdentification(request.getIdentification());
-                newUser.setAccount(null);
+                newUser.setAccount(null); // là khách hàng mới
                 customer = userRepository.save(newUser);
             }
         }

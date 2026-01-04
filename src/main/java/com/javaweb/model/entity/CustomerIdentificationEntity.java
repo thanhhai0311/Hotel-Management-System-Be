@@ -11,13 +11,13 @@ public class CustomerIdentificationEntity {
     private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "idUser")
+    @JoinColumn(name = "idUser", nullable = false)
     private UserEntity customer;
 
-    @Column(name = "identificationImage")
+    @Column(name = "identificationImage", nullable = false)
     private String identificationImage;
 
-    @Column(name = "expiryDate")
+    @Column(name = "expiryDate", nullable = false)
     private LocalDateTime expiryDate;
 
     public Integer getId() {

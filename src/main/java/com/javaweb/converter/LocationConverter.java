@@ -1,6 +1,7 @@
 package com.javaweb.converter;
 
 import com.javaweb.model.dto.LocationDTO.LocationDTO;
+import com.javaweb.model.dto.LocationDTO.LocationResponseDTO;
 import com.javaweb.model.entity.LocationEntity;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +17,8 @@ public class LocationConverter {
         return entity;
     }
 
-    public LocationDTO toDTO(LocationEntity entity) {
-        LocationDTO dto = new LocationDTO();
+    public LocationResponseDTO toDTO(LocationEntity entity) {
+        LocationResponseDTO dto = new LocationResponseDTO();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setDescription(entity.getDescription());

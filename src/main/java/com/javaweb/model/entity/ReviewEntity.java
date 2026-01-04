@@ -12,78 +12,78 @@ public class ReviewEntity {
     private Integer id;
 
     private String details;
+
     private Integer star;
-    
+
+    @Column(nullable = false)
     private String type;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     private Date day;
 
     @ManyToOne
-    @JoinColumn(name = "idCustomer")
+    @JoinColumn(name = "idCustomer", nullable = false)
     private UserEntity customer;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImageEntity> reviewImages;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getDetails() {
-		return details;
-	}
+    public String getDetails() {
+        return details;
+    }
 
-	public void setDetails(String details) {
-		this.details = details;
-	}
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
-	public Integer getStar() {
-		return star;
-	}
+    public Integer getStar() {
+        return star;
+    }
 
-	public void setStar(Integer star) {
-		this.star = star;
-	}
+    public void setStar(Integer star) {
+        this.star = star;
+    }
 
-	public Date getDay() {
-		return day;
-	}
+    public Date getDay() {
+        return day;
+    }
 
-	public void setDay(Date day) {
-		this.day = day;
-	}
+    public void setDay(Date day) {
+        this.day = day;
+    }
 
-	public UserEntity getCustomer() {
-		return customer;
-	}
+    public UserEntity getCustomer() {
+        return customer;
+    }
 
-	public void setCustomer(UserEntity customer) {
-		this.customer = customer;
-	}
+    public void setCustomer(UserEntity customer) {
+        this.customer = customer;
+    }
 
-	public List<ReviewImageEntity> getReviewImages() {
-		return reviewImages;
-	}
+    public List<ReviewImageEntity> getReviewImages() {
+        return reviewImages;
+    }
 
-	public void setReviewImages(List<ReviewImageEntity> reviewImages) {
-		this.reviewImages = reviewImages;
-	}
+    public void setReviewImages(List<ReviewImageEntity> reviewImages) {
+        this.reviewImages = reviewImages;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	
+    public void setType(String type) {
+        this.type = type;
+    }
 
 
-    
 }

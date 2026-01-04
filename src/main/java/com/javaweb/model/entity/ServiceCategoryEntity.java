@@ -10,44 +10,45 @@ public class ServiceCategoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String name;
+
     private String details;
 
     @OneToMany(mappedBy = "serviceCategory")
     private List<ServiceEntity> services;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getDetails() {
-		return details;
-	}
+    public String getDetails() {
+        return details;
+    }
 
-	public void setDetails(String details) {
-		this.details = details;
-	}
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
-	public List<ServiceEntity> getServices() {
-		return services;
-	}
+    public List<ServiceEntity> getServices() {
+        return services;
+    }
 
-	public void setServices(List<ServiceEntity> services) {
-		this.services = services;
-	}
-    
-    
+    public void setServices(List<ServiceEntity> services) {
+        this.services = services;
+    }
+
 
 }

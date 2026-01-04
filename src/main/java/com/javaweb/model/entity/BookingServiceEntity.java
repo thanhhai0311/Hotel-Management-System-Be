@@ -2,7 +2,6 @@ package com.javaweb.model.entity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "bookingservice")
@@ -10,9 +9,12 @@ public class BookingServiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "price", nullable = false)
     private Float price; // giá tại thời điểm đặt --> trong trường hợp nếu khách đặt
     // mà hôm sau thay đổi giá dịch vụ thì vẫn giữ giá cũ cho khách
 
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     //    @Temporal(TemporalType.TIMESTAMP)
@@ -22,21 +24,16 @@ public class BookingServiceEntity {
     private LocalDateTime completedTime;
 
     // 0: Order (Mới gọi) | 1: Done (Đã phục vụ) | 2: Cancel (Hủy)
+    @Column(name = "status", nullable = false)
     private Integer status = 0;
 
     @ManyToOne
-    @JoinColumn(name = "idBookingRoom")
+    @JoinColumn(name = "idBookingRoom", nullable = false)
     private BookingRoomEntity bookingRoom;
 
     @ManyToOne
-    @JoinColumn(name = "idService")
+    @JoinColumn(name = "idService", nullable = false)
     private ServiceEntity service;
-
-    @OneToMany(mappedBy = "bookingService")
-    private List<NotifacationServiceEntity> notifacationServices;
-
-    @OneToMany(mappedBy = "bookingService")
-    private List<DoingServiceEntity> doingServices;
 
     @PrePersist
     public void prePersist() {
@@ -74,22 +71,6 @@ public class BookingServiceEntity {
 
     public void setService(ServiceEntity service) {
         this.service = service;
-    }
-
-    public List<NotifacationServiceEntity> getNotifacationServices() {
-        return notifacationServices;
-    }
-
-    public void setNotifacationServices(List<NotifacationServiceEntity> notifacationServices) {
-        this.notifacationServices = notifacationServices;
-    }
-
-    public List<DoingServiceEntity> getDoingServices() {
-        return doingServices;
-    }
-
-    public void setDoingServices(List<DoingServiceEntity> doingServices) {
-        this.doingServices = doingServices;
     }
 
     public Integer getStatus() {

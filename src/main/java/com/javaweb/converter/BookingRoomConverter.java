@@ -41,10 +41,10 @@ public class BookingRoomConverter {
         }
 
         // 4. Map thông tin Nhân viên
-        if (entity.getEmployee() != null) {
-            dto.setEmployeeId(entity.getEmployee().getId());
-            dto.setEmployeeName(entity.getEmployee().getName());
-        }
+//        if (entity.getEmployee() != null) {
+//            dto.setEmployeeId(entity.getEmployee().getId());
+//            dto.setEmployeeName(entity.getEmployee().getName());
+//        }
 
         // 5. Map thông tin Khuyến mãi
         if (entity.getRoomPromotion() != null) {

@@ -1,6 +1,7 @@
 package com.javaweb.controller;
 
 import com.javaweb.model.dto.LocationDTO.LocationDTO;
+import com.javaweb.model.dto.LocationDTO.LocationResponseDTO;
 import com.javaweb.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +16,19 @@ public class LocationController {
     private LocationService locationService;
 
     @GetMapping
-    public ResponseEntity<List<LocationDTO>> getAllLocations() {
+    public ResponseEntity<List<LocationResponseDTO>> getAllLocations() {
         return ResponseEntity.ok(locationService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<LocationDTO> createLocation(@RequestBody LocationDTO locationDTO) {
-        return ResponseEntity.ok(locationService.save(locationDTO));
+    public ResponseEntity<LocationResponseDTO> createLocation(@RequestBody LocationDTO locationDTO) {
+        return ResponseEntity.ok(locationService.save(null, locationDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LocationDTO> updateLocation(@PathVariable Integer id, @RequestBody LocationDTO locationDTO) {
-        locationDTO.setId(id);
-        return ResponseEntity.ok(locationService.save(locationDTO));
+    public ResponseEntity<LocationResponseDTO> updateLocation(@PathVariable Integer id, @RequestBody LocationDTO locationDTO) {
+//        locationDTO.setId(id);
+        return ResponseEntity.ok(locationService.save(id, locationDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -37,8 +38,8 @@ public class LocationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LocationDTO> getLocationById(@PathVariable Integer id) {
-        LocationDTO result = locationService.findById(id);
+    public ResponseEntity<LocationResponseDTO> getLocationById(@PathVariable Integer id) {
+        LocationResponseDTO result = locationService.findById(id);
         return ResponseEntity.ok(result);
     }
 }

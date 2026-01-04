@@ -1,11 +1,20 @@
 package com.javaweb.model.dto.LocationDTO;
 
-public class LocationDTO {
+public class LocationResponseDTO {
+    private Integer id;
     private String name;
     private String description;
     private String thumbnail;
     private String websiteUrl;
     private Integer hotelId;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

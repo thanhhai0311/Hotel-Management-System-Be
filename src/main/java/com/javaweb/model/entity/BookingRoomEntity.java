@@ -11,42 +11,39 @@ public class BookingRoomEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "contractCheckInTime", nullable = false)
     private LocalDateTime contractCheckInTime;
 
+    @Column(name = "contractCheckOutTime", nullable = false)
     private LocalDateTime contractCheckOutTime;
 
+    @Column(name = "actualCheckInTime", nullable = false)
     private LocalDateTime actualCheckInTime;
 
+    @Column(name = "actualCheckOutTime", nullable = false)
     private LocalDateTime actualCheckOutTime;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private Integer status = 1; // 1: chưa checkout, 2: đã checkout
 
     @ManyToOne
-    @JoinColumn(name = "idBill")
+    @JoinColumn(name = "idBill", nullable = false)
     private BillEntity bill;
 
     @ManyToOne
-    @JoinColumn(name = "idCustomer")
+    @JoinColumn(name = "idCustomer", nullable = false)
     private UserEntity customer;
 
     @ManyToOne
-    @JoinColumn(name = "idRoomPromotion")
+    @JoinColumn(name = "idRoomPromotion", nullable = false)
     private RoomPromotionEntity roomPromotion;
 
     @ManyToOne
-    @JoinColumn(name = "idRoom")
+    @JoinColumn(name = "idRoom", nullable = false)
     private RoomEntity room;
 
-    @ManyToOne
-    @JoinColumn(name = "idEmployee")
-    private UserEntity employee;
-
-    @OneToMany(mappedBy = "bookingRoom")
+    @OneToMany(mappedBy = "bookingRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookingServiceEntity> bookingServices;
-
-    @OneToMany(mappedBy = "bookingRoom")
-    private List<NotifacationRoomEntity> notifacationRooms;
 
     public Integer getId() {
         return id;
@@ -112,28 +109,12 @@ public class BookingRoomEntity {
         this.room = room;
     }
 
-    public UserEntity getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(UserEntity employee) {
-        this.employee = employee;
-    }
-
     public List<BookingServiceEntity> getBookingServices() {
         return bookingServices;
     }
 
     public void setBookingServices(List<BookingServiceEntity> bookingServices) {
         this.bookingServices = bookingServices;
-    }
-
-    public List<NotifacationRoomEntity> getNotifacationRooms() {
-        return notifacationRooms;
-    }
-
-    public void setNotifacationRooms(List<NotifacationRoomEntity> notifacationRooms) {
-        this.notifacationRooms = notifacationRooms;
     }
 
     public BillEntity getBill() {

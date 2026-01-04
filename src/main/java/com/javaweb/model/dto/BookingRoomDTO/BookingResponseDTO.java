@@ -23,8 +23,8 @@ public class BookingResponseDTO {
     private String customerPhone;
 
     // Employee Info
-    private Integer employeeId;
-    private String employeeName;
+//    private Integer employeeId;
+//    private String employeeName;
 
     // Promotion
     private String promotionName;
@@ -183,21 +183,21 @@ public class BookingResponseDTO {
         this.customerPhone = customerPhone;
     }
 
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public String getEmployeeName() {
-        return employeeName;
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
+//    public Integer getEmployeeId() {
+//        return employeeId;
+//    }
+//
+//    public void setEmployeeId(Integer employeeId) {
+//        this.employeeId = employeeId;
+//    }
+//
+//    public String getEmployeeName() {
+//        return employeeName;
+//    }
+//
+//    public void setEmployeeName(String employeeName) {
+//        this.employeeName = employeeName;
+//    }
 
     public String getPromotionName() {
         return promotionName;

@@ -1,8 +1,7 @@
 package com.javaweb.model.entity;
 
-import java.util.List;
-
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "role")
@@ -11,47 +10,46 @@ public class RoleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
-    
+
     @Column(name = "details")
     private String details;
-    
+
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     private List<AccountEntity> accountEntity;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getDetails() {
-		return details;
-	}
+    public String getDetails() {
+        return details;
+    }
 
-	public void setDetails(String details) {
-		this.details = details;
-	}
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
-	public List<AccountEntity> getAccountEntity() {
-		return accountEntity;
-	}
+    public List<AccountEntity> getAccountEntity() {
+        return accountEntity;
+    }
 
-	public void setAccountEntity(List<AccountEntity> accountEntity) {
-		this.accountEntity = accountEntity;
-	}
+    public void setAccountEntity(List<AccountEntity> accountEntity) {
+        this.accountEntity = accountEntity;
+    }
 
-	
-	   
+
 }

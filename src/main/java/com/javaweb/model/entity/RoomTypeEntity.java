@@ -11,36 +11,51 @@ public class RoomTypeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String name;
 
     private String details;
 
+    @Column(nullable = false)
     private Integer bedCount;
 
+    @Column(nullable = false)
     private Integer maxOccupancy;
 
+    @Column(nullable = false)
     private Float price;
 
+    @Column(nullable = false)
     private Float area;
 
+    @Column(nullable = false)
     private Boolean isPrivateBathroom = false;
 
+    @Column(nullable = false)
     private Boolean isFreeToiletries = false;
 
+    @Column(nullable = false)
     private Boolean isAirConditioning = false;
 
+    @Column(nullable = false)
     private Boolean isSoundproofing = false;
 
+    @Column(nullable = false)
     private Boolean isTV = false;
 
+    @Column(nullable = false)
     private Boolean isMiniBar = false;
 
+    @Column(nullable = false)
     private Boolean isWorkDesk = false;
 
+    @Column(nullable = false)
     private Boolean isSeatingArea = false;
 
+    @Column(nullable = false)
     private Boolean isSafetyFeatures = false;
 
+    @Column(nullable = false)
     private Boolean isSmoking = false;
 
     @Column(nullable = false)
@@ -49,7 +64,7 @@ public class RoomTypeEntity {
     @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TypeImageEntity> typeImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "roomType")
     private List<RoomEntity> rooms = new ArrayList<>();
 
     public Integer getId() {

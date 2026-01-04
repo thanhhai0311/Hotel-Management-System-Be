@@ -1,98 +1,91 @@
 package com.javaweb.model.entity;
 
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "shift")
 public class ShiftEntity {
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-	
-	@Column(name = "name")
-	private String name;
-	
-	 // Lưu giờ bắt đầu của ca
-    @Column(name = "startTime")
-    private LocalTime  startTime;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    // Lưu giờ bắt đầu của ca
+    @Column(name = "startTime", nullable = false)
+    private LocalTime startTime;
 
     // Lưu giờ kết thúc của ca
-    @Column(name = "endTime")
-    private LocalTime  endTime;
+    @Column(name = "endTime", nullable = false)
+    private LocalTime endTime;
 
-	@Column(name = "details")
-	private String details;
-	
-	@Column(name = "isActive")
+    @Column(name = "details")
+    private String details;
+
+    @Column(name = "isActive", nullable = false)
     private Boolean isActive = true;
-	
-	@OneToMany(mappedBy = "shift")
-	private List<ShiftingEntity> shiftings;
 
-	public Integer getId() {
-		return id;
-	}
+    @OneToMany(mappedBy = "shift")
+    private List<ShiftingEntity> shiftings;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public LocalTime getStartTime() {
-		return startTime;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setStartTime(LocalTime startTime) {
-		this.startTime = startTime;
-	}
+    public LocalTime getStartTime() {
+        return startTime;
+    }
 
-	public LocalTime getEndTime() {
-		return endTime;
-	}
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
 
-	public void setEndTime(LocalTime endTime) {
-		this.endTime = endTime;
-	}
+    public LocalTime getEndTime() {
+        return endTime;
+    }
 
-	public String getDetails() {
-		return details;
-	}
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
 
-	public void setDetails(String details) {
-		this.details = details;
-	}
+    public String getDetails() {
+        return details;
+    }
 
-	public List<ShiftingEntity> getShiftings() {
-		return shiftings;
-	}
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
-	public void setShiftings(List<ShiftingEntity> shiftings) {
-		this.shiftings = shiftings;
-	}
+    public List<ShiftingEntity> getShiftings() {
+        return shiftings;
+    }
 
-	public Boolean getIsActive() {
-		return isActive;
-	}
+    public void setShiftings(List<ShiftingEntity> shiftings) {
+        this.shiftings = shiftings;
+    }
 
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
-	
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
 
 }

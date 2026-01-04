@@ -13,10 +13,10 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "phone")
+    @Column(name = "phone", nullable = false)
     private String phone;
 
     @Column(name = "gender")
@@ -25,22 +25,16 @@ public class UserEntity {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "identification")
+    @Column(name = "identification", nullable = false)
     private String identification;
 
     @Column(name = "dob")
     private LocalDate dob;
 
     @OneToMany(mappedBy = "employee")
-    private List<EvaluateEntity> evaluates;
-
-    @OneToMany(mappedBy = "employee")
     private List<ShiftingEntity> shiftings;
 
-    @OneToMany(mappedBy = "employee")
-    private List<DoingServiceEntity> doingServices;
-
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEntity> reviews;
 
     @OneToMany(mappedBy = "customer")
@@ -49,17 +43,11 @@ public class UserEntity {
     @OneToMany(mappedBy = "customer")
     private List<BillEntity> bills;
 
-    @OneToMany(mappedBy = "customer")
-    private List<NotifacationServiceEntity> notifacationServices;
-
-    @OneToMany(mappedBy = "customer")
-    private List<NotifacationRoomEntity> notifacationRooms;
-
     @OneToOne()
-    @JoinColumn(name = "idAccount")
+    @JoinColumn(name = "idAccount", nullable = false)
     private AccountEntity account;
 
-    @OneToOne(mappedBy = "customer")
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private CustomerIdentificationEntity customerIdentification;
 
     public Integer getId() {
@@ -110,28 +98,12 @@ public class UserEntity {
         this.dob = dob;
     }
 
-    public List<EvaluateEntity> getEvaluates() {
-        return evaluates;
-    }
-
-    public void setEvaluates(List<EvaluateEntity> evaluates) {
-        this.evaluates = evaluates;
-    }
-
     public List<ShiftingEntity> getShiftings() {
         return shiftings;
     }
 
     public void setShiftings(List<ShiftingEntity> shiftings) {
         this.shiftings = shiftings;
-    }
-
-    public List<DoingServiceEntity> getDoingServices() {
-        return doingServices;
-    }
-
-    public void setDoingServices(List<DoingServiceEntity> doingServices) {
-        this.doingServices = doingServices;
     }
 
     public List<ReviewEntity> getReviews() {
@@ -156,22 +128,6 @@ public class UserEntity {
 
     public void setBills(List<BillEntity> bills) {
         this.bills = bills;
-    }
-
-    public List<NotifacationServiceEntity> getNotifacationServices() {
-        return notifacationServices;
-    }
-
-    public void setNotifacationServices(List<NotifacationServiceEntity> notifacationServices) {
-        this.notifacationServices = notifacationServices;
-    }
-
-    public List<NotifacationRoomEntity> getNotifacationRooms() {
-        return notifacationRooms;
-    }
-
-    public void setNotifacationRooms(List<NotifacationRoomEntity> notifacationRooms) {
-        this.notifacationRooms = notifacationRooms;
     }
 
     public AccountEntity getAccount() {
