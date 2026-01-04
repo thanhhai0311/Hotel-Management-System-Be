@@ -17,10 +17,10 @@ public class BookingRoomEntity {
     @Column(name = "contractCheckOutTime", nullable = false)
     private LocalDateTime contractCheckOutTime;
 
-    @Column(name = "actualCheckInTime", nullable = false)
+    @Column(name = "actualCheckInTime")
     private LocalDateTime actualCheckInTime;
 
-    @Column(name = "actualCheckOutTime", nullable = false)
+    @Column(name = "actualCheckOutTime")
     private LocalDateTime actualCheckOutTime;
 
     @Column(name = "status", nullable = false)
@@ -35,7 +35,7 @@ public class BookingRoomEntity {
     private UserEntity customer;
 
     @ManyToOne
-    @JoinColumn(name = "idRoomPromotion", nullable = false)
+    @JoinColumn(name = "idRoomPromotion")
     private RoomPromotionEntity roomPromotion;
 
     @ManyToOne
