@@ -259,7 +259,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
         // Đánh dấu đã xóa
 //		roomType.setIsDeleted(true);
-        roomTypeRepository.save(roomType);
+        roomTypeRepository.delete(roomType);
     }
 
     @Override
