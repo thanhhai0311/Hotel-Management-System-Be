@@ -44,7 +44,7 @@ public class UserEntity {
     private List<BillEntity> bills;
 
     @OneToOne()
-    @JoinColumn(name = "idAccount", nullable = false)
+    @JoinColumn(name = "idAccount")
     private AccountEntity account;
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
