@@ -72,4 +72,10 @@ public class BillController {
         CheckoutInfoDTO info = bookingRoomService.getPaymentInfoByBill(billId);
         return ResponseEntity.ok(info);
     }
+
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<BillResponseDTO> updateBillStatus(@PathVariable("id") Integer id) {
+        BillResponseDTO billRes = billService.updateStatusBill(id);
+        return ResponseEntity.ok(billRes);
+    }
 }

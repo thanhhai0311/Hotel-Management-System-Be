@@ -8,4 +8,6 @@ public interface BillService {
     List<BillResponseDTO> getAllBills(Integer page, Integer limit);
 
     BillResponseDTO getBillById(Integer id);
+
+    BillResponseDTO updateStatusBill(Integer id);
 }

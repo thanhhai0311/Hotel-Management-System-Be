@@ -216,6 +216,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // ========== BILL SERVICES ==========
                 .antMatchers(HttpMethod.GET, "/api/bills/**").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/bills/update-status/**").hasAnyRole("ADMIN", "STAFF")
 
                 // ========== LOCATIONS ==========
                 .antMatchers(HttpMethod.GET, "/api/locations/**").permitAll()

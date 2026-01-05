@@ -6,6 +6,7 @@ import com.javaweb.model.entity.BookingRoomEntity;
 import com.javaweb.model.entity.BookingServiceEntity;
 import com.javaweb.model.entity.UserEntity;
 import com.javaweb.repository.BillRepository;
+import com.javaweb.repository.PaymentStatusRepository;
 import com.javaweb.repository.UserRepository;
 import com.javaweb.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class BillServiceImpl implements BillService {
     private BillRepository billRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PaymentStatusRepository paymentStatusRepository;
 
     @Override
     public List<BillResponseDTO> getAllBills(Integer page, Integer limit) {
@@ -78,6 +81,19 @@ public class BillServiceImpl implements BillService {
             }
         }
 
+        return convertToDTO(bill);
+    }
+
+    @Override
+    public BillResponseDTO updateStatusBill(Integer id) {
+        BillEntity bill = billRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy hóa đơn!"));
+        if (bill.getPaymentStatus().getId() != 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Khách hàng đã check-in hoặc hủy booking rồi");
+        }
+        bill.setPaymentStatus(paymentStatusRepository.findById(4)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thầy trạng thái hóa đơn!")));
+        billRepository.save(bill);
         return convertToDTO(bill);
     }
 
