@@ -21,11 +21,11 @@ public class BillEntity {
     private Float totalAfterTax;
 
     @ManyToOne
-    @JoinColumn(name = "idPaymentMethod", nullable = false)
+    @JoinColumn(name = "idPaymentMethod")
     private PaymentMethodEntity paymentMethod;
 
     @ManyToOne
-    @JoinColumn(name = "idPaymentStatus", nullable = false)
+    @JoinColumn(name = "idPaymentStatus")
     private PaymentStatusEntity paymentStatus;
 
     @ManyToOne
