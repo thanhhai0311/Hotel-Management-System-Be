@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -53,10 +54,18 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     @Autowired
     private RoomStatusRepository roomStatusRepository;
     @Autowired
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
+    @Autowired
+    private BlackListRepository blackListRepository;
+    @Autowired
+    private HotelRepository hotelRepository;
 
     private static final LocalTime STANDARD_CHECKIN_TIME = LocalTime.of(14, 0); // 14:00 PM
     private static final LocalTime STANDARD_CHECKOUT_TIME = LocalTime.of(12, 0); // 12:00 PM
+    private static final long GRACE_PERIOD_MINUTES = 30;
+    private static final int MAX_CANCEL_LIMIT = 3;
+    private static final long PENALTY_DAYS_BEFORE_CHECKIN = 3;
+
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
@@ -65,6 +74,14 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         if (request.getCustomerId() != null) {
             customer = userRepository.findById(request.getCustomerId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Khách hàng không tồn tại"));
+            Optional<BlackListEntity> blackListOpt = blackListRepository.findByCustomerId(request.getCustomerId());
+            if (blackListOpt.isPresent()) {
+                BlackListEntity blackList = blackListOpt.get();
+                if (blackList.getCount() >= MAX_CANCEL_LIMIT) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tài khoản của bạn đang bị tạm khóa tính năng đặt phòng do hủy quá "
+                            + MAX_CANCEL_LIMIT + " lần. Vui lòng liên hệ khách sạn để được hỗ trợ.");
+                }
+            }
         } else {
             if (request.getCustomerPhone() == null || request.getCustomerName() == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Thiếu tên hoặc SĐT khách hàng");
@@ -137,6 +154,7 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         draftBill.setPaymentStatus(draftStatus);
         draftBill.setPaymentMethod(null);
         draftBill.setPaymentDate(new Date());
+        draftBill.setCreatedAt(LocalDateTime.now());
         draftBill.setTotalBeforeTax(0f);
         draftBill.setTotalAfterTax(0f);
 
@@ -336,6 +354,7 @@ public class BookingRoomServiceImpl implements BookingRoomService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
+        LocalDateTime checkinTime = bookingRoom.getContractCheckInTime();
         boolean isAdminOrStaff = authentication.getAuthorities().stream()
                 .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN") || r.getAuthority().equals("ROLE_STAFF"));
 
@@ -366,11 +385,33 @@ public class BookingRoomServiceImpl implements BookingRoomService {
             if (allCancelled) {
                 PaymentStatusEntity cancelStatus = (PaymentStatusEntity) paymentStatusRepository.findByName("Canceled")
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi cấu hình: Không tìm thấy trạng thái 'Đã hủy' trong DB"));
+                LocalDateTime createdTime = bill.getCreatedAt();
+                LocalDateTime cancelTime = LocalDateTime.now();
+
+                long minutesDiff = Duration.between(createdTime, cancelTime).toMinutes();
+                long daysUntilCheckIn = Duration.between(cancelTime, checkinTime).toDays();
+                if (minutesDiff > GRACE_PERIOD_MINUTES && daysUntilCheckIn < PENALTY_DAYS_BEFORE_CHECKIN) {
+                    updateBlackListCount(bill.getCustomer());
+                }
 
                 bill.setPaymentStatus(cancelStatus);
             }
             billRepository.save(bill);
         }
+    }
+
+    private void updateBlackListCount(UserEntity customer) {
+        BlackListEntity blackList = blackListRepository.findByCustomerId(customer.getId())
+                .orElseGet(() -> {
+                    BlackListEntity newBL = new BlackListEntity();
+                    newBL.setCustomer(customer);
+                    newBL.setHotel(hotelRepository.findById(1).get());
+                    newBL.setCount(0);
+                    return newBL;
+                });
+
+        blackList.setCount(blackList.getCount() + 1);
+        blackListRepository.save(blackList);
     }
 
     // Hàm phụ tính lại tiền (Ví dụ đơn giản)

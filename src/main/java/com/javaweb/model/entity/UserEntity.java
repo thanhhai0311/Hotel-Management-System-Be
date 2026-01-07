@@ -50,6 +50,9 @@ public class UserEntity {
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private CustomerIdentificationEntity customerIdentification;
 
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private BlackListEntity blackList;
+
     public Integer getId() {
         return id;
     }
@@ -152,5 +155,13 @@ public class UserEntity {
 
     public void setCustomerIdentification(CustomerIdentificationEntity customerIdentification) {
         this.customerIdentification = customerIdentification;
+    }
+
+    public BlackListEntity getBlackList() {
+        return blackList;
+    }
+
+    public void setBlackList(BlackListEntity blackList) {
+        this.blackList = blackList;
     }
 }

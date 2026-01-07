@@ -28,6 +28,9 @@ public class HotelEntity {
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<LocationEntity> locations;
 
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlackListEntity> blackLists;
+
     public Integer getId() {
         return id;
     }
@@ -82,5 +85,13 @@ public class HotelEntity {
 
     public void setLocations(List<LocationEntity> locations) {
         this.locations = locations;
+    }
+
+    public List<BlackListEntity> getBlackLists() {
+        return blackLists;
+    }
+
+    public void setBlackLists(List<BlackListEntity> blackLists) {
+        this.blackLists = blackLists;
     }
 }

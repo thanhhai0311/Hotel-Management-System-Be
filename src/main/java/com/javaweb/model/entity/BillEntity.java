@@ -1,6 +1,7 @@
 package com.javaweb.model.entity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class BillEntity {
 
     @Column(name = "totalAfterTax", nullable = false)
     private Float totalAfterTax;
+
+    @Column(name = "createdAt")
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "idPaymentMethod")
@@ -99,5 +103,11 @@ public class BillEntity {
         this.bookingRooms = bookingRooms;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
