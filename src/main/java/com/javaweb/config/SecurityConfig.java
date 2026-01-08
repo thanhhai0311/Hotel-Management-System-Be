@@ -224,6 +224,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/locations/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/locations/**").hasRole("ADMIN")
 
+                // ========== BLACKLIST ==========
+                .antMatchers(HttpMethod.POST, "/api/blacklist/**").hasAnyRole("ADMIN", "STAFF")
+                .antMatchers(HttpMethod.GET, "/api/blacklist/**").hasAnyRole("ADMIN", "STAFF")
+
                 // ========== ROLES ==========
                 .antMatchers("/api/roles/**").hasRole("ADMIN")
 

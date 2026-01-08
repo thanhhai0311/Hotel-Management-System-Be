@@ -16,6 +16,7 @@ public class UserWithAccountResponseDTO {
     private String email;
     private String roleName;
     private boolean active;
+    private boolean isBlacklist = false;
 
     private String identificationImage;
 
@@ -114,5 +115,13 @@ public class UserWithAccountResponseDTO {
 
     public void setIdentificationImage(String identificationImage) {
         this.identificationImage = identificationImage;
+    }
+
+    public boolean isBlacklist() {
+        return isBlacklist;
+    }
+
+    public void setBlacklist(boolean blacklist) {
+        isBlacklist = blacklist;
     }
 }

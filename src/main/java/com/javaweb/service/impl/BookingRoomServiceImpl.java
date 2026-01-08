@@ -494,6 +494,10 @@ public class BookingRoomServiceImpl implements BookingRoomService {
         BillEntity bill = billRepository.findById(billId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy hóa đơn!"));
 
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isAfter(bill.getBookingRooms().get(0).getContractCheckOutTime())) {
+            bill.setTotalAfterTax(bill.getTotalAfterTax() + (10 / 100) * bill.getTotalAfterTax());
+        }
         CheckoutInfoDTO info = new CheckoutInfoDTO();
         info.setBillId(bill.getId());
         info.setTotalAmount(bill.getTotalAfterTax());

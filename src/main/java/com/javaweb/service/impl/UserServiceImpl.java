@@ -224,6 +224,10 @@ public class UserServiceImpl implements UserService {
         if (user.getCustomerIdentification() != null && user.getCustomerIdentification().getIdentificationImage() != null) {
             dto.setIdentificationImage(user.getCustomerIdentification().getIdentificationImage());
         }
+
+        if (user.getBlackList() != null && user.getBlackList().getCount() >= 3) {
+            dto.setBlacklist(true);
+        }
         return dto;
     }
 
