@@ -106,6 +106,7 @@ public class BillServiceImpl implements BillService {
 
         dto.setTotalBeforeTax(bill.getTotalBeforeTax() != null ? bill.getTotalBeforeTax() : 0f);
         dto.setTotalAfterTax(bill.getTotalAfterTax() != null ? bill.getTotalAfterTax() : 0f);
+        dto.setPhoneNumber(bill.getCustomer().getPhone());
 
         if (bill.getPaymentMethod() != null) {
             dto.setPaymentMethod(bill.getPaymentMethod().getName());

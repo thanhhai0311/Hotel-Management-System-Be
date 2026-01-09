@@ -64,7 +64,7 @@ public class BookingRoomServiceImpl implements BookingRoomService {
     private static final LocalTime STANDARD_CHECKOUT_TIME = LocalTime.of(12, 0); // 12:00 PM
     private static final long GRACE_PERIOD_MINUTES = 30;
     private static final int MAX_CANCEL_LIMIT = 3;
-    private static final long PENALTY_DAYS_BEFORE_CHECKIN = 3;
+    private static final long PENALTY_DAYS_BEFORE_CHECKIN = 1;
 
 
     @Override

@@ -14,6 +14,7 @@ public class BillResponseDTO {
     // Thông tin khách hàng
     private Integer customerId;
     private String customerName;
+    private String phoneNumber;
 
     // Danh sách phòng trong hóa đơn này
     private List<BillRoomDTO> bookingRooms;
@@ -91,9 +92,15 @@ public class BillResponseDTO {
         this.bookingRooms = bookingRooms;
     }
 
-    // ==========================================
-    // INNER CLASS 1: Thông tin Phòng trong Bill
-    // ==========================================
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+
     public static class BillRoomDTO {
         private Integer bookingRoomId;
         private Integer roomNumber; // Số phòng
